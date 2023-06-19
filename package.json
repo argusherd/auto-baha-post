@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "name": "auto-baha-post",
+  "version": "0.0.1",
+  "main": "main/index.js",
+  "productName": "AutoBahaPost",
+  "scripts": {
+    "clean": "rimraf dist main renderer/out renderer/.next",
+    "dev": "npm run build-electron && electron .",
+    "build-renderer": "next build renderer",
+    "build-electron": "tsc -p electron-src",
+    "build": "npm run build-renderer && npm run build-electron",
+    "pack-app": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "type-check": "tsc -p ./renderer/tsconfig.json && tsc -p ./electron-src/tsconfig.json",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "electron-is-dev": "^1.1.0",
+    "electron-next": "^3.1.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.6",
+    "@types/react": "^16.9.9",
+    "@types/react-dom": "^16.9.9",
+    "electron": "^25.1.1",
+    "electron-builder": "^24.4.0",
+    "eslint": "8.43.0",
+    "eslint-config-next": "13.4.6",
+    "eslint-config-prettier": "^8.8.0",
+    "next": "latest",
+    "rimraf": "^3.0.0",
+    "typescript": "^4.9.5"
+  },
+  "build": {
+    "asar": true,
+    "files": [
+      "main",
+      "renderer/out"
+    ]
+  }
+}
