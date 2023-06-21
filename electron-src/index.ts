@@ -1,11 +1,13 @@
 // Native
 import { join } from "path";
-import { format } from "url";
 
 // Packages
 import { app, BrowserWindow } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
+import serve from "electron-serve";
+
+const loadURL = serve({ directory: "./renderer/out" });
 
 // Prepare the renderer once the app is ready
 app.on("ready", async () => {
@@ -21,17 +23,12 @@ app.on("ready", async () => {
     },
   });
 
-  mainWindow.webContents.openDevTools();
-
-  const url = isDev
-    ? "http://localhost:8000/"
-    : format({
-        pathname: join(__dirname, "../renderer/out/index.html"),
-        protocol: "file:",
-        slashes: true,
-      });
-
-  mainWindow.loadURL(url);
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+    mainWindow.loadURL("http://localhost:8000/");
+  } else {
+    loadURL(mainWindow);
+  }
 });
 
 // Quit the app once all windows are closed
