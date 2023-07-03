@@ -24,7 +24,7 @@ app.on("ready", async () => {
   });
 
   if (isDev) {
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
     mainWindow.loadURL("http://localhost:8000/");
   } else {
     loadURL(mainWindow);
