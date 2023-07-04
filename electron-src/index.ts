@@ -2,10 +2,13 @@
 import { join } from "path";
 
 // Packages
+import { configDotenv } from "dotenv";
 import { app, BrowserWindow } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
 import serve from "electron-serve";
+
+configDotenv();
 
 const loadURL = serve({ directory: "./renderer/out" });
 
@@ -24,7 +27,10 @@ app.on("ready", async () => {
   });
 
   if (isDev) {
-    // mainWindow.webContents.openDevTools();
+    if (process.env.NODE_ENV != "test" && process.env.DEBUG) {
+      mainWindow.webContents.openDevTools();
+    }
+
     mainWindow.loadURL("http://localhost:8000/");
   } else {
     loadURL(mainWindow);
