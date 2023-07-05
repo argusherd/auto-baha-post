@@ -1,4 +1,6 @@
-export default function Layout({ children }) {
+import "./globals.css";
+
+export default function RootLayout({ children }) {
   return (
     <html>
       <head></head>
