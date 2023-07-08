@@ -1,11 +1,35 @@
 import Home from "@/renderer/app/page";
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 
-test("it will say hi to us", () => {
-  render(<Home />);
+let originalElectron = window.Electron;
 
-  const content = screen.getByRole("heading");
+beforeAll(() => {
+  Object.defineProperty(window, "electron", {
+    value: { getTables: jest.fn().mockReturnValue([{ name: "migrations" }]) },
+    configurable: true,
+  });
+});
+
+afterAll(() => {
+  Object.defineProperty(window, "electron", {
+    value: originalElectron,
+    configurable: true,
+  });
+});
+
+test("it will say hi to us", async () => {
+  const { findByRole } = render(<Home />);
+
+  const content = await findByRole("heading");
 
   expect(content).toHaveTextContent("Hi");
+});
+
+test("it can list all tables in the database", async () => {
+  const { findByRole } = render(<Home />);
+
+  const content = await findByRole("listitem");
+
+  expect(content).toHaveTextContent("migrations");
 });
