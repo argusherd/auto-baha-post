@@ -13,7 +13,7 @@ const config = {
 
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
-    "^@/(.*)": "<rootDir>/$1.tsx",
+    "^@/(.*)$": "<rootDir>/$1",
   },
   roots: ["<rootDir>/__tests__/unit/"],
 };

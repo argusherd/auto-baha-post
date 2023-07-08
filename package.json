@@ -9,16 +9,14 @@
     "dev": "npm run build-electron && electron .",
     "build-renderer": "next build renderer",
     "build-electron": "tsc -p electron-src",
-    "build": "npm run build-renderer && npm run build-electron",
+    "build": "npm run build-renderer & npm run build-electron",
     "pack-app": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
     "type-check": "tsc -p ./renderer/tsconfig.json && tsc -p ./electron-src/tsconfig.json",
     "lint": "next lint renderer electron-src",
     "test": "jest --watch",
-    "test:ci": "jest --ci",
-    "test:e2e": "playwright test",
-    "test:build-e2e": "npm run build && npm run test:e2e",
-    "test:all": "npm run test:ci && npm run test:build-e2e"
+    "test:build": "npm run build && playwright test",
+    "test:all": "jest --ci & playwright test"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
@@ -26,7 +24,10 @@
     "electron-next": "^3.1.5",
     "electron-serve": "^1.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.1.6",
+    "typeorm": "0.3.17"
   },
   "devDependencies": {
     "@playwright/test": "^1.35.1",
@@ -54,6 +55,9 @@
     "files": [
       "main",
       "renderer/out"
+    ],
+    "extraFiles": [
+      ".env.production.example"
     ]
   }
 }
