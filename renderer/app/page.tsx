@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
   return (
     <>
       <h1 className="underline text-green-600 font-bold text-2xl">Hi</h1>
+      <Link href={"/drafts/create"}>Create a draft</Link>
       <ul>
         {tables.map((table, idx) => (
           <li key={idx}>{table.name}</li>
