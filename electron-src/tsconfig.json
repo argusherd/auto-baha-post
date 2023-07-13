@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "baseUrl": "../",
     "alwaysStrict": true,
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
@@ -20,7 +21,10 @@
     "strictPropertyInitialization": false,
     "strict": true,
     "target": "esnext",
-    "outDir": "../main"
+    "outDir": "../main",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts", "**/*.tsx", "**/*.js"]

@@ -4,10 +4,17 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 describe("create draft page", () => {
+  const mockedSaveDraft = jest.fn();
+
   beforeEach(() => {
     userEvent.setup();
 
     render(<CreateDraft />);
+
+    Object.defineProperty(window, "electron", {
+      value: { saveDraft: mockedSaveDraft },
+      configurable: true,
+    });
   });
 
   test("it has a input field for the subject", async () => {
@@ -41,6 +48,35 @@ describe("create draft page", () => {
     await waitFor(() => {
       expect(subjectError).toBeInTheDocument();
       expect(contentError).toBeInTheDocument();
+    });
+  });
+
+  test("it can handle submit event in order to persist draft data", async () => {
+    const subject = screen.getByPlaceholderText("Subject");
+    const content = screen.getByPlaceholderText("Content");
+    const submitBtn = screen.getByRole("button", { name: "Save" });
+
+    await userEvent.type(subject, "My first draft");
+    await userEvent.type(content, "The content in my first draft");
+    await userEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(mockedSaveDraft).toBeCalledTimes(1);
+    });
+  });
+
+  test("it resets input fields after submit create a draft", async () => {
+    const subject = screen.getByPlaceholderText("Subject");
+    const content = screen.getByPlaceholderText("Content");
+    const submitBtn = screen.getByRole("button", { name: "Save" });
+
+    await userEvent.type(subject, "My first draft");
+    await userEvent.type(content, "The content in my first draft");
+    await userEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(subject).toHaveDisplayValue("");
+      expect(content).toHaveDisplayValue("");
     });
   });
 });

@@ -1,5 +1,6 @@
 "use client";
 
+import { DraftType } from "@/interfaces/drafts";
 import { useForm } from "react-hook-form";
 
 export default function CreateDraft() {
@@ -7,8 +8,13 @@ export default function CreateDraft() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
-  const onSubmit = () => {};
+
+  async function onSubmit(data: DraftType) {
+    await window.electron.saveDraft(data);
+    reset();
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
