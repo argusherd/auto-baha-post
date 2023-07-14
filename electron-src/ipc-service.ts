@@ -1,4 +1,3 @@
-import { DraftType } from "@/interfaces/drafts";
 import { ipcMain } from "electron";
 import { DataSource } from "typeorm";
 import { resolveDB } from "./database/connection";
@@ -17,7 +16,7 @@ async function getTables() {
   return await DB.query("select name from sqlite_master");
 }
 
-async function saveDraft(data: DraftType) {
+async function saveDraft(data: Draft) {
   const draft = new Draft();
   ({ subject: draft.subject, content: draft.content } = data);
   await draft.save();
