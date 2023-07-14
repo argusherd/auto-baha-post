@@ -1,6 +1,6 @@
 "use client";
 
-import { DraftType } from "@/interfaces/drafts";
+import Draft from "@/electron-src/database/entities/Draft";
 import { useForm } from "react-hook-form";
 
 export default function CreateDraft() {
@@ -11,7 +11,7 @@ export default function CreateDraft() {
     reset,
   } = useForm();
 
-  async function onSubmit(data: DraftType) {
+  async function onSubmit(data: Draft) {
     await window.electron.saveDraft(data);
     reset();
   }

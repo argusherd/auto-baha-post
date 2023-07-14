@@ -7,8 +7,8 @@ let DB: DataSource;
 export function resolveDB() {
   if (DB) return DB;
 
-  const entities = readdirSync(join(__dirname, "entities")).map((file) =>
-    join(__dirname, "entities", file)
+  const entities = readdirSync(join(__dirname, "schemas")).map((file) =>
+    join(__dirname, "schemas", file)
   );
 
   const migrations = readdirSync(join(__dirname, "migrations")).map((file) =>
