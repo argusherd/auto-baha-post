@@ -1,31 +1,13 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "baseUrl": "../",
     "alwaysStrict": true,
-    "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
     "lib": ["dom", "es2017"],
     "module": "commonjs",
-    "moduleResolution": "node",
     "noEmit": false,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strictPropertyInitialization": false,
-    "strict": true,
-    "target": "esnext",
     "outDir": "../main",
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "strict": true,
+    "target": "esnext"
   },
-  "exclude": ["node_modules"],
+  "extends": "../tsconfig",
   "include": ["**/*.ts", "**/*.tsx", "**/*.js"]
 }
