@@ -56,4 +56,28 @@ describe("the create a new draft api", () => {
       content: "the content",
     });
   });
+
+  it("should not allow empty subject or empty content", async () => {
+    await request(app)
+      .post("/api/drafts")
+      .send({
+        subject: " ",
+        content: "the content",
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "subject" }] });
+      });
+
+    await request(app)
+      .post("/api/drafts")
+      .send({
+        subject: "the subject",
+        content: "",
+      })
+      .expect(422)
+      .expect((res) =>
+        expect(res.body).toMatchObject({ errors: [{ path: "content" }] })
+      );
+  });
 });
