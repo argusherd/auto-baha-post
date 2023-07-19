@@ -5,3 +5,8 @@ contextBridge.exposeInMainWorld("electron", {
   getTables: () => ipcRenderer.invoke("getTables"),
   saveDraft: (data: Draft) => ipcRenderer.invoke("drafts.save", data),
 });
+
+contextBridge.exposeInMainWorld(
+  "backendUrl",
+  `http://localhost:${process.env.API_PORT}`
+);

@@ -7,5 +7,6 @@ export interface Electron {
 declare global {
   interface Window {
     electron: Electron;
+    backendUrl: string;
   }
 }
