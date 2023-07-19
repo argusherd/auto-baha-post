@@ -13,6 +13,8 @@ export default function Home() {
     };
 
     getTables();
+
+    console.log(window.backendUrl);
   }, []);
 
   return (
