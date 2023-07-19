@@ -2,7 +2,7 @@
   "private": true,
   "name": "auto-baha-post",
   "version": "0.0.1",
-  "main": "main/index.js",
+  "main": "main/electron-src/index.js",
   "productName": "AutoBahaPost",
   "scripts": {
     "clean": "rimraf dist main renderer/out renderer/.next",

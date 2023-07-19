@@ -1,6 +1,7 @@
 import { app } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
+import backendServer from "../backend-api/server";
 import { revokeDB } from "./database/connection";
 import { createWindow, initializeApp, serveProduction } from "./initialization";
 
@@ -25,6 +26,9 @@ app.on("ready", async () => {
   }
 });
 
-// Quit the app once all windows are closed
+app.on("before-quit", async () => {
+  backendServer.close();
+  await revokeDB();
+});
+
 app.on("window-all-closed", app.quit);
-app.on("before-quit", revokeDB);
