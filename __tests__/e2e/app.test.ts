@@ -1,7 +1,8 @@
-import { expect, test, _electron as electron } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { launchElectron } from "./setup";
 
 test("it should say hi to us", async () => {
-  const app = await electron.launch({ args: ["main/index.js"] });
+  const app = await launchElectron();
   const page = await app.firstWindow();
   const content = page.getByRole("heading").first();
 
@@ -9,7 +10,7 @@ test("it should say hi to us", async () => {
 });
 
 test("it can list all tables in the database", async () => {
-  const app = await electron.launch({ args: ["main/index.js"] });
+  const app = await launchElectron();
   const page = await app.firstWindow();
   const content = page.getByRole("listitem").first();
 

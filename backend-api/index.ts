@@ -1,7 +1,7 @@
-import Draft from "@/electron-src/database/entities/Draft";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { checkSchema, validationResult } from "express-validator";
+import Draft from "../electron-src/database/entities/Draft";
 
 const app = express();
 
