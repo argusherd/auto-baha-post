@@ -2,19 +2,16 @@ import CreateDraft from "@/renderer/app/drafts/create/page";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import axios from "axios";
+
+jest.mock("axios");
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("create draft page", () => {
-  const mockedSaveDraft = jest.fn();
-
   beforeEach(() => {
     userEvent.setup();
 
     render(<CreateDraft />);
-
-    Object.defineProperty(window, "electron", {
-      value: { saveDraft: mockedSaveDraft },
-      configurable: true,
-    });
   });
 
   test("it has a input field for the subject", async () => {
@@ -61,7 +58,7 @@ describe("create draft page", () => {
     await userEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(mockedSaveDraft).toBeCalledTimes(1);
+      expect(mockedAxios.post).toBeCalledTimes(1);
     });
   });
 
