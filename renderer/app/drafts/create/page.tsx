@@ -1,6 +1,7 @@
 "use client";
 
 import Draft from "@/electron-src/database/entities/Draft";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 export default function CreateDraft() {
@@ -12,7 +13,10 @@ export default function CreateDraft() {
   } = useForm();
 
   async function onSubmit(data: Draft) {
-    await window.electron.saveDraft(data);
+    const url = window.backendUrl + "/api/drafts";
+
+    await axios.post(url, data);
+
     reset();
   }
 
