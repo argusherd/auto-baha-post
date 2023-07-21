@@ -1,17 +1,17 @@
 import { EntitySchema } from "typeorm";
-import Draft from "../entities/Draft";
+import Post from "../entities/Post";
 
-const DraftSchema = new EntitySchema({
-  name: "Draft",
-  target: Draft,
-  tableName: "drafts",
+const PostSchema = new EntitySchema({
+  name: "Post",
+  target: Post,
+  tableName: "posts",
   columns: {
     id: {
       type: "int",
       primary: true,
       generated: true,
     },
-    subject: {
+    title: {
       type: "text",
     },
     content: {
@@ -28,4 +28,4 @@ const DraftSchema = new EntitySchema({
   },
 });
 
-export default DraftSchema;
+export default PostSchema;

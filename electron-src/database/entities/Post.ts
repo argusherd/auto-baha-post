@@ -1,8 +1,8 @@
 import { BaseEntity } from "typeorm";
 
-export default class Draft extends BaseEntity {
+export default class Post extends BaseEntity {
   id: number;
-  subject: string;
+  title: string;
   content: string;
   created_at: Date;
   updated_at: Date;

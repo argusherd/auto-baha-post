@@ -1,7 +1,7 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { checkSchema, validationResult } from "express-validator";
-import Draft from "../electron-src/database/entities/Draft";
+import Post from "../electron-src/database/entities/Post";
 
 const app = express();
 
@@ -9,10 +9,10 @@ app.use(cors());
 app.use(express.json());
 
 app.post(
-  "/api/drafts",
+  "/api/posts",
   checkSchema(
     {
-      subject: { trim: true, notEmpty: true },
+      title: { trim: true, notEmpty: true },
       content: { notEmpty: true },
     },
     ["body"]
@@ -24,13 +24,13 @@ app.post(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const draft = new Draft();
+    const post = new Post();
 
-    ({ subject: draft.subject, content: draft.content } = req.body);
+    ({ title: post.title, content: post.content } = req.body);
 
-    await draft.save();
+    await post.save();
 
-    res.status(201).json({ ...draft });
+    res.status(201).json({ ...post });
   }
 );
 

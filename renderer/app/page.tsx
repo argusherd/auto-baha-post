@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <>
       <h1 className="underline text-green-600 font-bold text-2xl">Hi</h1>
-      <Link href={"/drafts/create"}>Create a draft</Link>
+      <Link href={"/posts/create"}>Create a post</Link>
       <ul>
         {tables.map((table, idx) => (
           <li key={idx}>{table.name}</li>
