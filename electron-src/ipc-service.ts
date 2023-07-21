@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import { DataSource } from "typeorm";
-import { resolveDB } from "./database/connection";
+import { resolveDB } from "../backend-api/database/connection";
 
 let DB: DataSource;
 
