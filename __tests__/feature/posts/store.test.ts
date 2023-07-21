@@ -1,10 +1,10 @@
 import app from "@/backend-api/index";
 import { resolveDB } from "@/electron-src/database/connection";
-import Draft from "@/electron-src/database/entities/Draft";
+import Post from "@/electron-src/database/entities/Post";
 import request from "supertest";
 import { DataSource } from "typeorm";
 
-describe("the create a new draft api", () => {
+describe("the create a new post api", () => {
   let DB: DataSource;
 
   beforeEach(async () => {
@@ -18,61 +18,61 @@ describe("the create a new draft api", () => {
   });
 
   it("can add new record into the database", async () => {
-    const beforeCount = await Draft.count();
+    const beforeCount = await Post.count();
     expect(beforeCount).toEqual(0);
 
-    await request(app).post("/api/drafts").send({
-      subject: "my first draft",
-      content: "content in the first draft",
+    await request(app).post("/api/posts").send({
+      title: "my first post",
+      content: "content in the first post",
     });
 
-    const afterCount = await Draft.count();
+    const afterCount = await Post.count();
     expect(afterCount).toEqual(1);
   });
 
   it("store user's input into the database", async () => {
-    await request(app).post("/api/drafts").send({
-      subject: "ma draft",
+    await request(app).post("/api/posts").send({
+      title: "ma post",
       content: "the content",
     });
 
-    const newDraft = await Draft.findOneBy({ id: null });
+    const newPost = await Post.findOneBy({ id: null });
 
-    expect(newDraft).toMatchObject({
-      subject: "ma draft",
+    expect(newPost).toMatchObject({
+      title: "ma post",
       content: "the content",
     });
   });
 
-  it("responds to the draft that was just saved into the database", async () => {
-    const response = await request(app).post("/api/drafts").send({
-      subject: "ma draft",
+  it("responds to the post that was just saved into the database", async () => {
+    const response = await request(app).post("/api/posts").send({
+      title: "ma post",
       content: "the content",
     });
 
     expect(response.body).toMatchObject({
       id: 1,
-      subject: "ma draft",
+      title: "ma post",
       content: "the content",
     });
   });
 
-  it("should not allow empty subject or empty content", async () => {
+  it("should not allow empty title or empty content", async () => {
     await request(app)
-      .post("/api/drafts")
+      .post("/api/posts")
       .send({
-        subject: " ",
+        title: " ",
         content: "the content",
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "subject" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "title" }] });
       });
 
     await request(app)
-      .post("/api/drafts")
+      .post("/api/posts")
       .send({
-        subject: "the subject",
+        title: "the title",
         content: "",
       })
       .expect(422)

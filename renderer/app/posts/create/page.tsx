@@ -1,10 +1,10 @@
 "use client";
 
-import Draft from "@/electron-src/database/entities/Draft";
+import Post from "@/electron-src/database/entities/Post";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
-export default function CreateDraft() {
+export default function CreatePost() {
   const {
     register,
     handleSubmit,
@@ -12,8 +12,8 @@ export default function CreateDraft() {
     reset,
   } = useForm();
 
-  async function onSubmit(data: Draft) {
-    const url = window.backendUrl + "/api/drafts";
+  async function onSubmit(data: Post) {
+    const url = window.backendUrl + "/api/posts";
 
     await axios.post(url, data);
 
@@ -24,10 +24,10 @@ export default function CreateDraft() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <input
         className="border"
-        placeholder="Subject"
-        {...register("subject", { required: "Subject is required" })}
+        placeholder="Title"
+        {...register("title", { required: "Title is required" })}
       />
-      {errors.subject && <small>{errors.subject.message}</small>}
+      {errors.title && <small>{errors.title.message}</small>}
 
       <textarea
         className="border"

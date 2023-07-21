@@ -1,4 +1,4 @@
-import CreateDraft from "@/renderer/app/drafts/create/page";
+import CreatePost from "@/renderer/app/posts/create/page";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -7,21 +7,21 @@ import axios from "axios";
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe("create draft page", () => {
+describe("create post page", () => {
   beforeEach(() => {
     userEvent.setup();
 
-    render(<CreateDraft />);
+    render(<CreatePost />);
   });
 
-  test("it has a input field for the subject", async () => {
-    const subjectInput = screen.queryByPlaceholderText("Subject");
+  test("it has a input field for the title", async () => {
+    const titleInput = screen.queryByPlaceholderText("Title");
 
-    expect(subjectInput).toBeInTheDocument();
+    expect(titleInput).toBeInTheDocument();
 
-    await userEvent.type(subjectInput, "Hello world");
+    await userEvent.type(titleInput, "Hello world");
 
-    expect(subjectInput).toHaveDisplayValue("Hello world");
+    expect(titleInput).toHaveDisplayValue("Hello world");
   });
 
   test("it has a input field for the content", async () => {
@@ -39,22 +39,22 @@ describe("create draft page", () => {
 
     await userEvent.click(submitButton);
 
-    const subjectError = screen.queryByText("Subject is required");
+    const titleError = screen.queryByText("Title is required");
     const contentError = screen.queryByText("Content is required");
 
     await waitFor(() => {
-      expect(subjectError).toBeInTheDocument();
+      expect(titleError).toBeInTheDocument();
       expect(contentError).toBeInTheDocument();
     });
   });
 
-  test("it can handle submit event in order to persist draft data", async () => {
-    const subject = screen.getByPlaceholderText("Subject");
+  test("it can handle submit event in order to persist post data", async () => {
+    const title = screen.getByPlaceholderText("Title");
     const content = screen.getByPlaceholderText("Content");
     const submitBtn = screen.getByRole("button", { name: "Save" });
 
-    await userEvent.type(subject, "My first draft");
-    await userEvent.type(content, "The content in my first draft");
+    await userEvent.type(title, "My first post");
+    await userEvent.type(content, "The content in my first post");
     await userEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -62,17 +62,17 @@ describe("create draft page", () => {
     });
   });
 
-  test("it resets input fields after submit create a draft", async () => {
-    const subject = screen.getByPlaceholderText("Subject");
+  test("it resets input fields after submit create a post", async () => {
+    const title = screen.getByPlaceholderText("Title");
     const content = screen.getByPlaceholderText("Content");
     const submitBtn = screen.getByRole("button", { name: "Save" });
 
-    await userEvent.type(subject, "My first draft");
-    await userEvent.type(content, "The content in my first draft");
+    await userEvent.type(title, "My first post");
+    await userEvent.type(content, "The content in my first post");
     await userEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(subject).toHaveDisplayValue("");
+      expect(title).toHaveDisplayValue("");
       expect(content).toHaveDisplayValue("");
     });
   });
