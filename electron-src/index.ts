@@ -1,8 +1,8 @@
 import { app } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
+import { revokeDB } from "../backend-api/database/connection";
 import backendServer from "../backend-api/server";
-import { revokeDB } from "./database/connection";
 import { createWindow, initializeApp, serveProduction } from "./initialization";
 
 const loadURL = serveProduction();

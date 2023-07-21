@@ -4,7 +4,7 @@ import isDev from "electron-is-dev";
 import serve from "electron-serve";
 import { constants, copyFile } from "fs/promises";
 import { join } from "path";
-import { resolveDB } from "./database/connection";
+import { resolveDB } from "../backend-api/database/connection";
 import registerIpcMain from "./ipc-service";
 
 export function serveProduction() {

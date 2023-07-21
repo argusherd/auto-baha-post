@@ -1,6 +1,6 @@
 "use client";
 
-import Post from "@/electron-src/database/entities/Post";
+import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 

@@ -1,6 +1,6 @@
+import { resolveDB } from "@/backend-api/database/connection";
+import Post from "@/backend-api/database/entities/Post";
 import app from "@/backend-api/index";
-import { resolveDB } from "@/electron-src/database/connection";
-import Post from "@/electron-src/database/entities/Post";
 import request from "supertest";
 import { DataSource } from "typeorm";
 
