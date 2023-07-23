@@ -8,6 +8,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/api/posts", async (_req: Request, res: Response) => {
+  res.json(await Post.find());
+});
+
 app.post(
   "/api/posts",
   checkSchema(
