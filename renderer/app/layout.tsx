@@ -1,10 +1,15 @@
+import Link from "next/link";
 import "./globals.css";
 
 export default function RootLayout({ children }) {
   return (
     <html>
       <head></head>
-      <body>{children}</body>
+      <body>
+        <Link href={"/"}>Home</Link>
+
+        {children}
+      </body>
     </html>
   );
 }

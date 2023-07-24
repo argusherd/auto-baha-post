@@ -21,6 +21,7 @@ export default function Home() {
     <>
       <h1 className="underline text-green-600 font-bold text-2xl">Hi</h1>
       <Link href={"/posts/create"}>Create a post</Link>
+      <Link href={"/posts"}>All posts</Link>
       <ul>
         {tables.map((table, idx) => (
           <li key={idx}>{table.name}</li>
