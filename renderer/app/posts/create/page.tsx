@@ -2,7 +2,10 @@
 
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+
+const HTTP_CREATED = 201;
 
 export default function CreatePost() {
   const {
@@ -11,13 +14,18 @@ export default function CreatePost() {
     formState: { errors },
     reset,
   } = useForm();
+  const router = useRouter();
 
   async function onSubmit(data: Post) {
     const url = window.backendUrl + "/api/posts";
 
-    await axios.post(url, data);
+    const res = await axios.post(url, data);
 
-    reset();
+    if (res.status == HTTP_CREATED) {
+      reset();
+
+      router.push("/posts");
+    }
   }
 
   return (
