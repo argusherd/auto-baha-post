@@ -1,6 +1,6 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
-import { checkSchema, validationResult } from "express-validator";
+import { checkSchema, param, validationResult } from "express-validator";
 import Post from "./database/entities/Post";
 
 const app = express();
@@ -8,33 +8,57 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/posts", async (_req: Request, res: Response) => {
-  res.json(await Post.find());
-});
-
-app.post(
-  "/api/posts",
+const validatePost = () =>
   checkSchema(
     {
       title: { trim: true, notEmpty: true },
       content: { notEmpty: true },
     },
     ["body"]
+  );
+
+app.get("/api/posts", async (_req: Request, res: Response) => {
+  res.json(await Post.find());
+});
+
+app.post("/api/posts", validatePost(), async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const post = new Post();
+
+  ({ title: post.title, content: post.content } = req.body);
+
+  await post.save();
+
+  res.status(201).json({ ...post });
+});
+
+app.put(
+  "/api/posts/:post",
+  param("post").customSanitizer(
+    async (id) => await Post.findOneBy({ id: Number(id) })
   ),
-  async (req: Request, res: Response) => {
+  validatePost(),
+  async (req: Request<{ post: Post }>, res: Response) => {
+    const post = req.params.post;
+
+    if (!post) return res.sendStatus(404);
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const post = new Post();
-
     ({ title: post.title, content: post.content } = req.body);
 
     await post.save();
 
-    res.status(201).json({ ...post });
+    res.status(200).send({ ...post });
   }
 );
 
