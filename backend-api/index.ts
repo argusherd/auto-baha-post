@@ -17,9 +17,26 @@ const validatePost = () =>
     ["body"]
   );
 
+const checkPostExists = () =>
+  param("post").customSanitizer(
+    async (id) => await Post.findOneBy({ id: Number(id) })
+  );
+
 app.get("/api/posts", async (_req: Request, res: Response) => {
   res.json(await Post.find());
 });
+
+app.get(
+  "/api/posts/:post",
+  checkPostExists(),
+  async (req: Request<{ post: Post }>, res: Response) => {
+    const post = req.params.post;
+
+    if (!post) return res.sendStatus(404);
+
+    return res.json({ ...post });
+  }
+);
 
 app.post("/api/posts", validatePost(), async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -39,9 +56,7 @@ app.post("/api/posts", validatePost(), async (req: Request, res: Response) => {
 
 app.put(
   "/api/posts/:post",
-  param("post").customSanitizer(
-    async (id) => await Post.findOneBy({ id: Number(id) })
-  ),
+  checkPostExists(),
   validatePost(),
   async (req: Request<{ post: Post }>, res: Response) => {
     const post = req.params.post;
