@@ -2,6 +2,7 @@
 
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function PostIndex() {
@@ -21,7 +22,7 @@ export default function PostIndex() {
         <ul>
           {posts.map((post) => (
             <li key={post.id}>
-              <p>{post.title}</p>
+              <Link href={`/posts/get?id=${post.id}`}>{post.title}</Link>
               <p>{post.content}</p>
             </li>
           ))}
