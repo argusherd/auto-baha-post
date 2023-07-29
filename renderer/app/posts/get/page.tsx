@@ -9,12 +9,13 @@ import { useForm } from "react-hook-form";
 export default function ViewPost() {
   const router = useRouter();
   const search = useSearchParams();
-  const { register, setValue } = useForm();
+  const { register, setValue, handleSubmit } = useForm();
+  const POST_ID = search.get("id");
 
   useEffect(() => {
     (async () => {
       const res = await axios.get<Post>(
-        window.backendUrl + `/api/posts/${search.get("id")}`
+        window.backendUrl + `/api/posts/${POST_ID}`
       );
 
       if (res.status == 404) {
@@ -26,8 +27,12 @@ export default function ViewPost() {
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  async function onSubmit(data: Post) {
+    await axios.put(window.backendUrl + `/api/posts/${POST_ID}`, data);
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <input
         placeholder="Title"
         {...register("title", {
@@ -40,6 +45,8 @@ export default function ViewPost() {
           required: "Content is required",
         })}
       ></textarea>
+
+      <button>Save</button>
     </form>
   );
 }
