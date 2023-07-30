@@ -77,4 +77,18 @@ app.put(
   }
 );
 
+app.delete(
+  "/api/posts/:post",
+  checkPostExists(),
+  async (req: Request<{ post: Post }>, res: Response) => {
+    const post = req.params.post;
+
+    if (!post) return res.sendStatus(404);
+
+    await post.remove();
+
+    res.sendStatus(200);
+  }
+);
+
 export default app;

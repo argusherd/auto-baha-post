@@ -8,7 +8,7 @@ export default class PostFactory extends Factory<Post> {
   protected dataSource = resolveDB();
   protected attrs(): FactorizedAttrs<Post> {
     return {
-      title: faker.lorem.lines(),
+      title: faker.lorem.lines(1),
       content: faker.lorem.sentences(),
     };
   }
