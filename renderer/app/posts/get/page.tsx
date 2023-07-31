@@ -3,7 +3,7 @@
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { MouseEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export default function ViewPost() {
@@ -31,6 +31,14 @@ export default function ViewPost() {
     await axios.put(window.backendUrl + `/api/posts/${POST_ID}`, data);
   }
 
+  async function handleDelete(event: MouseEvent) {
+    event.preventDefault();
+
+    const res = await axios.delete(window.backendUrl + `/api/posts/${POST_ID}`);
+
+    if (res.status == 200) router.push("/posts");
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input
@@ -47,6 +55,7 @@ export default function ViewPost() {
       ></textarea>
 
       <button>Save</button>
+      <button onClick={handleDelete}>Delete</button>
     </form>
   );
 }
