@@ -1,21 +1,20 @@
 import { EntitySchema } from "typeorm";
-import Post from "../entities/Post";
+import Board from "../entities/Board";
 
-const PostSchema = new EntitySchema({
-  name: "Post",
-  target: Post,
-  tableName: "posts",
+const BoardSchema = new EntitySchema<Board>({
+  name: "Board",
+  target: Board,
+  tableName: "boards",
   columns: {
     id: {
       type: "integer",
       primary: true,
       generated: true,
     },
-    title: {
+    no: {
       type: "varchar",
-    },
-    content: {
-      type: "text",
+      unique: true,
+      nullable: false,
     },
     created_at: {
       type: "datetime",
@@ -28,4 +27,4 @@ const PostSchema = new EntitySchema({
   },
 });
 
-export default PostSchema;
+export default BoardSchema;

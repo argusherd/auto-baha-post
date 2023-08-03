@@ -1,9 +1,8 @@
 import { BaseEntity } from "typeorm";
 
-export default class Post extends BaseEntity {
+export default class Board extends BaseEntity {
   id: number;
-  title: string;
-  content: string;
+  no: string;
   created_at: string;
   updated_at: string;
 }
