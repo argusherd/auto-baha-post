@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreatePostsTable_1689067711952 implements MigrationInterface {
+export class CreateBoardsTable1691041615897 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "posts",
+        name: "boards",
         columns: [
           {
             name: "id",
@@ -14,12 +14,9 @@ export class CreatePostsTable_1689067711952 implements MigrationInterface {
             generationStrategy: "increment",
           },
           {
-            name: "title",
+            name: "no",
             type: "varchar",
-          },
-          {
-            name: "content",
-            type: "text",
+            isUnique: true,
           },
           {
             name: "created_at",
@@ -30,15 +27,13 @@ export class CreatePostsTable_1689067711952 implements MigrationInterface {
             name: "updated_at",
             type: "datetime",
             default: "CURRENT_TIMESTAMP",
-            isNullable: true,
           },
         ],
-      }),
-      true
+      })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("posts");
+    await queryRunner.dropTable("boards");
   }
 }
