@@ -1,10 +1,7 @@
 import PostIndex from "@/renderer/app/posts/page";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
-import axios from "axios";
-
-jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+import { mockedAxios } from "../setup/mock";
 
 describe("view all posts page", () => {
   it("can list all posts", async () => {

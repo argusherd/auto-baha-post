@@ -6,11 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { MouseEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export default function ViewPost() {
+export default function ShowPost() {
   const router = useRouter();
-  const search = useSearchParams();
+  const params = useSearchParams();
   const { register, setValue, handleSubmit } = useForm();
-  const POST_ID = search.get("id");
+  const POST_ID = params.get("id");
 
   useEffect(() => {
     (async () => {

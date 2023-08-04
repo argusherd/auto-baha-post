@@ -1,22 +1,8 @@
-import { resolveDB } from "@/backend-api/database/connection";
 import Post from "@/backend-api/database/entities/Post";
 import app from "@/backend-api/index";
 import request from "supertest";
-import { DataSource } from "typeorm";
 
 describe("the create a new post api", () => {
-  let DB: DataSource;
-
-  beforeEach(async () => {
-    DB = resolveDB();
-    await DB.initialize();
-    await DB.runMigrations();
-  });
-
-  afterEach(async () => {
-    await DB.destroy();
-  });
-
   it("can add new record into the database", async () => {
     const beforeCount = await Post.count();
     expect(beforeCount).toEqual(0);

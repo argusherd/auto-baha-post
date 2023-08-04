@@ -1,20 +1,8 @@
-import { resolveDB } from "@/backend-api/database/connection";
 import PostFactory from "@/backend-api/database/factories/PostFactory";
 import app from "@/backend-api/index";
 import request from "supertest";
 
 describe("get a post api", () => {
-  const DB = resolveDB();
-
-  beforeEach(async () => {
-    await DB.initialize();
-    await DB.runMigrations();
-  });
-
-  afterEach(async () => {
-    await DB.destroy();
-  });
-
   it("can retrieve a specified post data", async () => {
     const post = await new PostFactory().create();
 

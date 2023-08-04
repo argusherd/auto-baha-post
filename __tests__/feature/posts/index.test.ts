@@ -1,20 +1,8 @@
-import { resolveDB } from "@/backend-api/database/connection";
 import PostFactory from "@/backend-api/database/factories/PostFactory";
 import app from "@/backend-api/index";
 import request from "supertest";
 
 describe("get posts api", () => {
-  let DB = resolveDB();
-
-  beforeEach(async () => {
-    await DB.initialize();
-    await DB.runMigrations();
-  });
-
-  afterEach(async () => {
-    await DB.destroy();
-  });
-
   it("can call the api with no problem", async () => {
     await request(app).get("/api/posts").expect(200);
   });

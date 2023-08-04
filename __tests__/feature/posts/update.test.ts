@@ -1,23 +1,9 @@
-import { resolveDB } from "@/backend-api/database/connection";
 import Post from "@/backend-api/database/entities/Post";
 import PostFactory from "@/backend-api/database/factories/PostFactory";
 import app from "@/backend-api/index";
 import request from "supertest";
-import { DataSource } from "typeorm";
 
 describe("the update a post api", () => {
-  let DB: DataSource;
-
-  beforeEach(async () => {
-    DB = resolveDB();
-    await DB.initialize();
-    await DB.runMigrations();
-  });
-
-  afterEach(async () => {
-    await DB.destroy();
-  });
-
   it("can update the details of a post", async () => {
     const post = await new PostFactory().create();
 
