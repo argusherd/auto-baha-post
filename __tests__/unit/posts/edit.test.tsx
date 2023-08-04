@@ -1,46 +1,26 @@
-import ViewPost from "@/renderer/app/posts/get/page";
+import ShowPost from "@/renderer/app/posts/show/page";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { backendUrl, mockedAxios, mockParamsGet } from "../setup/mock";
 
-jest.mock("axios");
-jest.mock("next/navigation");
+describe("edit a post in show a post page", () => {
+  const POST_ID = "1";
+  const mockedPut = jest.fn();
 
-const POST_ID = 1;
-const DOMAIN = "http://localhost";
+  mockedAxios.put = mockedPut;
+  mockParamsGet(POST_ID);
+  userEvent.setup();
 
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-const mockedPut = jest.fn();
-mockedAxios.put = mockedPut;
-
-(useSearchParams as jest.Mock).mockReturnValue({
-  get: () => POST_ID,
-});
-
-Object.defineProperty(window, "backendUrl", {
-  configurable: true,
-  value: DOMAIN,
-  writable: true,
-});
-
-describe("update post in get a post page", () => {
-  beforeEach(() => {
-    userEvent.setup();
-
-    mockedAxios.get.mockResolvedValue({
-      data: {
-        title: "My first post",
-        content: "Content in the post",
-      },
-    });
-
-    render(<ViewPost />);
+  mockedAxios.get.mockResolvedValue({
+    data: {
+      title: "My first post",
+      content: "Content in the post",
+    },
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  beforeEach(() => {
+    render(<ShowPost />);
   });
 
   it("can change a post's title and content", async () => {
@@ -68,7 +48,7 @@ describe("update post in get a post page", () => {
     await userEvent.click(submit);
 
     expect(mockedPut).toBeCalled();
-    expect(mockedPut).toBeCalledWith(`${DOMAIN}/api/posts/${POST_ID}`, {
+    expect(mockedPut).toBeCalledWith(`${backendUrl}/api/posts/${POST_ID}`, {
       title: "New title",
       content: "New content",
     });

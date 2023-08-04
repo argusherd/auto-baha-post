@@ -22,7 +22,7 @@ export default function PostIndex() {
         <ul>
           {posts.map((post) => (
             <li key={post.id}>
-              <Link href={`/posts/get?id=${post.id}`}>{post.title}</Link>
+              <Link href={`/posts/show?id=${post.id}`}>{post.title}</Link>
               <p>{post.content}</p>
             </li>
           ))}

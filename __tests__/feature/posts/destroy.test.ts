@@ -1,21 +1,9 @@
-import { resolveDB } from "@/backend-api/database/connection";
 import Post from "@/backend-api/database/entities/Post";
 import PostFactory from "@/backend-api/database/factories/PostFactory";
 import app from "@/backend-api/index";
 import request from "supertest";
 
 describe("delete a post api", () => {
-  const DB = resolveDB();
-
-  beforeEach(async () => {
-    await DB.initialize();
-    await DB.runMigrations();
-  });
-
-  afterEach(async () => {
-    await DB.destroy();
-  });
-
   it("can delete a post that exists in the database", async () => {
     const post = await new PostFactory().create();
 
