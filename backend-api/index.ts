@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { checkSchema, param, validationResult } from "express-validator";
+import Board from "./database/entities/Board";
 import Post from "./database/entities/Post";
 
 const app = express();
@@ -88,6 +89,49 @@ app.delete(
     await post.remove();
 
     res.sendStatus(200);
+  }
+);
+
+const notInUse = (column: string) =>
+  async function (value: any) {
+    const isUsed = await Board.countBy({ [column]: value });
+    return isUsed ? Promise.reject() : Promise.resolve();
+  };
+
+app.post(
+  "/api/boards",
+  checkSchema(
+    {
+      no: {
+        trim: true,
+        notEmpty: true,
+        notInUse: { custom: notInUse("no"), bail: true },
+      },
+      name: {
+        trim: true,
+        notEmpty: true,
+        notInUse: { custom: notInUse("name"), bail: true },
+      },
+    },
+    ["body"]
+  ),
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() });
+
+    const board = new Board();
+
+    ({ no: board.no, name: board.name } = req.body);
+
+    try {
+      await board.save();
+
+      res.sendStatus(201);
+    } catch (error) {
+      res.status(422).json({ errors: error });
+    }
   }
 );
 

@@ -19,6 +19,11 @@ export class CreateBoardsTable1691041615897 implements MigrationInterface {
             isUnique: true,
           },
           {
+            name: "name",
+            type: "varchar",
+            isUnique: true,
+          },
+          {
             name: "created_at",
             type: "datetime",
             default: "CURRENT_TIMESTAMP",
