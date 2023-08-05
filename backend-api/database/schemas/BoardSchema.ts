@@ -14,7 +14,10 @@ const BoardSchema = new EntitySchema<Board>({
     no: {
       type: "varchar",
       unique: true,
-      nullable: false,
+    },
+    name: {
+      type: "varchar",
+      unique: true,
     },
     created_at: {
       type: "datetime",
