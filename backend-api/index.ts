@@ -98,6 +98,10 @@ const notInUse = (column: string) =>
     return isUsed ? Promise.reject() : Promise.resolve();
   };
 
+app.get("/api/boards", async (_req: Request, res: Response) => {
+  res.json(await Board.find());
+});
+
 app.post(
   "/api/boards",
   checkSchema(
