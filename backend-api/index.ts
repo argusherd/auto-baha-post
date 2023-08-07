@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { checkSchema, param, validationResult } from "express-validator";
+import { Not } from "typeorm";
 import Board from "./database/entities/Board";
 import Post from "./database/entities/Post";
 
@@ -98,27 +99,39 @@ const notInUse = (column: string) =>
     return isUsed ? Promise.reject() : Promise.resolve();
   };
 
+const notInUseExcept = (column: string, ignores: number) =>
+  async function (value: any) {
+    const isUsed = await Board.countBy({ [column]: value, id: Not(ignores) });
+    return isUsed ? Promise.reject() : Promise.resolve();
+  };
+
+const validateBoard = () =>
+  checkSchema(
+    {
+      no: {
+        trim: true,
+        notEmpty: true,
+        isNumeric: true,
+      },
+      name: {
+        trim: true,
+        notEmpty: true,
+      },
+    },
+    ["body"]
+  );
+
 app.get("/api/boards", async (_req: Request, res: Response) => {
   res.json(await Board.find());
 });
 
 app.post(
   "/api/boards",
-  checkSchema(
-    {
-      no: {
-        trim: true,
-        notEmpty: true,
-        notInUse: { custom: notInUse("no"), bail: true },
-      },
-      name: {
-        trim: true,
-        notEmpty: true,
-        notInUse: { custom: notInUse("name"), bail: true },
-      },
-    },
-    ["body"]
-  ),
+  validateBoard(),
+  checkSchema({
+    no: { custom: { options: notInUse("no"), bail: true } },
+    name: { custom: { options: notInUse("name"), bail: true } },
+  }),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -136,6 +149,42 @@ app.post(
     } catch (error) {
       res.status(422).json({ errors: error });
     }
+  }
+);
+
+const boardBinding = () =>
+  param("board").customSanitizer(
+    async (id: number) => await Board.findOneBy({ id })
+  );
+
+app.put(
+  "/api/boards/:board",
+  boardBinding(),
+  validateBoard(),
+  async (req: Request<{ board: Board }, any, Board>, res: Response) => {
+    const board = req.params.board;
+
+    if (!board) return res.sendStatus(404);
+
+    await checkSchema({
+      no: {
+        custom: { options: notInUseExcept("no", board.id), bail: true },
+      },
+      name: {
+        custom: { options: notInUseExcept("name", board.id), bail: true },
+      },
+    }).run(req);
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() });
+
+    ({ no: board.no, name: board.name } = req.body);
+
+    await board.save();
+
+    res.json(board);
   }
 );
 
