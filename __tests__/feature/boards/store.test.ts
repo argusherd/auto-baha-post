@@ -20,9 +20,7 @@ describe("create a board api", () => {
       .post("/api/boards")
       .send({ no: " ", name: "foobar" })
       .expect(422)
-      .expect((res) =>
-        expect(res.body).toMatchObject({ errors: [{ path: "no" }] })
-      );
+      .expect((res) => expect(res.body.errors[0].path).toEqual("no"));
 
     await request(app)
       .post("/api/boards")
@@ -50,6 +48,16 @@ describe("create a board api", () => {
       .expect(422)
       .expect((res) =>
         expect(res.body).toMatchObject({ errors: [{ path: "name" }] })
+      );
+  });
+
+  it("only allow digits in board no", async () => {
+    await request(app)
+      .post("/api/boards")
+      .send({ no: "not_digits", name: "new board" })
+      .expect(422)
+      .expect((res) =>
+        expect(res.body).toMatchObject({ errors: [{ path: "no" }] })
       );
   });
 });
