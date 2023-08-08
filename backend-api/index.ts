@@ -188,4 +188,18 @@ app.put(
   }
 );
 
+app.delete(
+  "/api/boards/:board",
+  boardBinding(),
+  async (req: Request<{ board: Board }>, res: Response) => {
+    const board = req.params.board;
+
+    if (!board) return res.sendStatus(404);
+
+    await board.remove();
+
+    res.sendStatus(200);
+  }
+);
+
 export default app;
