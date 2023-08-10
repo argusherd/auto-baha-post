@@ -11,4 +11,5 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await DB.destroy();
+  jest.clearAllMocks();
 });
