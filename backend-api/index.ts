@@ -1,9 +1,10 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
-import { checkSchema, param, validationResult } from "express-validator";
+import { checkSchema, validationResult } from "express-validator";
 import { Not } from "typeorm";
 import Board from "./database/entities/Board";
 import Post from "./database/entities/Post";
+import bindEntity from "./middlewares/route-entity-binding";
 
 const app = express();
 
@@ -19,24 +20,15 @@ const validatePost = () =>
     ["body"]
   );
 
-const checkPostExists = () =>
-  param("post").customSanitizer(
-    async (id) => await Post.findOneBy({ id: Number(id) })
-  );
-
 app.get("/api/posts", async (_req: Request, res: Response) => {
   res.json(await Post.find());
 });
 
 app.get(
   "/api/posts/:post",
-  checkPostExists(),
-  async (req: Request<{ post: Post }>, res: Response) => {
-    const post = req.params.post;
-
-    if (!post) return res.sendStatus(404);
-
-    return res.json({ ...post });
+  bindEntity(Post),
+  async (req: Request, res: Response) => {
+    res.json({ ...req.post });
   }
 );
 
@@ -58,12 +50,10 @@ app.post("/api/posts", validatePost(), async (req: Request, res: Response) => {
 
 app.put(
   "/api/posts/:post",
-  checkPostExists(),
+  bindEntity(Post),
   validatePost(),
-  async (req: Request<{ post: Post }>, res: Response) => {
-    const post = req.params.post;
-
-    if (!post) return res.sendStatus(404);
+  async (req: Request, res: Response) => {
+    const post = req.post;
 
     const errors = validationResult(req);
 
@@ -81,11 +71,9 @@ app.put(
 
 app.delete(
   "/api/posts/:post",
-  checkPostExists(),
-  async (req: Request<{ post: Post }>, res: Response) => {
-    const post = req.params.post;
-
-    if (!post) return res.sendStatus(404);
+  bindEntity(Post),
+  async (req: Request, res: Response) => {
+    const post = req.post;
 
     await post.remove();
 
@@ -152,19 +140,12 @@ app.post(
   }
 );
 
-const boardBinding = () =>
-  param("board").customSanitizer(
-    async (id: number) => await Board.findOneBy({ id })
-  );
-
 app.put(
   "/api/boards/:board",
-  boardBinding(),
+  bindEntity(Board),
   validateBoard(),
-  async (req: Request<{ board: Board }, any, Board>, res: Response) => {
-    const board = req.params.board;
-
-    if (!board) return res.sendStatus(404);
+  async (req: Request, res: Response) => {
+    const board = req.board;
 
     await checkSchema({
       no: {
@@ -190,11 +171,9 @@ app.put(
 
 app.delete(
   "/api/boards/:board",
-  boardBinding(),
-  async (req: Request<{ board: Board }>, res: Response) => {
-    const board = req.params.board;
-
-    if (!board) return res.sendStatus(404);
+  bindEntity(Board),
+  async (req: Request, res: Response) => {
+    const board = req.board;
 
     await board.remove();
 
