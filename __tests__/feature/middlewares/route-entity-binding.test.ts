@@ -33,6 +33,20 @@ describe("route entity binding middleware", () => {
     expect(mockedReq["hasid"].id).toEqual(entity.id);
   });
 
+  it("uses lower case of the entity's name to check param key and bind Request", async () => {
+    const entity = new HasId();
+    entity.id = 1;
+    findOneBy.mockResolvedValue(entity);
+
+    mockedReq.params = { hasid: String(entity.id) };
+
+    const shouldBind = bindEntity(HasId);
+
+    await shouldBind(mockedReq as Request, mockedRes as Response, () => {});
+
+    expect(mockedReq).toHaveProperty(HasId.name.toLowerCase());
+  });
+
   it("continues the request process after the binding is completed", async () => {
     const entity = new HasId();
     findOneBy.mockResolvedValue(entity);
@@ -52,7 +66,8 @@ describe("route entity binding middleware", () => {
     await shouldBind(mockedReq as Request, mockedRes as Response, mockedNext);
 
     expect(mockedReq["hasid"]).toBeUndefined();
-    expect(mockedNext).not.toBeCalled();
+    expect(mockedRes.sendStatus).toBeCalledWith(404);
+    expect(mockedNext).not.toBeCalledTimes(1);
   });
 
   it("returns 404 response if cannot find an existed entity", async () => {
@@ -66,6 +81,6 @@ describe("route entity binding middleware", () => {
 
     expect(findOneBy).toBeCalled();
     expect(mockedRes.sendStatus).toBeCalledWith(404);
-    expect(mockedNext).not.toBeCalled();
+    expect(mockedNext).not.toBeCalledTimes(1);
   });
 });
