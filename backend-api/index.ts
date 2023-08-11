@@ -1,24 +1,21 @@
 import cors from "cors";
-import express, { Request, Response } from "express";
-import { checkSchema, validationResult } from "express-validator";
+import express, { NextFunction, Request, Response } from "express";
+import { body } from "express-validator";
 import { Not } from "typeorm";
 import Board from "./database/entities/Board";
 import Post from "./database/entities/Post";
 import bindEntity from "./middlewares/route-entity-binding";
+import validator from "./middlewares/validate-request";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const validatePost = () =>
-  checkSchema(
-    {
-      title: { trim: true, notEmpty: true },
-      content: { notEmpty: true },
-    },
-    ["body"]
-  );
+const validatePost = [
+  body("title").trim().notEmpty(),
+  body("content").notEmpty(),
+];
 
 app.get("/api/posts", async (_req: Request, res: Response) => {
   res.json(await Post.find());
@@ -28,44 +25,36 @@ app.get(
   "/api/posts/:post",
   bindEntity(Post),
   async (req: Request, res: Response) => {
-    res.json({ ...req.post });
+    res.json(req.post);
   }
 );
 
-app.post("/api/posts", validatePost(), async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-
-  const post = new Post();
-
-  ({ title: post.title, content: post.content } = req.body);
-
-  await post.save();
-
-  res.status(201).json({ ...post });
-});
-
-app.put(
-  "/api/posts/:post",
-  bindEntity(Post),
-  validatePost(),
+app.post(
+  "/api/posts",
+  validator(validatePost),
   async (req: Request, res: Response) => {
-    const post = req.post;
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
+    const post = new Post();
 
     ({ title: post.title, content: post.content } = req.body);
 
     await post.save();
 
-    res.status(200).send({ ...post });
+    res.status(201).json(post);
+  }
+);
+
+app.put(
+  "/api/posts/:post",
+  bindEntity(Post),
+  validator(validatePost),
+  async (req: Request, res: Response) => {
+    const post = req.post;
+
+    ({ title: post.title, content: post.content } = req.body);
+
+    await post.save();
+
+    res.status(200).json(post);
   }
 );
 
@@ -73,41 +62,26 @@ app.delete(
   "/api/posts/:post",
   bindEntity(Post),
   async (req: Request, res: Response) => {
-    const post = req.post;
-
-    await post.remove();
+    await req.post.remove();
 
     res.sendStatus(200);
   }
 );
 
-const notInUse = (column: string) =>
+const notInUse = (column: string, ignoreId?: number) =>
   async function (value: any) {
-    const isUsed = await Board.countBy({ [column]: value });
+    const isUsed = await Board.countBy({
+      [column]: value,
+      ...(ignoreId && { id: Not(ignoreId) }),
+    });
+
     return isUsed ? Promise.reject() : Promise.resolve();
   };
 
-const notInUseExcept = (column: string, ignores: number) =>
-  async function (value: any) {
-    const isUsed = await Board.countBy({ [column]: value, id: Not(ignores) });
-    return isUsed ? Promise.reject() : Promise.resolve();
-  };
-
-const validateBoard = () =>
-  checkSchema(
-    {
-      no: {
-        trim: true,
-        notEmpty: true,
-        isNumeric: true,
-      },
-      name: {
-        trim: true,
-        notEmpty: true,
-      },
-    },
-    ["body"]
-  );
+const validateBoard = [
+  body("no").trim().notEmpty().isNumeric(),
+  body("name").trim().notEmpty(),
+];
 
 app.get("/api/boards", async (_req: Request, res: Response) => {
   res.json(await Board.find());
@@ -115,51 +89,34 @@ app.get("/api/boards", async (_req: Request, res: Response) => {
 
 app.post(
   "/api/boards",
-  validateBoard(),
-  checkSchema({
-    no: { custom: { options: notInUse("no"), bail: true } },
-    name: { custom: { options: notInUse("name"), bail: true } },
-  }),
+  validator([
+    ...validateBoard,
+    body("no").custom(notInUse("no")),
+    body("name").custom(notInUse("name")),
+  ]),
   async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty())
-      return res.status(422).json({ errors: errors.array() });
-
     const board = new Board();
 
     ({ no: board.no, name: board.name } = req.body);
 
-    try {
-      await board.save();
+    await board.save();
 
-      res.sendStatus(201);
-    } catch (error) {
-      res.status(422).json({ errors: error });
-    }
+    res.status(201).json(board);
   }
 );
 
 app.put(
   "/api/boards/:board",
   bindEntity(Board),
-  validateBoard(),
+  validator(validateBoard),
+  (req: Request, res: Response, next: NextFunction) => {
+    validator([
+      body("no").custom(notInUse("no", req.board.id)),
+      body("name").custom(notInUse("name", req.board.id)),
+    ])(req, res, next);
+  },
   async (req: Request, res: Response) => {
     const board = req.board;
-
-    await checkSchema({
-      no: {
-        custom: { options: notInUseExcept("no", board.id), bail: true },
-      },
-      name: {
-        custom: { options: notInUseExcept("name", board.id), bail: true },
-      },
-    }).run(req);
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty())
-      return res.status(422).json({ errors: errors.array() });
 
     ({ no: board.no, name: board.name } = req.body);
 
