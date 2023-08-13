@@ -4,6 +4,7 @@ import isDev from "electron-is-dev";
 import serve from "electron-serve";
 import { constants, copyFile } from "fs/promises";
 import { join } from "path";
+import pie from "puppeteer-in-electron";
 import { resolveDB } from "../backend-api/database/connection";
 import registerIpcMain from "./ipc-service";
 
@@ -30,6 +31,8 @@ export function initializeApp() {
       resolveDB().initialize();
 
       registerIpcMain();
+
+      pie.initialize(app);
     });
 }
 
