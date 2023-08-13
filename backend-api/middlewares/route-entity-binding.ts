@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { BaseEntity } from "typeorm";
 
+declare module "express" {
+  interface Request {
+    [key: string]: any;
+  }
+}
 export class HasId extends BaseEntity {
   id: number;
 }
