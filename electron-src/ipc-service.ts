@@ -1,15 +1,12 @@
 import { ipcMain } from "electron";
-import { DataSource } from "typeorm";
-import { resolveDB } from "../backend-api/database/connection";
-
-let DB: DataSource;
+import { createWindow } from "./initialization";
 
 export default function registerIpcMain() {
-  DB = resolveDB();
-
-  ipcMain.handle("getTables", getTables);
+  ipcMain.on("openBaha", openBaha);
 }
 
-async function getTables() {
-  return await DB.query("select name from sqlite_master");
+async function openBaha() {
+  const window = createWindow();
+
+  await window.loadURL("https://home.gamer.com.tw/homeindex.php");
 }

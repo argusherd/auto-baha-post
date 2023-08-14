@@ -1,5 +1,5 @@
 export interface Electron {
-  getTables(): Promise<Object[]>;
+  openBaha(): Promise<void>;
 }
 
 declare global {
