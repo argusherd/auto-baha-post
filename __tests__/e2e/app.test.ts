@@ -1,18 +1,16 @@
 import { expect, test } from "@playwright/test";
 import { launchElectron } from "./setup";
 
-test("it should say hi to us", async () => {
+test("it can open the baha page and allow you to manage authentication", async () => {
   const app = await launchElectron();
   const page = await app.firstWindow();
-  const content = page.getByRole("heading").first();
+  const bahaBtn = page.getByRole("button", { name: "Open Baha" });
 
-  await expect(content).toContainText("Hi");
-});
+  await bahaBtn.click();
+  await app.context().waitForEvent("page");
 
-test("it can list all tables in the database", async () => {
-  const app = await launchElectron();
-  const page = await app.firstWindow();
-  const content = page.getByRole("listitem").first();
+  const bahaPage = app.windows()[1];
 
-  await expect(content).toContainText("migrations");
+  expect(app.windows()).toHaveLength(2);
+  expect(bahaPage.url()).toContain("gamer.com.tw");
 });

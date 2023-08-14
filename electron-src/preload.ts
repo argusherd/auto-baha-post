@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electron", {
-  getTables: () => ipcRenderer.invoke("getTables"),
+  openBaha: () => ipcRenderer.send("openBaha"),
 });
 
 contextBridge.exposeInMainWorld(
