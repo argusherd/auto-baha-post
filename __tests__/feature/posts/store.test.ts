@@ -1,4 +1,5 @@
 import Post from "@/backend-api/database/entities/Post";
+import BoardFactory from "@/backend-api/database/factories/BoardFactory";
 import app from "@/backend-api/index";
 import request from "supertest";
 
@@ -65,5 +66,50 @@ describe("the create a new post api", () => {
       .expect((res) =>
         expect(res.body).toMatchObject({ errors: [{ path: "content" }] })
       );
+  });
+
+  it("can assign a board during the creating process", async () => {
+    const board = await new BoardFactory().create();
+
+    await request(app).post("/api/posts").send({
+      title: "my first post",
+      content: "content in the first post",
+      board: board.id,
+    });
+
+    const post = await Post.findOneBy({});
+
+    expect(post.board).toEqual(board);
+  });
+
+  it("must be an existing board when provided with a board as an assignment", async () => {
+    const notExists = 999999;
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: notExists,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+      });
+  });
+
+  it("is okay to provided an empty board", async () => {
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: null,
+      })
+      .expect(201);
+
+    const post = await Post.findOneBy({});
+
+    expect(post.board).toBeNull();
   });
 });
