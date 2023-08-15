@@ -1,7 +1,7 @@
 import { EntitySchema } from "typeorm";
 import Post from "../entities/Post";
 
-const PostSchema = new EntitySchema({
+const PostSchema = new EntitySchema<Post>({
   name: "Post",
   target: Post,
   tableName: "posts",
@@ -24,6 +24,18 @@ const PostSchema = new EntitySchema({
     updated_at: {
       type: "datetime",
       updateDate: true,
+    },
+  },
+  relations: {
+    board: {
+      type: "many-to-one",
+      target: "Board",
+      eager: true,
+      nullable: true,
+      joinColumn: {
+        name: "board_id",
+        referencedColumnName: "id",
+      },
     },
   },
 });

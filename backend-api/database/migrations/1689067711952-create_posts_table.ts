@@ -14,6 +14,11 @@ export class CreatePostsTable_1689067711952 implements MigrationInterface {
             generationStrategy: "increment",
           },
           {
+            name: "board_id",
+            type: "integer",
+            isNullable: true,
+          },
+          {
             name: "title",
             type: "varchar",
           },
@@ -31,6 +36,14 @@ export class CreatePostsTable_1689067711952 implements MigrationInterface {
             type: "datetime",
             default: "CURRENT_TIMESTAMP",
             isNullable: true,
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ["board_id"],
+            referencedTableName: "boards",
+            referencedColumnNames: ["id"],
+            onDelete: "set null",
           },
         ],
       }),
