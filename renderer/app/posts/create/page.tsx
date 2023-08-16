@@ -1,8 +1,10 @@
 "use client";
 
+import Board from "@/backend-api/database/entities/Board";
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const HTTP_CREATED = 201;
@@ -15,9 +17,21 @@ export default function CreatePost() {
     reset,
   } = useForm();
   const router = useRouter();
+  const [boards, setBoards] = useState<Board[]>([]);
+
+  useEffect(() => {
+    const fetchBoards = async () => {
+      const res = await axios.get(`${window.backendUrl}/api/boards`);
+      setBoards(res.data);
+    };
+
+    fetchBoards();
+  }, []);
 
   async function onSubmit(data: Post) {
     const url = window.backendUrl + "/api/posts";
+
+    console.log(data);
 
     const res = await axios.post(url, data);
 
@@ -36,6 +50,14 @@ export default function CreatePost() {
         {...register("title", { required: "Title is required" })}
       />
       {errors.title && <small>{errors.title.message}</small>}
+
+      <select {...register("board")}>
+        {boards.map((board) => (
+          <option key={board.id} value={board.id}>
+            {board.name}
+          </option>
+        ))}
+      </select>
 
       <textarea
         className="border"
