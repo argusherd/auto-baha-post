@@ -64,7 +64,7 @@ router.delete(
   }
 );
 
-async function existingBoard(id) {
+async function existingBoard(id: number) {
   const isExist = await Board.countBy({ id });
 
   return isExist ? Promise.resolve() : Promise.reject();
