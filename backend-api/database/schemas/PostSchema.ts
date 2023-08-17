@@ -11,6 +11,9 @@ const PostSchema = new EntitySchema<Post>({
       primary: true,
       generated: true,
     },
+    board_id: {
+      type: "integer",
+    },
     title: {
       type: "varchar",
     },
@@ -30,7 +33,6 @@ const PostSchema = new EntitySchema<Post>({
     board: {
       type: "many-to-one",
       target: "Board",
-      eager: true,
       nullable: true,
       joinColumn: {
         name: "board_id",

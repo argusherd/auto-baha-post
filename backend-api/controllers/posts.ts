@@ -31,11 +31,11 @@ router.post(
   async (req: Request, res: Response) => {
     const post = new Post();
 
-    ({ title: post.title, content: post.content } = req.body);
-
-    let boardId = req.body.board;
-
-    if (boardId) post.board = await Board.findOneBy({ id: boardId });
+    ({
+      title: post.title,
+      content: post.content,
+      board: post.board_id,
+    } = req.body);
 
     res.status(201).json(await post.save());
   }
@@ -48,7 +48,11 @@ router.put(
   async (req: Request, res: Response) => {
     const post = req.post;
 
-    ({ title: post.title, content: post.content } = req.body);
+    ({
+      title: post.title,
+      content: post.content,
+      board: post.board_id,
+    } = req.body);
 
     res.status(200).json(await post.save());
   }

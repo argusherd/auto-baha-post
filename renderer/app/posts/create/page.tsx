@@ -31,8 +31,6 @@ export default function CreatePost() {
   async function onSubmit(data: Post) {
     const url = window.backendUrl + "/api/posts";
 
-    console.log(data);
-
     const res = await axios.post(url, data);
 
     if (res.status == HTTP_CREATED) {
