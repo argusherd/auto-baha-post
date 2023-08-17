@@ -1,4 +1,5 @@
 import Post from "@/backend-api/database/entities/Post";
+import BoardFactory from "@/backend-api/database/factories/BoardFactory";
 import PostFactory from "@/backend-api/database/factories/PostFactory";
 import app from "@/backend-api/index";
 import request from "supertest";
@@ -10,12 +11,10 @@ describe("the update a post api", () => {
     expect(post.title).not.toEqual("new title");
     expect(post.content).not.toEqual("new content");
 
-    await request(app)
-      .put(`/api/posts/${[post.id]}`)
-      .send({
-        title: "new title",
-        content: "new content",
-      });
+    await request(app).put(`/api/posts/${post.id}`).send({
+      title: "new title",
+      content: "new content",
+    });
 
     await post.reload();
 
@@ -44,7 +43,7 @@ describe("the update a post api", () => {
     expect(post.content).not.toEqual("new content");
 
     await request(app)
-      .put(`/api/posts/${[post.id]}`)
+      .put(`/api/posts/${post.id}`)
       .send({
         title: "",
         content: "new content",
@@ -52,7 +51,7 @@ describe("the update a post api", () => {
       .expect(422);
 
     await request(app)
-      .put(`/api/posts/${[post.id]}`)
+      .put(`/api/posts/${post.id}`)
       .send({
         title: "new title",
         content: "",
@@ -63,5 +62,65 @@ describe("the update a post api", () => {
 
     expect(post.title).not.toEqual("new title");
     expect(post.content).not.toEqual("new content");
+  });
+
+  it("can assign a board to the post", async () => {
+    let post = await new PostFactory().create();
+    const board = await new BoardFactory().create();
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: post.title,
+        content: post.content,
+        board: board.id,
+      })
+      .expect(200);
+
+    post = await Post.findOne({
+      where: { id: post.id },
+      relations: { board: true },
+    });
+
+    expect(post.board).toEqual(board);
+  });
+
+  it("cannot assign a board that doesn't exist to a post", async () => {
+    const post = await new PostFactory().create();
+    const notExists = 99999;
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: post.title,
+        content: post.content,
+        board: notExists,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+      });
+  });
+
+  it("can unset a post's assignment", async () => {
+    let post = await new PostFactory().create();
+
+    expect(post.board).not.toBeNull();
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: post.title,
+        content: post.content,
+        board: null,
+      })
+      .expect(200);
+
+    post = await Post.findOne({
+      where: { id: post.id },
+      relations: { board: true },
+    });
+
+    expect(post.board).toBeNull();
   });
 });

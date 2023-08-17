@@ -77,7 +77,7 @@ describe("the create a new post api", () => {
       board: board.id,
     });
 
-    const post = await Post.findOneBy({});
+    const post = await Post.findOne({ relations: { board: true }, where: {} });
 
     expect(post.board).toEqual(board);
   });
@@ -110,6 +110,6 @@ describe("the create a new post api", () => {
 
     const post = await Post.findOneBy({});
 
-    expect(post.board).toBeNull();
+    expect(post.board_id).toBeNull();
   });
 });
