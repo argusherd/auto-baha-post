@@ -19,3 +19,25 @@ export const mockParamsGet = (param: string) =>
   (useSearchParams as jest.Mock).mockReturnValue({
     get: () => param,
   });
+
+export const mockPostPageApi = (postId: string | number) => {
+  mockedAxios.get.mockImplementation(async (url) => {
+    const request = {
+      [backendUrl + "/api/boards"]: {
+        data: [
+          { id: 1, name: "Tech" },
+          { id: 2, name: "Gaming" },
+          { id: 3, name: "Cooking" },
+        ],
+      },
+      [backendUrl + `/api/posts/${postId}`]: {
+        data: {
+          title: "My first post",
+          content: "Content in post",
+        },
+      },
+    };
+
+    return request[url];
+  });
+};

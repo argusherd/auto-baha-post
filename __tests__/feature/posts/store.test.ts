@@ -104,7 +104,7 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: null,
+        board: "",
       })
       .expect(201);
 

@@ -1,8 +1,13 @@
 import ShowPost from "@/renderer/app/posts/show/page";
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { backendUrl, mockedAxios, mockParamsGet } from "../setup/mock";
+import {
+  backendUrl,
+  mockedAxios,
+  mockParamsGet,
+  mockPostPageApi,
+} from "../setup/mock";
 
 describe("edit a post in show a post page", () => {
   const POST_ID = "1";
@@ -10,17 +15,11 @@ describe("edit a post in show a post page", () => {
 
   mockedAxios.put = mockedPut;
   mockParamsGet(POST_ID);
+  mockPostPageApi(POST_ID);
   userEvent.setup();
 
-  mockedAxios.get.mockResolvedValue({
-    data: {
-      title: "My first post",
-      content: "Content in the post",
-    },
-  });
-
-  beforeEach(() => {
-    render(<ShowPost />);
+  beforeEach(async () => {
+    await waitFor(() => render(<ShowPost />));
   });
 
   it("can change a post's title and content", async () => {

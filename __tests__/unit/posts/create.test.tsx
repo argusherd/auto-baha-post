@@ -101,10 +101,10 @@ describe("create post page", () => {
   it("lists all available boards for assignment", async () => {
     const options = screen.getAllByRole("option");
 
-    expect(options[0]).toHaveValue("1");
-    expect(options[0]).toHaveTextContent("Tech");
-    expect(options[1]).toHaveValue("2");
-    expect(options[1]).toHaveTextContent("Gaming");
+    expect(options[1]).toHaveValue("1");
+    expect(options[1]).toHaveTextContent("Tech");
+    expect(options[2]).toHaveValue("2");
+    expect(options[2]).toHaveTextContent("Gaming");
   });
 
   it("can select a board as an assignment", async () => {

@@ -49,7 +49,10 @@ export default function CreatePost() {
       />
       {errors.title && <small>{errors.title.message}</small>}
 
-      <select {...register("board")}>
+      <select {...register("board")} defaultValue={""}>
+        <option value="" disabled>
+          Publish to
+        </option>
         {boards.map((board) => (
           <option key={board.id} value={board.id}>
             {board.name}
