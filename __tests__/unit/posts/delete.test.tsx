@@ -1,10 +1,17 @@
 import ShowPost from "@/renderer/app/posts/show/page";
-import { createEvent, fireEvent, render, screen } from "@testing-library/react";
+import {
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   backendUrl,
   mockedAxios,
   mockParamsGet,
+  mockPostPageApi,
   mockRouterPush,
 } from "../setup/mock";
 
@@ -16,18 +23,12 @@ describe("delete a post in show a post page", () => {
   });
 
   mockParamsGet(POST_ID);
+  mockPostPageApi(POST_ID);
   mockedAxios.delete = mockedDelete;
   userEvent.setup();
 
-  mockedAxios.get.mockResolvedValue({
-    data: {
-      title: "My first post",
-      content: "Content in post",
-    },
-  });
-
-  beforeEach(() => {
-    render(<ShowPost />);
+  beforeEach(async () => {
+    await waitFor(() => render(<ShowPost />));
   });
 
   it("can delete a post when click on delete button", async () => {

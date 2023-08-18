@@ -112,7 +112,7 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: null,
+        board: "",
       })
       .expect(200);
 

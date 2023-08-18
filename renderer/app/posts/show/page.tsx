@@ -1,9 +1,10 @@
 "use client";
 
+import Board from "@/backend-api/database/entities/Board";
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function ShowPost() {
@@ -11,18 +12,26 @@ export default function ShowPost() {
   const params = useSearchParams();
   const { register, setValue, handleSubmit } = useForm();
   const POST_ID = params.get("id");
+  const [boards, setBoards] = useState<Board[]>([]);
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get<Post>(
+      const getBoards = await axios.get<Board[]>(
+        `${window.backendUrl}/api/boards`
+      );
+
+      setBoards(getBoards.data);
+
+      const getPost = await axios.get<Post>(
         window.backendUrl + `/api/posts/${POST_ID}`
       );
 
-      if (res.status == 404) {
+      if (getPost.status == 404) {
         router.push("/posts/create");
       } else {
-        setValue("title", res.data.title);
-        setValue("content", res.data.content);
+        setValue("title", getPost.data.title);
+        setValue("content", getPost.data.content);
+        setValue("board", getPost.data.board_id);
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -47,6 +56,18 @@ export default function ShowPost() {
           required: "Title is required",
         })}
       />
+
+      <select {...register("board")}>
+        <option value="" disabled>
+          Publish to
+        </option>
+        {boards?.map((board) => (
+          <option key={board.id} value={board.id}>
+            {board.name}
+          </option>
+        ))}
+      </select>
+
       <textarea
         placeholder="Content"
         {...register("content", {
