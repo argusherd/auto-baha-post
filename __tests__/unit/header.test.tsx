@@ -1,9 +1,9 @@
-import RootLayout from "@/renderer/app/layout";
+import Header from "@/renderer/app/header";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-describe("the root layout", () => {
+describe("the navbar", () => {
   const fakeOpenBaha = jest.fn();
   userEvent.setup();
 
@@ -12,7 +12,7 @@ describe("the root layout", () => {
   });
 
   beforeEach(() => {
-    render(<RootLayout>{}</RootLayout>);
+    render(<Header />);
   });
 
   it("has a button that has the ability to open the baha login page", async () => {
