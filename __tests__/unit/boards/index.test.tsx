@@ -29,7 +29,7 @@ describe("the boards component", () => {
   });
 
   it("has a default value of 'Publish to'", async () => {
-    const defaultValue = screen.getByRole("textbox");
+    const defaultValue = screen.getByPlaceholderText("board");
     const display = screen.getByRole("heading");
 
     expect(defaultValue).toHaveValue("");
@@ -39,7 +39,7 @@ describe("the boards component", () => {
   it("can set the default value", async () => {
     await waitFor(() => rerender(<Boards defaultValue={2} />));
 
-    const publishTo = screen.getByRole("textbox");
+    const publishTo = screen.getByPlaceholderText("board");
     const display = screen.getByRole("heading");
 
     expect(publishTo).toHaveValue("2");
@@ -51,10 +51,27 @@ describe("the boards component", () => {
 
     await userEvent.click(boards[1]);
 
-    const publishTo = screen.getByRole("textbox");
+    const publishTo = screen.getByPlaceholderText("board");
     const display = screen.getByRole("heading");
 
     expect(publishTo).toHaveValue("2");
     expect(display).toBeInTheDocument();
+  });
+
+  it("opens the form that create a new board", async () => {
+    const addBtn = screen.getByRole("button", { name: "Add new board" });
+    let no = screen.queryByPlaceholderText("No");
+    let name = screen.queryByPlaceholderText("Name");
+
+    expect(no).toBeNull();
+    expect(name).toBeNull();
+
+    await userEvent.click(addBtn);
+
+    no = screen.queryByPlaceholderText("No");
+    name = screen.queryByPlaceholderText("Name");
+
+    expect(no).toBeInTheDocument();
+    expect(name).toBeInTheDocument();
   });
 });
