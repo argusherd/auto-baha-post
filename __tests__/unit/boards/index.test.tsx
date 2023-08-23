@@ -36,7 +36,7 @@ describe("the boards component", () => {
     expect(display).toBeInTheDocument();
   });
 
-  it("can set the default value", async () => {
+  it("can specify the default value", async () => {
     await waitFor(() => rerender(<Boards defaultValue={2} />));
 
     const publishTo = screen.getByPlaceholderText("board");
@@ -44,6 +44,16 @@ describe("the boards component", () => {
 
     expect(publishTo).toHaveValue("2");
     expect(display).toBeInTheDocument();
+  });
+
+  it("sholud has empty value if specify a value that not in the board list", async () => {
+    await waitFor(() => rerender(<Boards defaultValue={999999} />));
+
+    const publishTo = screen.getByPlaceholderText("board");
+    const display = screen.getByRole("heading");
+
+    expect(publishTo).toHaveValue("");
+    expect(display).toHaveTextContent("Publish to");
   });
 
   it("can select a board as an assignment", async () => {

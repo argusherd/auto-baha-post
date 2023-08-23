@@ -2,13 +2,14 @@ import Board from "@/backend-api/database/entities/Board";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import BoardItem from "./board";
 import CreateBoard from "./create";
 
 export default function Boards({ defaultValue }: { defaultValue?: number }) {
   const [boards, setBoards] = useState<Board[]>();
   const [publishTo, setPublishTo] = useState<Board>();
   const { register, setValue } = useForm();
-  const [isCreating, setisCreating] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     fetchBoards();
@@ -24,13 +25,16 @@ export default function Boards({ defaultValue }: { defaultValue?: number }) {
 
     setBoards(res.data);
 
-    if (defaultValue) assign(boards.find((board) => board.id == defaultValue));
+    const foundDefault =
+      boards && boards.find((board) => board.id == defaultValue);
+
+    if (foundDefault) assign(foundDefault);
   }
 
   return (
     <>
       <h5>{publishTo ? publishTo.name : "Publish to"}</h5>
-      <button onClick={() => setisCreating((prev) => !prev)}>
+      <button onClick={() => setIsCreating((prev) => !prev)}>
         Add new board
       </button>
       {isCreating && <CreateBoard fetchBoards={fetchBoards} />}
@@ -38,9 +42,12 @@ export default function Boards({ defaultValue }: { defaultValue?: number }) {
       <ul>
         {boards &&
           boards.map((board) => (
-            <li key={board.id} onClick={() => assign(board)}>
-              {board.name}
-            </li>
+            <BoardItem
+              key={board.id}
+              board={board}
+              assign={assign}
+              fetchBoards={fetchBoards}
+            />
           ))}
       </ul>
     </>
