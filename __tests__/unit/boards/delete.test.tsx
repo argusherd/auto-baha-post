@@ -8,7 +8,6 @@ import { backendUrl, mockedAxios } from "../setup/mock";
 describe("delete in board item component", () => {
   const boardId = 1;
   const mockedDelete = jest.fn();
-  const mockedAssign = jest.fn();
   const mockedFetchBoards = jest.fn();
 
   userEvent.setup();
@@ -20,7 +19,7 @@ describe("delete in board item component", () => {
     render(
       <BoardItem
         board={board}
-        assign={mockedAssign}
+        assign={jest.fn()}
         fetchBoards={mockedFetchBoards}
       />
     );
