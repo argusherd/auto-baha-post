@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { body } from "express-validator";
 import { Not } from "typeorm";
 import Board from "../database/entities/Board";
+import Post from "../database/entities/Post";
 import bindEntity from "../middlewares/route-entity-binding";
 import validator from "../middlewares/validate-request";
 
@@ -55,6 +56,10 @@ router.delete(
   "/boards/:board",
   bindEntity(Board),
   async (req: Request, res: Response) => {
+    const notDeletable = await Post.countBy({ board_id: req.board.id });
+
+    if (notDeletable) return res.sendStatus(409);
+
     await req.board.remove();
 
     res.sendStatus(200);
