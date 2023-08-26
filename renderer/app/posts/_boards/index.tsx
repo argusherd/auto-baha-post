@@ -1,14 +1,21 @@
 import Board from "@/backend-api/database/entities/Board";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import BoardItem from "./board";
 import CreateBoard from "./create";
 
-export default function Boards({ defaultValue }: { defaultValue?: number }) {
+export default function Boards({
+  defaultValue,
+  register,
+  setValue,
+}: {
+  defaultValue?: number;
+  register: UseFormRegister<FieldValues>;
+  setValue: UseFormSetValue<FieldValues>;
+}) {
   const [boards, setBoards] = useState<Board[]>();
   const [publishTo, setPublishTo] = useState<Board>();
-  const { register, setValue } = useForm();
   const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
@@ -21,14 +28,18 @@ export default function Boards({ defaultValue }: { defaultValue?: number }) {
   }
 
   async function fetchBoards() {
-    const res = await axios.get(`${window.backendUrl}}/api/boards`);
+    const res = await axios.get<Board[]>(`${window.backendUrl}/api/boards`);
 
-    setBoards(res.data);
+    setBoards(() => {
+      const boards = res.data;
 
-    const foundDefault =
-      boards && boards.find((board) => board.id == defaultValue);
+      const foundDefault =
+        boards && boards.find((board) => board.id == defaultValue);
 
-    if (foundDefault) assign(foundDefault);
+      if (foundDefault) assign(foundDefault);
+
+      return boards;
+    });
   }
 
   return (

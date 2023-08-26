@@ -36,33 +36,32 @@ describe("edit a post in show a post page", () => {
   });
 
   it("can assign a board to the post", async () => {
-    const selectBoard = screen.getByRole("combobox");
-    const boardOption = screen.getByRole("option", { name: "Gaming" });
+    const board = screen.getByPlaceholderText("board");
+    const gaming = screen.getByText("Gaming");
 
-    await userEvent.selectOptions(selectBoard, boardOption);
+    await userEvent.click(gaming);
 
-    expect(selectBoard).toHaveDisplayValue("Gaming");
+    expect(board).toHaveValue("2");
   });
 
   it("can handle a submit event to persist new post data", async () => {
     const title = screen.getByPlaceholderText("Title");
     const content = screen.getByPlaceholderText("Content");
-    const selectBoard = screen.getByRole("combobox");
-    const boardOption = screen.getByRole("option", { name: "Gaming" });
+    const gaming = screen.getByText("Gaming");
     const submit = screen.getByRole("button", { name: "Save" });
 
     await userEvent.clear(title);
     await userEvent.type(title, "New title");
     await userEvent.clear(content);
     await userEvent.type(content, "New content");
-    await userEvent.selectOptions(selectBoard, boardOption);
+    await userEvent.click(gaming);
     await userEvent.click(submit);
 
     expect(mockedPut).toBeCalled();
     expect(mockedPut).toBeCalledWith(`${backendUrl}/api/posts/${POST_ID}`, {
       title: "New title",
       content: "New content",
-      board: "2",
+      board: 2,
     });
   });
 

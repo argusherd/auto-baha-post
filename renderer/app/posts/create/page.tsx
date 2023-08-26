@@ -1,11 +1,10 @@
 "use client";
 
-import Board from "@/backend-api/database/entities/Board";
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Boards from "../_boards";
 
 const HTTP_CREATED = 201;
 
@@ -15,18 +14,9 @@ export default function CreatePost() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
   const router = useRouter();
-  const [boards, setBoards] = useState<Board[]>([]);
-
-  useEffect(() => {
-    const fetchBoards = async () => {
-      const res = await axios.get(`${window.backendUrl}/api/boards`);
-      setBoards(res.data);
-    };
-
-    fetchBoards();
-  }, []);
 
   async function onSubmit(data: Post) {
     const url = window.backendUrl + "/api/posts";
@@ -49,16 +39,7 @@ export default function CreatePost() {
       />
       {errors.title && <small>{errors.title.message}</small>}
 
-      <select {...register("board")} defaultValue={""}>
-        <option value="" disabled>
-          Publish to
-        </option>
-        {boards.map((board) => (
-          <option key={board.id} value={board.id}>
-            {board.name}
-          </option>
-        ))}
-      </select>
+      <Boards register={register} setValue={setValue} />
 
       <textarea
         className="border"

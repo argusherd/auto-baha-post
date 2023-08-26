@@ -9,6 +9,7 @@ import {
 } from "../setup/mock";
 
 describe("show a post page", () => {
+  let rerender;
   const POST_ID = "1";
   const mockedPush = mockRouterPush();
 
@@ -17,7 +18,7 @@ describe("show a post page", () => {
 
   beforeEach(async () => {
     await waitFor(() => {
-      render(<ShowPost />);
+      ({ rerender } = render(<ShowPost />));
     });
   });
 
@@ -30,21 +31,20 @@ describe("show a post page", () => {
   });
 
   it("lists all the boards in the page", async () => {
-    const boards = screen.getAllByRole("option");
+    const boards = screen.getAllByRole("listitem");
 
-    expect(boards[1]).toHaveValue("1");
-    expect(boards[1]).toHaveTextContent("Tech");
-    expect(boards[2]).toHaveValue("2");
-    expect(boards[2]).toHaveTextContent("Gaming");
+    expect(boards[0]).toHaveTextContent("Tech");
+    expect(boards[1]).toHaveTextContent("Gaming");
   });
 
-  it.skip("shows the board assigned by the post", async () => {
-    /**
-     * the select element registered by react-hook-form does not reflect well with the defaultValue set by axios callback in the test
-     */
-    const selectedBoard = screen.getByRole("combobox");
+  it("shows the board assigned by the post", async () => {
+    await waitFor(() => rerender(<ShowPost />));
 
-    expect(selectedBoard).toHaveDisplayValue("Gaming");
+    const board = screen.getByPlaceholderText("board");
+    const display = screen.getByRole("heading");
+
+    expect(board).toHaveValue("1");
+    expect(display).toHaveTextContent("Tech");
   });
 
   it("redirecting you to the create post page if the post is not exist", async () => {

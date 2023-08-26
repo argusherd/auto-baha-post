@@ -1,27 +1,21 @@
 "use client";
 
-import Board from "@/backend-api/database/entities/Board";
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Boards from "../_boards";
 
 export default function ShowPost() {
   const router = useRouter();
   const params = useSearchParams();
   const { register, setValue, handleSubmit } = useForm();
   const POST_ID = params.get("id");
-  const [boards, setBoards] = useState<Board[]>([]);
+  const [boardId, setBoardId] = useState<number>();
 
   useEffect(() => {
     (async () => {
-      const getBoards = await axios.get<Board[]>(
-        `${window.backendUrl}/api/boards`
-      );
-
-      setBoards(getBoards.data);
-
       const getPost = await axios.get<Post>(
         window.backendUrl + `/api/posts/${POST_ID}`
       );
@@ -29,9 +23,12 @@ export default function ShowPost() {
       if (getPost.status == 404) {
         router.push("/posts/create");
       } else {
-        setValue("title", getPost.data.title);
-        setValue("content", getPost.data.content);
-        setValue("board", getPost.data.board_id);
+        const { title, content, board_id } = getPost.data;
+
+        setValue("title", title);
+        setValue("content", content);
+        setValue("board", board_id);
+        setBoardId(board_id);
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -57,16 +54,7 @@ export default function ShowPost() {
         })}
       />
 
-      <select {...register("board")}>
-        <option value="" disabled>
-          Publish to
-        </option>
-        {boards?.map((board) => (
-          <option key={board.id} value={board.id}>
-            {board.name}
-          </option>
-        ))}
-      </select>
+      <Boards defaultValue={boardId} register={register} setValue={setValue} />
 
       <textarea
         placeholder="Content"
@@ -76,7 +64,9 @@ export default function ShowPost() {
       ></textarea>
 
       <button>Save</button>
-      <button onClick={handleDelete}>Delete</button>
+      <button data-testid="delete-post" onClick={handleDelete}>
+        Delete
+      </button>
     </form>
   );
 }

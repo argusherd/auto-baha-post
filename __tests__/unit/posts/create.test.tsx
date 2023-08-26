@@ -56,19 +56,18 @@ describe("create post page", () => {
     const title = screen.getByPlaceholderText("Title");
     const content = screen.getByPlaceholderText("Content");
     const submitBtn = screen.getByRole("button", { name: "Save" });
-    const board = screen.getByRole("combobox");
-    const option2nd = screen.getByRole("option", { name: "Gaming" });
+    const gaming = screen.getByText("Gaming");
 
     await userEvent.type(title, "My first post");
     await userEvent.type(content, "The content in my first post");
-    await userEvent.selectOptions(board, option2nd);
+    await userEvent.click(gaming);
     await userEvent.click(submitBtn);
 
     expect(mockedAxios.post).toBeCalledTimes(1);
     expect(mockedAxios.post).toBeCalledWith(`${backendUrl}/api/posts`, {
       title: "My first post",
       content: "The content in my first post",
-      board: "2",
+      board: 2,
     });
   });
 
@@ -99,20 +98,18 @@ describe("create post page", () => {
   });
 
   it("lists all available boards for assignment", async () => {
-    const options = screen.getAllByRole("option");
+    const boards = screen.getAllByRole("listitem");
 
-    expect(options[1]).toHaveValue("1");
-    expect(options[1]).toHaveTextContent("Tech");
-    expect(options[2]).toHaveValue("2");
-    expect(options[2]).toHaveTextContent("Gaming");
+    expect(boards[0]).toHaveTextContent("Tech");
+    expect(boards[1]).toHaveTextContent("Gaming");
   });
 
   it("can select a board as an assignment", async () => {
-    const board = screen.getByRole("combobox");
-    const option2nd = screen.getByRole("option", { name: "Gaming" });
+    const board = screen.getByPlaceholderText("board");
+    const option2nd = screen.getByText("Gaming");
 
-    await userEvent.selectOptions(board, option2nd);
+    await userEvent.click(option2nd);
 
-    expect(board).toHaveDisplayValue("Gaming");
+    expect(board).toHaveValue("2");
   });
 });
