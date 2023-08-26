@@ -21,7 +21,7 @@ export const mockParamsGet = (param: string) =>
   });
 
 export const mockPostPageApi = (postId: string | number) => {
-  mockedAxios.get.mockImplementation(async (url) => {
+  mockedAxios.get.mockImplementation(async (url: string) => {
     const request = {
       [backendUrl + "/api/boards"]: {
         data: [
@@ -34,6 +34,7 @@ export const mockPostPageApi = (postId: string | number) => {
         data: {
           title: "My first post",
           content: "Content in post",
+          board_id: 1,
         },
       },
     };

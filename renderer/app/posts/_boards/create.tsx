@@ -25,7 +25,7 @@ export default function CreateBoard({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <div>
       <input
         type="text"
         placeholder="No"
@@ -51,7 +51,7 @@ export default function CreateBoard({
       />
       {errors.name && <p>{errors.name.message}</p>}
 
-      <button>Add</button>
-    </form>
+      <button onClick={handleSubmit(onSubmit)}>Add</button>
+    </div>
   );
 }

@@ -32,7 +32,7 @@ describe("delete a post in show a post page", () => {
   });
 
   it("can delete a post when click on delete button", async () => {
-    const deleteBtn = screen.getByRole("button", { name: "Delete" });
+    const deleteBtn = screen.getByTestId("delete-post");
 
     await userEvent.click(deleteBtn);
 
@@ -41,7 +41,7 @@ describe("delete a post in show a post page", () => {
   });
 
   it("redirect you to post list page after delete a post", async () => {
-    const deleteBtn = screen.getByRole("button", { name: "Delete" });
+    const deleteBtn = screen.getByTestId("delete-post");
 
     await userEvent.click(deleteBtn);
 
@@ -50,7 +50,7 @@ describe("delete a post in show a post page", () => {
   });
 
   it("should prevent default submit event when delete a post", async () => {
-    const deleteBtn = screen.getByRole("button", { name: "Delete" });
+    const deleteBtn = screen.getByTestId("delete-post");
 
     const deleteClicked = createEvent.click(deleteBtn);
 

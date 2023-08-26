@@ -35,7 +35,7 @@ export default function BoardItem({
   }
 
   return (
-    <li onClick={() => assign(board)}>
+    <li>
       {isEditing ? (
         <div>
           <input type="text" placeholder="No" {...register("no")} />
@@ -46,8 +46,10 @@ export default function BoardItem({
         </div>
       ) : (
         <div>
-          <span>{board.no}</span>
-          <span>{board.name}</span>
+          <div onClick={() => assign(board)}>
+            <span>{board.no}</span>
+            <span>{board.name}</span>
+          </div>
 
           <button onClick={() => setIsEditing(true)}>Edit</button>
           <button onClick={handleDelete}>Delete</button>
