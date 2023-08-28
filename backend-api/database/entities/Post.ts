@@ -8,5 +8,6 @@ export default class Post extends BaseEntity {
   content: string;
   created_at: string;
   updated_at: string;
+  scheduled_at?: string;
   board?: Board;
 }

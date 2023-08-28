@@ -28,6 +28,9 @@ const PostSchema = new EntitySchema<Post>({
       type: "datetime",
       updateDate: true,
     },
+    scheduled_at: {
+      type: "datetime",
+    },
   },
   relations: {
     board: {

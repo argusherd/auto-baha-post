@@ -37,6 +37,11 @@ export class CreatePostsTable_1689067711952 implements MigrationInterface {
             default: "CURRENT_TIMESTAMP",
             isNullable: true,
           },
+          {
+            name: "scheduled_at",
+            type: "datetime",
+            isNullable: true,
+          },
         ],
         foreignKeys: [
           {

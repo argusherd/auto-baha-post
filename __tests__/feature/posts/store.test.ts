@@ -1,6 +1,7 @@
 import Post from "@/backend-api/database/entities/Post";
 import BoardFactory from "@/backend-api/database/factories/BoardFactory";
 import app from "@/backend-api/index";
+import moment from "moment";
 import request from "supertest";
 
 describe("the create a new post api", () => {
@@ -111,5 +112,90 @@ describe("the create a new post api", () => {
     const post = await Post.findOneBy({});
 
     expect(post.board_id).toBeNull();
+  });
+
+  it("can schedule the post during the creating process", async () => {
+    const board = await new BoardFactory().create();
+
+    const scheduled_at = moment().add(1, "day").toISOString();
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: board.id,
+        scheduled_at,
+      })
+      .expect(201);
+
+    const post = await Post.findOneBy({});
+
+    expect(moment(post.scheduled_at).toISOString()).toEqual(scheduled_at);
+  });
+
+  it("only accept a valid full datetime string", async () => {
+    const board = await new BoardFactory().create();
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: board.id,
+        scheduled_at: "foorbar",
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body.errors[0]).toMatchObject({ path: "scheduled_at" });
+      });
+  });
+
+  it("can only schedule the post after the current time", async () => {
+    const board = await new BoardFactory().create();
+
+    const yesterday = moment().subtract(1, "day").toISOString();
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: board.id,
+        scheduled_at: yesterday,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "scheduled_at" }] });
+      });
+  });
+
+  it("can only schedule the post if it is assigned to a board", async () => {
+    const scheduled_at = moment().add(1, "day").toISOString();
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: "",
+        scheduled_at,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+      });
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        scheduled_at,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+      });
   });
 });
