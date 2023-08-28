@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { body } from "express-validator";
+import moment from "moment";
 import Board from "../database/entities/Board";
 import Post from "../database/entities/Post";
 import bindEntity from "../middlewares/route-entity-binding";
@@ -11,6 +12,11 @@ const validatePost = [
   body("title").trim().notEmpty(),
   body("content").notEmpty(),
   body("board").custom(existingBoard).optional({ values: "falsy" }),
+  body("scheduled_at")
+    .isISO8601()
+    .isAfter(moment().toISOString())
+    .optional({ values: "null" }),
+  body("board").if(body("scheduled_at").notEmpty()).notEmpty(),
 ];
 
 router.get("/posts", async (_req: Request, res: Response) => {
@@ -31,7 +37,11 @@ router.post(
   async (req: Request, res: Response) => {
     const post = new Post();
 
-    ({ title: post.title, content: post.content } = req.body);
+    ({
+      title: post.title,
+      content: post.content,
+      scheduled_at: post.scheduled_at,
+    } = req.body);
 
     post.board_id = req.body.board || null;
 
