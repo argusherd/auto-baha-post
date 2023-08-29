@@ -11,7 +11,7 @@ const router = Router();
 const validatePost = [
   body("title").trim().notEmpty(),
   body("content").notEmpty(),
-  body("board").custom(existingBoard).optional({ values: "falsy" }),
+  body("board").if(body("board").notEmpty()).custom(existingBoard),
   body("scheduled_at")
     .isISO8601()
     .isAfter(moment().toISOString())
@@ -56,7 +56,11 @@ router.put(
   async (req: Request, res: Response) => {
     const post = req.post;
 
-    ({ title: post.title, content: post.content } = req.body);
+    ({
+      title: post.title,
+      content: post.content,
+      scheduled_at: post.scheduled_at,
+    } = req.body);
 
     post.board_id = req.body.board || null;
 

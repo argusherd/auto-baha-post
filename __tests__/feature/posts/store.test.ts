@@ -97,6 +97,18 @@ describe("the create a new post api", () => {
       .expect((res) => {
         expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
       });
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: 0,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+      });
   });
 
   it("is okay to provided an empty board", async () => {
@@ -183,7 +195,7 @@ describe("the create a new post api", () => {
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body.errors[0]).toMatchObject({ path: "board" });
       });
 
     await request(app)
