@@ -2,6 +2,7 @@ import CreatePost from "@/renderer/app/posts/create/page";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import moment from "moment";
 import { backendUrl, mockedAxios, mockRouterPush } from "../setup/mock";
 
 describe("create post page", () => {
@@ -40,7 +41,7 @@ describe("create post page", () => {
     expect(contentInput).toHaveDisplayValue("Hello world");
   });
 
-  test("all inputs should be filled", async () => {
+  test("all required inputs should be filled", async () => {
     const submitButton = screen.getByRole("button", { name: "Save" });
 
     await userEvent.click(submitButton);
@@ -57,10 +58,15 @@ describe("create post page", () => {
     const content = screen.getByPlaceholderText("Content");
     const submitBtn = screen.getByRole("button", { name: "Save" });
     const gaming = screen.getByText("Gaming");
+    const datetime = moment().format("YYYY-MM-DDTHH:mm");
 
     await userEvent.type(title, "My first post");
     await userEvent.type(content, "The content in my first post");
     await userEvent.click(gaming);
+
+    const scheduledAt = screen.getByLabelText("Schedule");
+
+    await userEvent.type(scheduledAt, datetime);
     await userEvent.click(submitBtn);
 
     expect(mockedAxios.post).toBeCalledTimes(1);
@@ -68,6 +74,7 @@ describe("create post page", () => {
       title: "My first post",
       content: "The content in my first post",
       board: 2,
+      scheduled_at: datetime,
     });
   });
 
@@ -111,5 +118,19 @@ describe("create post page", () => {
     await userEvent.click(option2nd);
 
     expect(board).toHaveValue("2");
+  });
+
+  it("can schedule the post after assigning a board", async () => {
+    const option2nd = screen.getByText("Gaming");
+
+    let scheduledAt = screen.queryByLabelText("Schedule");
+
+    expect(scheduledAt).not.toBeInTheDocument();
+
+    await userEvent.click(option2nd);
+
+    scheduledAt = screen.queryByLabelText("Schedule");
+
+    expect(scheduledAt).toBeInTheDocument();
   });
 });
