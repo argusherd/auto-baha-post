@@ -44,7 +44,7 @@ export default function Boards({
 
   return (
     <>
-      <h5>{publishTo ? publishTo.name : "Publish to"}</h5>
+      <h5>{publishTo?.name || "Publish to"}</h5>
       <button onClick={() => setIsCreating((prev) => !prev)}>
         Add new board
       </button>

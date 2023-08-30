@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Boards from "../_boards";
+import ScheduledAt from "../_posts/scheduled-at";
 
 const HTTP_CREATED = 201;
 
@@ -15,6 +16,7 @@ export default function CreatePost() {
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm();
   const router = useRouter();
 
@@ -40,6 +42,8 @@ export default function CreatePost() {
       {errors.title && <small>{errors.title.message}</small>}
 
       <Boards register={register} setValue={setValue} />
+
+      {watch("board") && <ScheduledAt register={register} />}
 
       <textarea
         className="border"
