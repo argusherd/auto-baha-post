@@ -3,15 +3,13 @@
 import Board from "@/backend-api/database/entities/Board";
 import axios from "axios";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 
 export default function BoardItem({
   board,
-  assign,
   fetchBoards,
 }: {
   board: Board;
-  assign: Function;
   fetchBoards: Function;
 }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -21,9 +19,13 @@ export default function BoardItem({
       name: board.name,
     },
   });
+  const { setValue: setParentValue, getValues: getParentValues } =
+    useFormContext();
 
   async function handleDelete() {
     await axios.delete(`${window.backendUrl}/api/boards/${board.id}`);
+
+    if (getParentValues("board") == board.id) setParentValue("board", "");
 
     fetchBoards();
   }
@@ -46,7 +48,7 @@ export default function BoardItem({
         </div>
       ) : (
         <div>
-          <div onClick={() => assign(board)}>
+          <div onClick={() => setParentValue("board", board.id)}>
             <span>{board.no}</span>
             <span>{board.name}</span>
           </div>

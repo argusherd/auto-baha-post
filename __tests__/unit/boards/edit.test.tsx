@@ -4,24 +4,25 @@ import BoardItem from "@/renderer/app/posts/_boards/board";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { backendUrl, mockedAxios } from "../setup/mock";
+import { FormProvider, UseFormReturn } from "react-hook-form";
+import { backendUrl, mockedAxios, renderUseFormHook } from "../setup/mock";
 
 describe("edit in board item component", () => {
   const boardId = 1;
   let board: Board;
+  let formHook: UseFormReturn;
   const mockedFetchBoards = jest.fn();
 
   userEvent.setup();
 
   beforeEach(async () => {
     board = await new BoardFactory().make({ id: boardId });
+    formHook = renderUseFormHook();
 
     render(
-      <BoardItem
-        board={board}
-        assign={jest.fn()}
-        fetchBoards={mockedFetchBoards}
-      />
+      <FormProvider {...formHook}>
+        <BoardItem board={board} fetchBoards={mockedFetchBoards} />
+      </FormProvider>
     );
   });
 

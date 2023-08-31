@@ -1,19 +1,25 @@
 import Boards from "@/renderer/app/posts/_boards";
 import "@testing-library/jest-dom";
-import { render, renderHook, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   FieldValues,
-  useForm,
-  UseFormRegister,
+  FormProvider,
+  UseFormReturn,
   UseFormSetValue,
 } from "react-hook-form";
-import { mockedAxios } from "../setup/mock";
+import { mockedAxios, renderUseFormHook } from "../setup/mock";
 
 describe("the boards component", () => {
   let rerender;
-  let register: UseFormRegister<FieldValues>;
+  let formHook: UseFormReturn;
   let setValue: UseFormSetValue<FieldValues>;
+  const rerenderBoards = () =>
+    rerender(
+      <FormProvider {...formHook}>
+        <Boards />
+      </FormProvider>
+    );
 
   mockedAxios.get.mockResolvedValue({
     data: [
@@ -25,15 +31,14 @@ describe("the boards component", () => {
   userEvent.setup();
 
   beforeEach(async () => {
-    const {
-      result: { current },
-    } = renderHook(() => useForm());
-
-    ({ register, setValue } = current);
+    formHook = renderUseFormHook();
+    ({ setValue } = formHook);
 
     await waitFor(() => {
       ({ rerender } = render(
-        <Boards register={register} setValue={setValue} />
+        <FormProvider {...formHook}>
+          <Boards />
+        </FormProvider>
       ));
     });
   });
@@ -53,31 +58,27 @@ describe("the boards component", () => {
     expect(display).toBeInTheDocument();
   });
 
-  it("can specify the default value", async () => {
-    await waitFor(() =>
-      rerender(
-        <Boards defaultValue={2} register={register} setValue={setValue} />
-      )
-    );
+  it("can reflect the one we pick", async () => {
+    await waitFor(() => {
+      setValue("board", 2);
+      rerenderBoards();
+    });
 
     const board = screen.getByPlaceholderText("board");
     const display = screen.getByRole("heading");
 
     expect(board).toHaveValue("2");
-    expect(display).toBeInTheDocument();
+    expect(display).toHaveTextContent("Gaming");
   });
 
-  it("sholud has empty value if specify a value that not in the board list", async () => {
-    await waitFor(() =>
-      rerender(
-        <Boards defaultValue={999999} register={register} setValue={setValue} />
-      )
-    );
+  it("sholud display the default string if specify a value that not in the board list", async () => {
+    await waitFor(() => {
+      setValue("board", 99999999);
+      rerenderBoards();
+    });
 
-    const board = screen.getByPlaceholderText("board");
     const display = screen.getByRole("heading");
 
-    expect(board).toHaveValue("");
     expect(display).toHaveTextContent("Publish to");
   });
 
@@ -108,5 +109,23 @@ describe("the boards component", () => {
 
     expect(no).toBeInTheDocument();
     expect(name).toBeInTheDocument();
+  });
+
+  it("should display the default string if the board value is set to null", async () => {
+    await waitFor(() => {
+      setValue("board", 2);
+      rerenderBoards();
+    });
+
+    const display = screen.getByRole("heading");
+
+    expect(display).toHaveTextContent("Gaming");
+
+    await waitFor(() => {
+      setValue("board", null);
+      rerenderBoards();
+    });
+
+    expect(display).toHaveTextContent("Publish to");
   });
 });

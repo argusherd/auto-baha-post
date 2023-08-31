@@ -3,16 +3,16 @@
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MouseEvent, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { MouseEvent, useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import Boards from "../_boards";
 
 export default function ShowPost() {
   const router = useRouter();
   const params = useSearchParams();
-  const { register, setValue, handleSubmit } = useForm();
+  const methods = useForm();
+  const { register, setValue, handleSubmit } = methods;
   const POST_ID = params.get("id");
-  const [boardId, setBoardId] = useState<number>();
 
   useEffect(() => {
     (async () => {
@@ -28,7 +28,6 @@ export default function ShowPost() {
         setValue("title", title);
         setValue("content", content);
         setValue("board", board_id);
-        setBoardId(board_id);
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -54,7 +53,9 @@ export default function ShowPost() {
         })}
       />
 
-      <Boards defaultValue={boardId} register={register} setValue={setValue} />
+      <FormProvider {...methods}>
+        <Boards />
+      </FormProvider>
 
       <textarea
         placeholder="Content"
