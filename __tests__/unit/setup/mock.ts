@@ -1,5 +1,7 @@
+import { renderHook } from "@testing-library/react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
 
 export const backendUrl = "http://backend-api.test";
 
@@ -41,4 +43,12 @@ export const mockPostPageApi = (postId: string | number) => {
 
     return request[url];
   });
+};
+
+export const renderUseFormHook = () => {
+  const {
+    result: { current },
+  } = renderHook(() => useForm());
+
+  return current;
 };
