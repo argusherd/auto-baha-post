@@ -30,6 +30,7 @@ export default function Boards() {
     const res = await axios.get<Board[]>(`${window.backendUrl}/api/boards`);
 
     setBoards(res.data);
+    setIsCreating(false);
   }
 
   return (

@@ -111,6 +111,23 @@ describe("the boards component", () => {
     expect(name).toBeInTheDocument();
   });
 
+  it("close the form that create a new board after successfully create one", async () => {
+    const addBoardBtn = screen.getByRole("button", { name: "Add new board" });
+
+    await userEvent.click(addBoardBtn);
+
+    const no = screen.getByPlaceholderText("No");
+    const name = screen.getByPlaceholderText("Name");
+    const add = screen.getByRole("button", { name: "Add" });
+
+    await userEvent.type(no, "123456");
+    await userEvent.type(name, "New board");
+    await userEvent.click(add);
+
+    expect(no).not.toBeInTheDocument();
+    expect(name).not.toBeInTheDocument();
+  });
+
   it("should display the default string if the board value is set to null", async () => {
     await waitFor(() => {
       setValue("board", 2);
