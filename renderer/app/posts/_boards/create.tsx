@@ -6,8 +6,10 @@ import { useForm } from "react-hook-form";
 
 export default function CreateBoard({
   fetchBoards,
+  setIsCreating,
 }: {
   fetchBoards: Function;
+  setIsCreating: Function;
 }) {
   const {
     handleSubmit,
@@ -52,6 +54,7 @@ export default function CreateBoard({
       {errors.name && <p>{errors.name.message}</p>}
 
       <button onClick={handleSubmit(onSubmit)}>Add</button>
+      <button onClick={() => setIsCreating(false)}>Cancel</button>
     </div>
   );
 }
