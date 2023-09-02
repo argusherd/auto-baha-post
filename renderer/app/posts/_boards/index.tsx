@@ -39,7 +39,9 @@ export default function Boards() {
       <button onClick={() => setIsCreating((prev) => !prev)}>
         Add new board
       </button>
-      {isCreating && <CreateBoard fetchBoards={fetchBoards} />}
+      {isCreating && (
+        <CreateBoard fetchBoards={fetchBoards} setIsCreating={setIsCreating} />
+      )}
       <input type="hidden" placeholder="board" {...register("board")} />
       <ul>
         {boards &&

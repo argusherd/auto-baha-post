@@ -13,7 +13,12 @@ describe("create a board component", () => {
 
   beforeEach(async () => {
     await waitFor(() =>
-      render(<CreateBoard fetchBoards={mockedFetchBoards} />)
+      render(
+        <CreateBoard
+          fetchBoards={mockedFetchBoards}
+          setIsCreating={jest.fn()}
+        />
+      )
     );
   });
 

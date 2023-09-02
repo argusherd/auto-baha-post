@@ -128,6 +128,23 @@ describe("the boards component", () => {
     expect(name).not.toBeInTheDocument();
   });
 
+  it("can cancel the creation of a new board", async () => {
+    const addBoardBtn = screen.getByRole("button", { name: "Add new board" });
+
+    await userEvent.click(addBoardBtn);
+
+    const add = screen.queryByRole("button", { name: "Add" });
+    const cancel = screen.getByRole("button", { name: "Cancel" });
+
+    expect(add).toBeInTheDocument();
+    expect(cancel).toBeInTheDocument();
+
+    await userEvent.click(cancel);
+
+    expect(add).not.toBeInTheDocument();
+    expect(cancel).not.toBeInTheDocument();
+  });
+
   it("should display the default string if the board value is set to null", async () => {
     await waitFor(() => {
       setValue("board", 2);
