@@ -93,4 +93,26 @@ describe("edit in board item component", () => {
 
     expect(mockedFetchBoards).toBeCalled();
   });
+
+  it("switches from edit mode to display mode after successfully update the board", async () => {
+    const editBtn = screen.getByRole("button", { name: "Edit" });
+
+    await userEvent.click(editBtn);
+
+    const boardNo = screen.getByPlaceholderText("No");
+    const boardName = screen.getByPlaceholderText("Name");
+    let confirm = screen.getByRole("button", { name: "Confirm" });
+
+    await userEvent.clear(boardNo);
+    await userEvent.clear(boardName);
+    await userEvent.type(boardNo, "123456");
+    await userEvent.type(boardName, "New board");
+    await userEvent.click(confirm);
+
+    confirm = screen.queryByRole("button", { name: "Confirm" });
+
+    expect(boardNo).not.toBeInTheDocument();
+    expect(boardName).not.toBeInTheDocument();
+    expect(confirm).not.toBeInTheDocument();
+  });
 });
