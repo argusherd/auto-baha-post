@@ -33,6 +33,8 @@ export default function BoardItem({
   async function handleUpdate() {
     await axios.put(`${window.backendUrl}/api/boards/${board.id}`, getValues());
 
+    setIsEditing(false);
+
     fetchBoards();
   }
 
