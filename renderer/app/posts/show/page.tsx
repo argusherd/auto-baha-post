@@ -5,13 +5,13 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MouseEvent, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import Boards from "../_boards";
+import PostInputs from "../_posts/post-inputs";
 
 export default function ShowPost() {
   const router = useRouter();
   const params = useSearchParams();
   const methods = useForm();
-  const { register, setValue, handleSubmit } = methods;
+  const { setValue, handleSubmit } = methods;
   const POST_ID = params.get("id");
 
   useEffect(() => {
@@ -46,23 +46,9 @@ export default function ShowPost() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input
-        placeholder="Title"
-        {...register("title", {
-          required: "Title is required",
-        })}
-      />
-
       <FormProvider {...methods}>
-        <Boards />
+        <PostInputs />
       </FormProvider>
-
-      <textarea
-        placeholder="Content"
-        {...register("content", {
-          required: "Content is required",
-        })}
-      ></textarea>
 
       <button>Save</button>
       <button data-testid="delete-post" onClick={handleDelete}>
