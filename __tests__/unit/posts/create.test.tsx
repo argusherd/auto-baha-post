@@ -120,7 +120,7 @@ describe("create post page", () => {
     expect(board).toHaveValue("2");
   });
 
-  it("can schedule the post after assigning a board", async () => {
+  it("can schedule the post after it is assigning a board", async () => {
     const option2nd = screen.getByText("Gaming");
 
     let scheduledAt = screen.queryByLabelText("Schedule");

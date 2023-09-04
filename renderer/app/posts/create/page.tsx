@@ -4,20 +4,13 @@ import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
-import Boards from "../_boards";
-import ScheduledAt from "../_posts/scheduled-at";
+import PostInputs from "../_posts/post-inputs";
 
 const HTTP_CREATED = 201;
 
 export default function CreatePost() {
   const methods = useForm();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    watch,
-  } = methods;
+  const { handleSubmit, reset } = methods;
   const router = useRouter();
 
   async function onSubmit(data: Post) {
@@ -34,25 +27,9 @@ export default function CreatePost() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input
-        className="border"
-        placeholder="Title"
-        {...register("title", { required: "Title is required" })}
-      />
-      {errors.title && <small>{errors.title.message}</small>}
-
       <FormProvider {...methods}>
-        <Boards />
+        <PostInputs />
       </FormProvider>
-
-      {watch("board") && <ScheduledAt register={register} />}
-
-      <textarea
-        className="border"
-        placeholder="Content"
-        {...register("content", { required: "Content is required" })}
-      ></textarea>
-      {errors.content && <small>{errors.content.message}</small>}
 
       <button>Save</button>
     </form>

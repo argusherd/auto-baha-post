@@ -1,10 +1,8 @@
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
-export default function ScheduledAt({
-  register,
-}: {
-  register: UseFormRegister<FieldValues>;
-}) {
+export default function ScheduledAt() {
+  const { register } = useFormContext();
+
   return (
     <>
       <label htmlFor="scheduled_at">Schedule</label>
