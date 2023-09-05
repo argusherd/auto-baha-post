@@ -4,6 +4,7 @@ import prepareNext from "electron-next";
 import { revokeDB } from "../backend-api/database/connection";
 import backendServer from "../backend-api/server";
 import { createWindow, initializeApp, serveProduction } from "./initialization";
+import scheduler from "./scheduler";
 
 const loadURL = serveProduction();
 
@@ -27,6 +28,7 @@ app.on("ready", async () => {
 });
 
 app.on("before-quit", async () => {
+  scheduler.stop();
   backendServer.close();
   await revokeDB();
 });
