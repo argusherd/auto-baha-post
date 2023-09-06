@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { body } from "express-validator";
-import { Not } from "typeorm";
+import moment from "moment";
+import { MoreThanOrEqual, Not } from "typeorm";
 import Board from "../database/entities/Board";
 import Post from "../database/entities/Post";
 import bindEntity from "../middlewares/route-entity-binding";
@@ -56,7 +57,12 @@ router.delete(
   "/boards/:board",
   bindEntity(Board),
   async (req: Request, res: Response) => {
-    const notDeletable = await Post.countBy({ board_id: req.board.id });
+    const notDeletable = await Post.countBy({
+      board_id: req.board.id,
+      scheduled_at: MoreThanOrEqual(
+        moment().utc().format("YYYY-MM-DD HH:mm:ss")
+      ),
+    });
 
     if (notDeletable) return res.sendStatus(409);
 
