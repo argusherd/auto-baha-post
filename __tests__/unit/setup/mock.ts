@@ -1,3 +1,4 @@
+import Post from "@/backend-api/database/entities/Post";
 import { renderHook } from "@testing-library/react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,7 +23,10 @@ export const mockParamsGet = (param: string) =>
     get: () => param,
   });
 
-export const mockPostPageApi = (postId: string | number) => {
+export const mockPostPageApi = (
+  postId: string | number,
+  postData?: object | Post
+) => {
   mockedAxios.get.mockImplementation(async (url: string) => {
     const request = {
       [backendUrl + "/api/boards"]: {
@@ -37,6 +41,7 @@ export const mockPostPageApi = (postId: string | number) => {
           title: "My first post",
           content: "Content in post",
           board_id: 1,
+          ...postData,
         },
       },
     };

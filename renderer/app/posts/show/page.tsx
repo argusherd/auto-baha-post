@@ -23,11 +23,12 @@ export default function ShowPost() {
       if (getPost.status == 404) {
         router.push("/posts/create");
       } else {
-        const { title, content, board_id } = getPost.data;
+        const { title, content, board_id, scheduled_at } = getPost.data;
 
         setValue("title", title);
         setValue("content", content);
         setValue("board", board_id);
+        setValue("scheduled_at", scheduled_at);
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
