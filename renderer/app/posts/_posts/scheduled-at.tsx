@@ -10,6 +10,7 @@ export default function ScheduledAt() {
         type="datetime-local"
         id="scheduled_at"
         step="1"
+        placeholder="Scheduled At"
         {...register("scheduled_at")}
       />
     </>

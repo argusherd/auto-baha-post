@@ -1,6 +1,7 @@
 import ShowPost from "@/renderer/app/posts/show/page";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
+import moment from "moment";
 import {
   mockedAxios,
   mockParamsGet,
@@ -12,11 +13,13 @@ describe("show a post page", () => {
   let rerender;
   const POST_ID = "1";
   const mockedPush = mockRouterPush();
+  const datetime = moment().format("YYYY-MM-DDTHH:mm");
 
   mockParamsGet(POST_ID);
-  mockPostPageApi(POST_ID);
 
   beforeEach(async () => {
+    mockPostPageApi(POST_ID, { scheduled_at: datetime });
+
     await waitFor(() => {
       ({ rerender } = render(<ShowPost />));
     });
@@ -56,5 +59,13 @@ describe("show a post page", () => {
 
     expect(mockedPush).toBeCalledTimes(1);
     expect(mockedPush).toBeCalledWith("/posts/create");
+  });
+
+  it("displays the scheduled time of the post", async () => {
+    await waitFor(() => rerender(<ShowPost />));
+
+    const scheduledAt = screen.getByPlaceholderText("Scheduled At");
+
+    expect(scheduledAt).toHaveValue(datetime);
   });
 });
