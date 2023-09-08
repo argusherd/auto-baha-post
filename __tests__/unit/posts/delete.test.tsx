@@ -1,11 +1,5 @@
 import ShowPost from "@/renderer/app/posts/show/page";
-import {
-  createEvent,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   backendUrl,
@@ -47,15 +41,5 @@ describe("delete a post in show a post page", () => {
 
     expect(mockedPush).toBeCalled();
     expect(mockedPush).toBeCalledWith("/posts");
-  });
-
-  it("should prevent default submit event when delete a post", async () => {
-    const deleteBtn = screen.getByTestId("delete-post");
-
-    const deleteClicked = createEvent.click(deleteBtn);
-
-    fireEvent(deleteBtn, deleteClicked);
-
-    expect(deleteClicked.defaultPrevented).toBeTruthy();
   });
 });

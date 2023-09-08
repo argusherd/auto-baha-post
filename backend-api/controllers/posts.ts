@@ -15,7 +15,7 @@ const validatePost = [
   body("scheduled_at")
     .isISO8601()
     .isAfter(moment().toISOString())
-    .optional({ values: "null" }),
+    .optional({ values: "falsy" }),
   body("board").if(body("scheduled_at").notEmpty()).notEmpty(),
 ];
 

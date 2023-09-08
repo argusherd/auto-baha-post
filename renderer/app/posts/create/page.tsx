@@ -26,12 +26,12 @@ export default function CreatePost() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={(event) => event.preventDefault()}>
       <FormProvider {...methods}>
         <PostInputs />
       </FormProvider>
 
-      <button>Save</button>
+      <button onClick={handleSubmit(onSubmit)}>Save</button>
     </form>
   );
 }
