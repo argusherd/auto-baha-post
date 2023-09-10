@@ -2,6 +2,7 @@
 
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
+import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -11,7 +12,7 @@ export default function ShowPost() {
   const router = useRouter();
   const params = useSearchParams();
   const methods = useForm();
-  const { setValue, handleSubmit } = methods;
+  const { setValue, handleSubmit, getValues } = methods;
   const POST_ID = params.get("id");
 
   useEffect(() => {
@@ -28,7 +29,10 @@ export default function ShowPost() {
         setValue("title", title);
         setValue("content", content);
         setValue("board", board_id);
-        setValue("scheduled_at", scheduled_at);
+        setValue(
+          "scheduled_at",
+          scheduled_at ? moment(scheduled_at).format("YYYY-MM-DDTHH:mm") : ""
+        );
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
