@@ -13,7 +13,7 @@ describe("show a post page", () => {
   let rerender;
   const POST_ID = "1";
   const mockedPush = mockRouterPush();
-  const datetime = moment().format("YYYY-MM-DDTHH:mm");
+  const datetime = moment().toISOString();
 
   mockParamsGet(POST_ID);
 
@@ -66,6 +66,8 @@ describe("show a post page", () => {
 
     const scheduledAt = screen.getByPlaceholderText("Scheduled At");
 
-    expect(scheduledAt).toHaveValue(datetime);
+    expect(scheduledAt).toHaveValue(
+      moment(datetime).format("YYYY-MM-DDTHH:mm")
+    );
   });
 });

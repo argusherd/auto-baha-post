@@ -41,7 +41,7 @@ describe("edit a post in show a post page", () => {
     const content = screen.getByPlaceholderText("Content");
     const gaming = screen.getByText("Gaming");
     const submit = screen.getByRole("button", { name: "Save" });
-    const datetime = moment().format("YYYY-MM-DDTHH:ss");
+    const datetime = moment().format("YYYY-MM-DDTHH:mm");
 
     await userEvent.clear(title);
     await userEvent.type(title, "New title");
