@@ -223,4 +223,37 @@ describe("the update a post api", () => {
         expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
       });
   });
+
+  it("cannot schedule the same time as other posts besides itself", async () => {
+    const baseDateTime = moment().endOf("day");
+    const scheduled_at = baseDateTime.toISOString();
+    const overlapped = baseDateTime.subtract(1, "minute").toISOString();
+
+    await new PostFactory().create({ scheduled_at: overlapped });
+
+    const post = await new PostFactory().create({ scheduled_at });
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: post.board_id,
+        scheduled_at: overlapped,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "scheduled_at" }] });
+      });
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: post.board_id,
+        scheduled_at,
+      })
+      .expect(200);
+  });
 });
