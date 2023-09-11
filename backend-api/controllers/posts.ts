@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { body } from "express-validator";
 import moment from "moment";
+import { Between, Not } from "typeorm";
 import Board from "../database/entities/Board";
 import Post from "../database/entities/Post";
 import bindEntity from "../middlewares/route-entity-binding";
@@ -33,7 +34,10 @@ router.get(
 
 router.post(
   "/posts",
-  validator(validatePost),
+  validator([
+    ...validatePost,
+    body("scheduled_at").custom(notOverlapped()).optional({ values: "falsy" }),
+  ]),
   async (req: Request, res: Response) => {
     const post = new Post();
 
@@ -53,6 +57,13 @@ router.put(
   "/posts/:post",
   bindEntity(Post),
   validator(validatePost),
+  async (req: Request, ...parameters) => {
+    validator([
+      body("scheduled_at")
+        .custom(notOverlapped(req.post.id))
+        .optional({ values: "falsy" }),
+    ])(req, ...parameters);
+  },
   async (req: Request, res: Response) => {
     const post = req.post;
 
@@ -82,6 +93,23 @@ async function existingBoard(id: number) {
   const isExist = await Board.countBy({ id });
 
   return isExist ? Promise.resolve() : Promise.reject();
+}
+
+function notOverlapped(ignoreId?: number) {
+  return async function (value: string) {
+    const format = "YYYY-MM-DD HH:mm:ss:SSS";
+    const datetime = moment(value).utc();
+
+    const isOverlapped = await Post.countBy({
+      scheduled_at: Between(
+        datetime.startOf("minute").format(format),
+        datetime.endOf("minute").format(format)
+      ),
+      ...(ignoreId && { id: Not(ignoreId) }),
+    });
+
+    return isOverlapped ? Promise.reject() : Promise.resolve();
+  };
 }
 
 export default router;

@@ -1,5 +1,6 @@
 import Post from "@/backend-api/database/entities/Post";
 import BoardFactory from "@/backend-api/database/factories/BoardFactory";
+import PostFactory from "@/backend-api/database/factories/PostFactory";
 import app from "@/backend-api/index";
 import moment from "moment";
 import request from "supertest";
@@ -208,6 +209,29 @@ describe("the create a new post api", () => {
       .expect(422)
       .expect((res) => {
         expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+      });
+  });
+
+  it("cannot schedule the same time as other posts", async () => {
+    const scheduled_at = moment().endOf("day").toISOString();
+    const overlapped = moment()
+      .endOf("day")
+      .subtract(10, "seconds")
+      .toISOString();
+
+    const exists = await new PostFactory().create({ scheduled_at });
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: exists.board_id,
+        scheduled_at: overlapped,
+      })
+      .expect(422)
+      .expect((res) => {
+        expect(res.body).toMatchObject({ errors: [{ path: "scheduled_at" }] });
       });
   });
 });
