@@ -1,10 +1,10 @@
-import { SimpleIntervalJob, Task, ToadScheduler } from "toad-scheduler";
+import { SimpleIntervalJob, ToadScheduler } from "toad-scheduler";
+import publishAPost from "./tasks/publish-a-post";
 
 const schduler = new ToadScheduler();
 
-const logTask = new Task("log", () => console.log("this is from scheduler"));
-const logJob = new SimpleIntervalJob({ seconds: 1 }, logTask);
+const publishJob = new SimpleIntervalJob({ minutes: 1 }, publishAPost);
 
-schduler.addSimpleIntervalJob(logJob);
+schduler.addSimpleIntervalJob(publishJob);
 
 export default schduler;

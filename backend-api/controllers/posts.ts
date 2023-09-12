@@ -97,7 +97,7 @@ async function existingBoard(id: number) {
 
 function notOverlapped(ignoreId?: number) {
   return async function (value: string) {
-    const format = "YYYY-MM-DD HH:mm:ss:SSS";
+    const format = "YYYY-MM-DD HH:mm:ss.SSS";
     const datetime = moment(value).utc();
 
     const isOverlapped = await Post.countBy({
