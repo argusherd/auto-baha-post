@@ -31,6 +31,12 @@ const PostSchema = new EntitySchema<Post>({
     scheduled_at: {
       type: "datetime",
     },
+    published_at: {
+      type: "datetime",
+    },
+    publish_failed: {
+      type: "varchar",
+    },
   },
   relations: {
     board: {

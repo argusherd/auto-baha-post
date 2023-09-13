@@ -42,6 +42,16 @@ export class CreatePostsTable_1689067711952 implements MigrationInterface {
             type: "datetime",
             isNullable: true,
           },
+          {
+            name: "published_at",
+            type: "datetime",
+            isNullable: true,
+          },
+          {
+            name: "publish_failed",
+            type: "varchar",
+            isNullable: true,
+          },
         ],
         foreignKeys: [
           {
