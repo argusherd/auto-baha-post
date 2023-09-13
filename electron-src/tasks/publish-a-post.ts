@@ -25,9 +25,22 @@ const publishAPost = new AsyncTask("publish a post", async () => {
 
   if (await page.$(".TOP-nologin")) {
     console.log("user not yet login");
+
+    post.publish_failed = "USER_IS_NOT_LOGIN";
+
+    await post.save();
+
+    window.destroy();
+
+    return;
   } else {
     console.log("you have login!");
   }
+
+  post.published_at = moment().toISOString();
+  await post.save();
+
+  window.destroy();
 });
 
 export default publishAPost;

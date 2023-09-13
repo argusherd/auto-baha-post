@@ -9,5 +9,7 @@ export default class Post extends BaseEntity {
   created_at: string;
   updated_at: string;
   scheduled_at?: string;
+  published_at?: string;
+  publish_failed?: string;
   board?: Board;
 }
