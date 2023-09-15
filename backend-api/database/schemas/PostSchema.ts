@@ -17,6 +17,18 @@ const PostSchema = new EntitySchema<Post>({
     title: {
       type: "varchar",
     },
+    demonstratio: {
+      type: "integer",
+      nullable: true,
+    },
+    sub_board: {
+      type: "integer",
+      nullable: true,
+    },
+    subject: {
+      type: "integer",
+      nullable: true,
+    },
     content: {
       type: "text",
     },
@@ -30,12 +42,15 @@ const PostSchema = new EntitySchema<Post>({
     },
     scheduled_at: {
       type: "datetime",
+      nullable: true,
     },
     published_at: {
       type: "datetime",
+      nullable: true,
     },
     publish_failed: {
       type: "varchar",
+      nullable: true,
     },
   },
   relations: {

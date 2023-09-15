@@ -11,6 +11,9 @@ const router = Router();
 
 const validatePost = [
   body("title").trim().notEmpty(),
+  body("demonstratio").isNumeric().optional(),
+  body("sub_board").isNumeric().optional(),
+  body("subject").isNumeric().optional(),
   body("content").notEmpty(),
   body("board").if(body("board").notEmpty()).custom(existingBoard),
   body("scheduled_at")
@@ -43,6 +46,9 @@ router.post(
 
     ({
       title: post.title,
+      demonstratio: post.demonstratio,
+      sub_board: post.sub_board,
+      subject: post.subject,
       content: post.content,
       scheduled_at: post.scheduled_at,
     } = req.body);
