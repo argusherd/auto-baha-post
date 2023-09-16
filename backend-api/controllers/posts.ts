@@ -44,16 +44,7 @@ router.post(
   async (req: Request, res: Response) => {
     const post = new Post();
 
-    ({
-      title: post.title,
-      demonstratio: post.demonstratio,
-      sub_board: post.sub_board,
-      subject: post.subject,
-      content: post.content,
-      scheduled_at: post.scheduled_at,
-    } = req.body);
-
-    post.board_id = req.body.board || null;
+    setPostDate(post, req);
 
     res.status(201).json(await post.save());
   }
@@ -73,13 +64,7 @@ router.put(
   async (req: Request, res: Response) => {
     const post = req.post;
 
-    ({
-      title: post.title,
-      content: post.content,
-      scheduled_at: post.scheduled_at,
-    } = req.body);
-
-    post.board_id = req.body.board || null;
+    setPostDate(post, req);
 
     res.status(200).json(await post.save());
   }
@@ -116,6 +101,19 @@ function notOverlapped(ignoreId?: number) {
 
     return isOverlapped ? Promise.reject() : Promise.resolve();
   };
+}
+
+function setPostDate(post: Post, req: Request) {
+  ({
+    title: post.title,
+    demonstratio: post.demonstratio,
+    sub_board: post.sub_board,
+    subject: post.subject,
+    content: post.content,
+    scheduled_at: post.scheduled_at,
+  } = req.body);
+
+  post.board_id = req.body.board || null;
 }
 
 export default router;
