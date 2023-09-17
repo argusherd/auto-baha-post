@@ -114,6 +114,7 @@ function setPostDate(post: Post, req: Request) {
   } = req.body);
 
   post.board_id = req.body.board || null;
+  post.publish_failed = post.scheduled_at ? null : post.publish_failed;
 }
 
 export default router;

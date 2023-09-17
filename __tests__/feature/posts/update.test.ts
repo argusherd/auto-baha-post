@@ -314,4 +314,25 @@ describe("the update a post api", () => {
       })
       .expect(200);
   });
+
+  it("resets the reason for publish failure when rescheduling", async () => {
+    const scheduled_at = moment().add(1, "day").toISOString();
+    const post = await new PostFactory().create({
+      publish_failed: "USER_NOT_LOGIN",
+    });
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        board: post.board_id,
+        scheduled_at,
+      })
+      .expect(200);
+
+    const updated = await Post.findOneBy({ id: post.id });
+
+    expect(updated.publish_failed).toBeNull();
+  });
 });
