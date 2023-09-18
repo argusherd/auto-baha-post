@@ -55,12 +55,18 @@ describe("create post page", () => {
 
   it("can handle submit event in order to persist post data", async () => {
     const title = screen.getByPlaceholderText("Title");
+    const demonstratio = screen.getByPlaceholderText("Demonstratio");
+    const subBoard = screen.getByPlaceholderText("Sub Board");
+    const subject = screen.getByPlaceholderText("Subject");
     const content = screen.getByPlaceholderText("Content");
     const submitBtn = screen.getByRole("button", { name: "Save" });
     const gaming = screen.getByText("Gaming");
     const datetime = moment().format("YYYY-MM-DDTHH:mm");
 
     await userEvent.type(title, "My first post");
+    await userEvent.type(demonstratio, "1");
+    await userEvent.type(subBoard, "1");
+    await userEvent.type(subject, "1");
     await userEvent.type(content, "The content in my first post");
     await userEvent.click(gaming);
 
@@ -72,6 +78,9 @@ describe("create post page", () => {
     expect(mockedAxios.post).toBeCalledTimes(1);
     expect(mockedAxios.post).toBeCalledWith(`${backendUrl}/api/posts`, {
       title: "My first post",
+      demonstratio: 1,
+      sub_board: 1,
+      subject: 1,
       content: "The content in my first post",
       board: 2,
       scheduled_at: datetime,

@@ -20,6 +20,22 @@ export default function PostInputs() {
 
       <Boards />
 
+      <input
+        type="number"
+        placeholder="Demonstratio"
+        {...register("demonstratio", { valueAsNumber: true })}
+      />
+      <input
+        type="number"
+        placeholder="Sub Board"
+        {...register("sub_board", { valueAsNumber: true })}
+      />
+      <input
+        type="number"
+        placeholder="Subject"
+        {...register("subject", { valueAsNumber: true })}
+      />
+
       {watch("board") && <ScheduledAt />}
 
       <textarea

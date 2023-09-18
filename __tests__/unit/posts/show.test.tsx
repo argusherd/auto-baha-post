@@ -18,7 +18,12 @@ describe("show a post page", () => {
   mockParamsGet(POST_ID);
 
   beforeEach(async () => {
-    mockPostPageApi(POST_ID, { scheduled_at: datetime });
+    mockPostPageApi(POST_ID, {
+      demonstratio: 1,
+      sub_board: 1,
+      subject: 1,
+      scheduled_at: datetime,
+    });
 
     await waitFor(() => {
       ({ rerender } = render(<ShowPost />));
@@ -27,9 +32,15 @@ describe("show a post page", () => {
 
   it("can view a specified post", async () => {
     const title = screen.getByPlaceholderText("Title");
+    const demonstratio = screen.getByPlaceholderText("Demonstratio");
+    const subBoard = screen.getByPlaceholderText("Sub Board");
+    const subject = screen.getByPlaceholderText("Subject");
     const content = screen.getByPlaceholderText("Content");
 
     expect(title).toHaveDisplayValue("My first post");
+    expect(demonstratio).toHaveValue(1);
+    expect(subBoard).toHaveValue(1);
+    expect(subject).toHaveValue(1);
     expect(content).toHaveDisplayValue("Content in post");
   });
 
