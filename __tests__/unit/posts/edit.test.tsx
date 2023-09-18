@@ -38,6 +38,9 @@ describe("edit a post in show a post page", () => {
 
   it("can handle a submit event to persist new post data", async () => {
     const title = screen.getByPlaceholderText("Title");
+    const demonstratio = screen.getByPlaceholderText("Demonstratio");
+    const subBoard = screen.getByPlaceholderText("Sub Board");
+    const subject = screen.getByPlaceholderText("Subject");
     const content = screen.getByPlaceholderText("Content");
     const gaming = screen.getByText("Gaming");
     const submit = screen.getByRole("button", { name: "Save" });
@@ -45,6 +48,9 @@ describe("edit a post in show a post page", () => {
 
     await userEvent.clear(title);
     await userEvent.type(title, "New title");
+    await userEvent.type(demonstratio, "1");
+    await userEvent.type(subBoard, "1");
+    await userEvent.type(subject, "1");
     await userEvent.clear(content);
     await userEvent.type(content, "New content");
     await userEvent.click(gaming);
@@ -57,6 +63,9 @@ describe("edit a post in show a post page", () => {
     expect(mockedPut).toBeCalled();
     expect(mockedPut).toBeCalledWith(`${backendUrl}/api/posts/${POST_ID}`, {
       title: "New title",
+      demonstratio: 1,
+      sub_board: 1,
+      subject: 1,
       content: "New content",
       board: 2,
       scheduled_at: datetime,

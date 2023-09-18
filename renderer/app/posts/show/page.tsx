@@ -4,38 +4,36 @@ import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import PostInputs from "../_posts/post-inputs";
 
 export default function ShowPost() {
   const router = useRouter();
   const params = useSearchParams();
-  const methods = useForm();
-  const { setValue, handleSubmit, getValues } = methods;
   const POST_ID = params.get("id");
+  const methods = useForm({
+    defaultValues: getPostData,
+  });
+  const { handleSubmit } = methods;
 
-  useEffect(() => {
-    (async () => {
-      const getPost = await axios.get<Post>(
-        window.backendUrl + `/api/posts/${POST_ID}`
-      );
+  async function getPostData() {
+    const requestUrl = `${window.backendUrl}/api/posts/${POST_ID}`;
+    const getPost = await axios.get<Post>(requestUrl);
 
-      if (getPost.status == 404) {
-        router.push("/posts/create");
-      } else {
-        const { title, content, board_id, scheduled_at } = getPost.data;
+    if (getPost.status == 404) {
+      return router.push("/posts/create");
+    }
 
-        setValue("title", title);
-        setValue("content", content);
-        setValue("board", board_id);
-        setValue(
-          "scheduled_at",
-          scheduled_at ? moment(scheduled_at).format("YYYY-MM-DDTHH:mm") : ""
-        );
-      }
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const { board_id, scheduled_at, ...others } = getPost.data;
+
+    return {
+      ...others,
+      board: board_id,
+      scheduled_at: scheduled_at
+        ? moment(scheduled_at).format("YYYY-MM-DDTHH:mm")
+        : "",
+    };
+  }
 
   async function onSubmit(data: Post) {
     await axios.put(window.backendUrl + `/api/posts/${POST_ID}`, data);
