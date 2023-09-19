@@ -10,7 +10,7 @@ export default function Boards() {
   const [boards, setBoards] = useState<Board[]>();
   const [publishTo, setPublishTo] = useState<Board>();
   const [isCreating, setIsCreating] = useState(false);
-  const watchBoard = watch("board");
+  const watchBoard = watch("board_id");
 
   useEffect(() => {
     fetchBoards();
@@ -42,7 +42,7 @@ export default function Boards() {
       {isCreating && (
         <CreateBoard fetchBoards={fetchBoards} setIsCreating={setIsCreating} />
       )}
-      <input type="hidden" placeholder="board" {...register("board")} />
+      <input type="hidden" placeholder="board" {...register("board_id")} />
       <ul>
         {boards &&
           boards.map((board) => (

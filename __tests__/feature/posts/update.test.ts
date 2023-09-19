@@ -132,7 +132,7 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: board.id,
+        board_id: board.id,
       })
       .expect(200);
 
@@ -153,11 +153,11 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: notExists,
+        board_id: notExists,
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "board_id" }] });
       });
 
     await request(app)
@@ -165,11 +165,11 @@ describe("the update a post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: 0,
+        board_id: 0,
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "board_id" }] });
       });
   });
 
@@ -183,7 +183,7 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: "",
+        board_id: "",
       })
       .expect(200);
 
@@ -205,7 +205,7 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: post.board_id,
+        board_id: post.board_id,
         scheduled_at,
       })
       .expect(200);
@@ -223,7 +223,7 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: post.board_id,
+        board_id: post.board_id,
         scheduled_at: "foobar",
       })
       .expect(422)
@@ -242,7 +242,7 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: post.board_id,
+        board_id: post.board_id,
         scheduled_at: lastHour,
       })
       .expect(422)
@@ -261,12 +261,12 @@ describe("the update a post api", () => {
       .send({
         title: post.title,
         content: post.content,
-        board: "",
+        board_id: "",
         scheduled_at,
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "board_id" }] });
       });
 
     await request(app)
@@ -278,7 +278,7 @@ describe("the update a post api", () => {
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "board_id" }] });
       });
   });
 
@@ -296,7 +296,7 @@ describe("the update a post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: post.board_id,
+        board_id: post.board_id,
         scheduled_at: overlapped,
       })
       .expect(422)
@@ -309,7 +309,7 @@ describe("the update a post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: post.board_id,
+        board_id: post.board_id,
         scheduled_at,
       })
       .expect(200);
@@ -326,7 +326,7 @@ describe("the update a post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: post.board_id,
+        board_id: post.board_id,
         scheduled_at,
       })
       .expect(200);

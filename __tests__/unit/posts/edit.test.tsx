@@ -67,7 +67,7 @@ describe("edit a post in show a post page", () => {
       sub_board: 1,
       subject: 1,
       content: "New content",
-      board: 2,
+      board_id: 2,
       scheduled_at: datetime,
     });
   });

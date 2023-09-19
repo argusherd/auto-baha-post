@@ -24,11 +24,10 @@ export default function ShowPost() {
       return router.push("/posts/create");
     }
 
-    const { board_id, scheduled_at, ...others } = getPost.data;
+    const { scheduled_at, ...others } = getPost.data;
 
     return {
       ...others,
-      board: board_id,
       scheduled_at: scheduled_at
         ? moment(scheduled_at).format("YYYY-MM-DDTHH:mm")
         : "",

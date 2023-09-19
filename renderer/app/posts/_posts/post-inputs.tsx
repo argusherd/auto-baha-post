@@ -36,7 +36,7 @@ export default function PostInputs() {
         {...register("subject", { valueAsNumber: true })}
       />
 
-      {watch("board") && <ScheduledAt />}
+      {watch("board_id") && <ScheduledAt />}
 
       <textarea
         className="border"

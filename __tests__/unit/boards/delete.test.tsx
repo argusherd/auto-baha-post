@@ -21,7 +21,7 @@ describe("delete in board item component", () => {
     const board = await new BoardFactory().make({ id: boardId });
     const { setValue } = formHook;
 
-    setValue("board", boardId);
+    setValue("board_id", boardId);
 
     render(
       <FormProvider {...formHook}>
@@ -50,10 +50,10 @@ describe("delete in board item component", () => {
     const { getValues } = formHook;
     const deleteBtn = screen.getByRole("button", { name: "Delete" });
 
-    expect(getValues("board")).toEqual(boardId);
+    expect(getValues("board_id")).toEqual(boardId);
 
     await userEvent.click(deleteBtn);
 
-    expect(getValues("board")).toEqual("");
+    expect(getValues("board_id")).toEqual("");
   });
 });
