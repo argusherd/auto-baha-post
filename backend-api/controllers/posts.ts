@@ -15,12 +15,12 @@ const validatePost = [
   body("sub_board").isNumeric().optional(),
   body("subject").isNumeric().optional(),
   body("content").notEmpty(),
-  body("board").if(body("board").notEmpty()).custom(existingBoard),
+  body("board_id").if(body("board_id").notEmpty()).custom(existingBoard),
   body("scheduled_at")
     .isISO8601()
     .isAfter(moment().toISOString())
     .optional({ values: "falsy" }),
-  body("board").if(body("scheduled_at").notEmpty()).notEmpty(),
+  body("board_id").if(body("scheduled_at").notEmpty()).notEmpty(),
 ];
 
 router.get("/posts", async (_req: Request, res: Response) => {
@@ -113,7 +113,7 @@ function setPostDate(post: Post, req: Request) {
     scheduled_at: post.scheduled_at,
   } = req.body);
 
-  post.board_id = req.body.board || null;
+  post.board_id = req.body.board_id || null;
   post.publish_failed = post.scheduled_at ? null : post.publish_failed;
 }
 

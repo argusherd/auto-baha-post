@@ -60,7 +60,7 @@ describe("the boards component", () => {
 
   it("can reflect the one we pick", async () => {
     await waitFor(() => {
-      setValue("board", 2);
+      setValue("board_id", 2);
       rerenderBoards();
     });
 
@@ -73,7 +73,7 @@ describe("the boards component", () => {
 
   it("sholud display the default string if specify a value that not in the board list", async () => {
     await waitFor(() => {
-      setValue("board", 99999999);
+      setValue("board_id", 99999999);
       rerenderBoards();
     });
 
@@ -147,7 +147,7 @@ describe("the boards component", () => {
 
   it("should display the default string if the board value is set to null", async () => {
     await waitFor(() => {
-      setValue("board", 2);
+      setValue("board_id", 2);
       rerenderBoards();
     });
 
@@ -156,7 +156,7 @@ describe("the boards component", () => {
     expect(display).toHaveTextContent("Gaming");
 
     await waitFor(() => {
-      setValue("board", null);
+      setValue("board_id", null);
       rerenderBoards();
     });
 

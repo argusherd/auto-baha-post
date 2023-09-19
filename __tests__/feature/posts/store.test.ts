@@ -76,7 +76,7 @@ describe("the create a new post api", () => {
     await request(app).post("/api/posts").send({
       title: "my first post",
       content: "content in the first post",
-      board: board.id,
+      board_id: board.id,
     });
 
     const post = await Post.findOne({ relations: { board: true }, where: {} });
@@ -92,11 +92,11 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: notExists,
+        board_id: notExists,
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "board_id" }] });
       });
 
     await request(app)
@@ -104,11 +104,11 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: 0,
+        board_id: 0,
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "board_id" }] });
       });
   });
 
@@ -118,7 +118,7 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: "",
+        board_id: "",
       })
       .expect(201);
 
@@ -194,7 +194,7 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: board.id,
+        board_id: board.id,
         scheduled_at,
       })
       .expect(201);
@@ -212,7 +212,7 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: board.id,
+        board_id: board.id,
         scheduled_at: "foorbar",
       })
       .expect(422)
@@ -231,7 +231,7 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: board.id,
+        board_id: board.id,
         scheduled_at: yesterday,
       })
       .expect(422)
@@ -248,12 +248,12 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: "",
+        board_id: "",
         scheduled_at,
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body.errors[0]).toMatchObject({ path: "board" });
+        expect(res.body.errors[0]).toMatchObject({ path: "board_id" });
       });
 
     await request(app)
@@ -265,7 +265,7 @@ describe("the create a new post api", () => {
       })
       .expect(422)
       .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "board" }] });
+        expect(res.body).toMatchObject({ errors: [{ path: "board_id" }] });
       });
   });
 
@@ -283,7 +283,7 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        board: exists.board_id,
+        board_id: exists.board_id,
         scheduled_at: overlapped,
       })
       .expect(422)

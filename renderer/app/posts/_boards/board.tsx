@@ -25,7 +25,7 @@ export default function BoardItem({
   async function handleDelete() {
     await axios.delete(`${window.backendUrl}/api/boards/${board.id}`);
 
-    if (getParentValues("board") == board.id) setParentValue("board", "");
+    if (getParentValues("board_id") == board.id) setParentValue("board_id", "");
 
     fetchBoards();
   }
@@ -50,7 +50,7 @@ export default function BoardItem({
         </div>
       ) : (
         <div>
-          <div onClick={() => setParentValue("board", board.id)}>
+          <div onClick={() => setParentValue("board_id", board.id)}>
             <span>{board.no}</span>
             <span>{board.name}</span>
           </div>

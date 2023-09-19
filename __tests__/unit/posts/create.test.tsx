@@ -82,7 +82,7 @@ describe("create post page", () => {
       sub_board: 1,
       subject: 1,
       content: "The content in my first post",
-      board: 2,
+      board_id: 2,
       scheduled_at: datetime,
     });
   });
