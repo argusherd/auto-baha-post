@@ -1,6 +1,6 @@
 import { app, BrowserWindow, clipboard } from "electron";
 import moment from "moment";
-import puppeteer from "puppeteer-core";
+import puppeteer, { Page } from "puppeteer-core";
 import pie from "puppeteer-in-electron";
 import { AsyncTask } from "toad-scheduler";
 import { Between } from "typeorm";
@@ -37,6 +37,12 @@ const publishAPost = new AsyncTask("publish a post", async () => {
     return await failThePublish(post, "BOARD_NOT_EXISTS", window);
   }
 
+  await page.select(
+    "select[name='demonstratioType']",
+    String(post.demonstratio)
+  );
+  await selectSubBoard(page, post);
+  await page.select("select[name='subject']", String(post.subject));
   await page.type("input[name='title']", post.title);
 
   // click out post tips image
@@ -104,4 +110,30 @@ async function setupLocalStorage(window: BrowserWindow) {
   await window.webContents.executeJavaScript(
     "localStorage.setItem('FOURM_DEMONSTRATIO_HINT', 'shown')"
   );
+}
+
+async function selectSubBoard(page: Page, post: Post) {
+  const hasOption = await page.$(
+    `select[name='nsubbsn'] > option[value='${post.sub_board}']`
+  );
+  const optionText = await hasOption?.evaluate((el) => el.textContent);
+
+  if (hasOption && !optionText.includes("已鎖定")) {
+    return await page.select("select[name='nsubbsn']", String(post.sub_board));
+  }
+
+  const fallbackValue = await page.evaluate(() => {
+    let options = document.querySelectorAll(`select[name='nsubbsn'] > option`);
+
+    for (let el of options.values()) {
+      if (
+        el.getAttribute("value") != "0" &&
+        !el.textContent.includes("已鎖定")
+      ) {
+        return el.getAttribute("value");
+      }
+    }
+  });
+
+  await page.select("select[name='nsubbsn']", fallbackValue);
 }
