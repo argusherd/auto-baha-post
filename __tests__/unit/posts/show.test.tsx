@@ -40,7 +40,7 @@ describe("show a post page", () => {
     expect(title).toHaveDisplayValue("My first post");
     expect(demonstratio).toHaveValue(1);
     expect(subBoard).toHaveValue(1);
-    expect(subject).toHaveValue(1);
+    expect(subject).toHaveValue("1");
     expect(content).toHaveDisplayValue("Content in post");
   });
 

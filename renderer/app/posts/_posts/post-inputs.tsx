@@ -1,6 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import Boards from "../_boards";
 import ScheduledAt from "./scheduled-at";
+import Subject from "./subject";
 
 export default function PostInputs() {
   const {
@@ -30,11 +31,7 @@ export default function PostInputs() {
         placeholder="Sub Board"
         {...register("sub_board", { valueAsNumber: true })}
       />
-      <input
-        type="number"
-        placeholder="Subject"
-        {...register("subject", { valueAsNumber: true })}
-      />
+      <Subject />
 
       {watch("board_id") && <ScheduledAt />}
 
