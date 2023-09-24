@@ -41,7 +41,7 @@ const config = {
       ],
     },
     {
-      displayName: "backend-api",
+      displayName: "backend & electron",
       moduleNameMapper: {
         "^@/(.*)$": "<rootDir>/$1",
       },
