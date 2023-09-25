@@ -1,6 +1,8 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, clipboard } from "electron";
+import moment from "moment";
 import puppeteer, { Browser, Page } from "puppeteer-core";
 import pie from "puppeteer-in-electron";
+import { Between } from "typeorm";
 import Post from "../../backend-api/database/entities/Post";
 
 export default class Publisher {
@@ -8,6 +10,23 @@ export default class Publisher {
   window: BrowserWindow;
   page: Page;
   post: Post;
+
+  public async findScheduled() {
+    const format = "YYYY-MM-DD HH:mm:ss.SSS";
+    const datetime = moment().utc();
+
+    this.post = await Post.findOne({
+      where: {
+        scheduled_at: Between(
+          datetime.startOf("minute").format(format),
+          datetime.endOf("minute").format(format)
+        ),
+      },
+      relations: {
+        board: true,
+      },
+    });
+  }
 
   public async init() {
     this.browser = await pie.connect(app, puppeteer as any);
@@ -42,13 +61,74 @@ export default class Publisher {
 
     const publishPage = await this.page.$(".c-post__header");
 
-    console.log(publishPage);
-
     return publishPage !== null;
   }
 
   public async fail(reason: string) {
     this.post.publish_failed = reason;
+
+    await this.post.save();
+
+    this.window.destroy();
+  }
+
+  public async setupProperties() {
+    await this.page.select(
+      "select[name='demonstratioType']",
+      String(this.post.demonstratio)
+    );
+    await this.page.select(
+      "select[name='nsubbsn']",
+      String(this.post.sub_board)
+    );
+    await this.page.select("select[name='subject']", String(this.post.subject));
+    await this.page.type("input[name='title']", this.post.title);
+  }
+
+  public async fallbackSubBoard() {
+    const pickedValue = await this.page.$eval(
+      "select[name='nsubbsn']",
+      (subBoard) => subBoard.value
+    );
+
+    if (pickedValue === String(this.post.sub_board)) {
+      return;
+    }
+
+    const fallbackValue = await this.page.evaluate(() => {
+      const options = document.querySelectorAll(
+        "select[name='nsubbsn'] > option"
+      );
+
+      for (let el of options.values()) {
+        const value = el.getAttribute("value");
+        const text = el.textContent;
+
+        if (value !== "0" && !text.includes("已鎖定")) return value;
+      }
+    });
+
+    await this.page.select("select[name='nsubbsn']", fallbackValue);
+  }
+
+  public async setupContent() {
+    clipboard.writeText(this.post.content);
+
+    this.window.webContents.paste();
+  }
+
+  public async clickAwayPostTips() {
+    const postTips = await this.page.$("#postTips");
+
+    const position = await postTips.boundingBox();
+
+    await this.page.click("#postTips", {
+      offset: { x: position.x + 50, y: position.y + 50 },
+    });
+  }
+
+  public async publish() {
+    this.post.published_at = moment().toISOString();
 
     await this.post.save();
 
