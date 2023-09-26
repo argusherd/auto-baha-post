@@ -28,6 +28,27 @@ export default class Publisher {
     });
   }
 
+  public async run() {
+    await this.findScheduled();
+
+    if (!this.post) return;
+
+    await this.init();
+
+    if (!(await this.isLogin())) return await this.fail("USER_IS_NOT_LOGIN");
+
+    await this.setupLocalStorage();
+
+    if (!(await this.toPublishPage()))
+      return await this.fail("BOARD_NOT_EXISTS");
+
+    await this.setupProperties();
+    await this.fallbackSubBoard();
+    await this.clickAwayPostTips();
+    await this.setupContent();
+    await this.publish();
+  }
+
   public async init() {
     this.browser = await pie.connect(app, puppeteer as any);
     this.window = new BrowserWindow();
@@ -111,12 +132,6 @@ export default class Publisher {
     await this.page.select("select[name='nsubbsn']", fallbackValue);
   }
 
-  public async setupContent() {
-    clipboard.writeText(this.post.content);
-
-    this.window.webContents.paste();
-  }
-
   public async clickAwayPostTips() {
     const postTips = await this.page.$("#postTips");
 
@@ -125,6 +140,12 @@ export default class Publisher {
     await this.page.click("#postTips", {
       offset: { x: position.x + 50, y: position.y + 50 },
     });
+  }
+
+  public async setupContent() {
+    clipboard.writeText(this.post.content);
+
+    this.window.webContents.paste();
   }
 
   public async publish() {

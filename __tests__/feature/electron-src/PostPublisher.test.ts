@@ -23,6 +23,22 @@ jest.mock<typeof CrossProcessExports>("electron", () => {
 });
 
 describe("the publish delegator", () => {
+  beforeEach(() => {
+    BrowserWindow.prototype.loadURL = jest.fn();
+    BrowserWindow.prototype.destroy = jest.fn();
+
+    pie.getPage = jest.fn().mockResolvedValue({
+      $: jest.fn().mockResolvedValue({
+        boundingBox: jest.fn().mockResolvedValue({ x: 0, y: 0 }),
+      }),
+      $eval: jest.fn(),
+      click: jest.fn(),
+      evaluate: jest.fn(),
+      select: jest.fn(),
+      type: jest.fn(),
+    });
+  });
+
   it("can find one scheduled post", async () => {
     const publisher = new Publisher();
 
@@ -55,8 +71,6 @@ describe("the publish delegator", () => {
   it("can check if the user is logged in", async () => {
     const publisher = new Publisher();
 
-    BrowserWindow.prototype.loadURL = jest.fn();
-    pie.getPage = jest.fn().mockResolvedValue({ $: jest.fn() });
     await publisher.init();
 
     expect(await publisher.isLogin()).toBeTruthy();
@@ -65,7 +79,6 @@ describe("the publish delegator", () => {
   it("can check if the user is NOT logged in", async () => {
     const publisher = new Publisher();
 
-    BrowserWindow.prototype.loadURL = jest.fn();
     pie.getPage = jest.fn().mockResolvedValue({
       $: jest.fn().mockResolvedValue(null),
     });
@@ -108,7 +121,6 @@ describe("the publish delegator", () => {
     const publisher = new Publisher();
 
     BrowserWindow.prototype.loadURL = mockedLoadUrl;
-    pie.getPage = jest.fn().mockResolvedValue({ $: jest.fn() });
     publisher.post = post;
 
     await publisher.init();
@@ -123,7 +135,6 @@ describe("the publish delegator", () => {
     const post = await new PostFactory().create();
     const publisher = new Publisher();
 
-    pie.getPage = jest.fn().mockResolvedValue({ $: jest.fn() });
     await publisher.init();
     publisher.post = post;
 
@@ -134,7 +145,9 @@ describe("the publish delegator", () => {
     const post = await new PostFactory().create();
     const publisher = new Publisher();
 
-    pie.getPage = jest.fn().mockResolvedValue({ $: () => null });
+    pie.getPage = jest
+      .fn()
+      .mockResolvedValue({ $: jest.fn().mockResolvedValue(null) });
     await publisher.init();
     publisher.post = post;
 
@@ -288,5 +301,166 @@ describe("the publish delegator", () => {
 
     expect(published.published_at).not.toBeNull();
     expect(mockedDestroy).toBeCalled();
+  });
+
+  it("can run the publishing process", async () => {
+    const publisher = new Publisher();
+    const post = await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    await publisher.run();
+
+    const published = await Post.findOneBy({ id: post.id });
+
+    expect(published.published_at).not.toBeNull();
+    expect(published.publish_failed).toBeNull();
+  });
+
+  it("will not initiate the publish process if there is no scheduled post", async () => {
+    const mockedInit = jest.fn();
+    const publisher = new Publisher();
+
+    Object.defineProperty(publisher, "init", {
+      value: mockedInit,
+    });
+
+    await publisher.run();
+
+    expect(mockedInit).not.toBeCalled();
+  });
+
+  it("fails the publishing if the user is not login", async () => {
+    const publisher = new Publisher();
+    const post = await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperty(publisher, "isLogin", {
+      value: jest.fn().mockResolvedValue(false),
+    });
+
+    await publisher.run();
+
+    const failed = await Post.findOneBy({ id: post.id });
+
+    expect(failed.published_at).toBeNull();
+    expect(failed.publish_failed).toEqual("USER_IS_NOT_LOGIN");
+  });
+
+  it("sets up the local storage during the publishing process", async () => {
+    const mockedSetupLocalStorage = jest.fn();
+    const publisher = new Publisher();
+
+    await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperties(publisher, {
+      setupLocalStorage: {
+        value: mockedSetupLocalStorage,
+      },
+    });
+
+    await publisher.run();
+
+    expect(mockedSetupLocalStorage).toBeCalled();
+  });
+
+  it("fails the publishing if the publish page is incorrect", async () => {
+    const publisher = new Publisher();
+    const post = await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperty(publisher, "isLogin", {
+      value: jest.fn().mockResolvedValue(true),
+    });
+    pie.getPage = jest.fn().mockResolvedValue({
+      $: jest.fn().mockResolvedValue(null),
+    });
+
+    await publisher.run();
+
+    const failed = await Post.findOneBy({ id: post.id });
+
+    expect(failed.published_at).toBeNull();
+    expect(failed.publish_failed).toEqual("BOARD_NOT_EXISTS");
+  });
+
+  it("sets up the post properties during the publishing process", async () => {
+    const mockedSetupProperties = jest.fn();
+    const publisher = new Publisher();
+
+    await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperties(publisher, {
+      setupProperties: {
+        value: mockedSetupProperties,
+      },
+    });
+
+    await publisher.run();
+
+    expect(mockedSetupProperties).toBeCalled();
+  });
+
+  it("falls back the sub board during the publishing process", async () => {
+    const mockedFallbackSubBoard = jest.fn();
+    const publisher = new Publisher();
+
+    await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperties(publisher, {
+      fallbackSubBoard: {
+        value: mockedFallbackSubBoard,
+      },
+    });
+
+    await publisher.run();
+
+    expect(mockedFallbackSubBoard).toBeCalled();
+  });
+
+  it("sets up the publish content during the publishing process", async () => {
+    const mockedSetupContent = jest.fn();
+    const publisher = new Publisher();
+
+    await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperties(publisher, {
+      setupContent: {
+        value: mockedSetupContent,
+      },
+    });
+
+    await publisher.run();
+
+    expect(mockedSetupContent).toBeCalled();
+  });
+
+  it("clicks away the post tips image during the publishing process", async () => {
+    const mockedClickAwayPostTips = jest.fn();
+    const publisher = new Publisher();
+
+    await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperties(publisher, {
+      clickAwayPostTips: {
+        value: mockedClickAwayPostTips,
+      },
+    });
+
+    await publisher.run();
+
+    expect(mockedClickAwayPostTips).toBeCalled();
   });
 });
