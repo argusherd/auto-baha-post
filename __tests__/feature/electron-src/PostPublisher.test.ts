@@ -463,4 +463,45 @@ describe("the publish delegator", () => {
 
     expect(mockedClickAwayPostTips).toBeCalled();
   });
+
+  it("executes the publishing process in a specified order", async () => {
+    const mockedSetupProperties = jest.fn();
+    const mockedFallbackSubBoard = jest.fn();
+    const mockedClickAwayPostTips = jest.fn();
+    const mockedSetupContent = jest.fn();
+    const mockedPublish = jest.fn();
+    const publisher = new Publisher();
+    await new PostFactory().create({
+      scheduled_at: moment().toISOString(),
+    });
+
+    Object.defineProperties(publisher, {
+      setupProperties: {
+        value: mockedSetupProperties,
+      },
+      fallbackSubBoard: {
+        value: mockedFallbackSubBoard,
+      },
+      clickAwayPostTips: {
+        value: mockedClickAwayPostTips,
+      },
+      setupContent: {
+        value: mockedSetupContent,
+      },
+      publish: {
+        value: mockedPublish,
+      },
+    });
+
+    await publisher.run();
+
+    expect(mockedSetupProperties).toHaveBeenCalledBefore(
+      mockedFallbackSubBoard
+    );
+    expect(mockedFallbackSubBoard).toHaveBeenCalledBefore(
+      mockedClickAwayPostTips
+    );
+    expect(mockedClickAwayPostTips).toHaveBeenCalledBefore(mockedSetupContent);
+    expect(mockedSetupContent).toHaveBeenCalledBefore(mockedPublish);
+  });
 });
