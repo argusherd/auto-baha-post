@@ -5,7 +5,7 @@ import pie from "puppeteer-in-electron";
 import { Between } from "typeorm";
 import Post from "../../backend-api/database/entities/Post";
 
-export default class Publisher {
+export default class PostPublisher {
   browser: Browser;
   window: BrowserWindow;
   page: Page;
