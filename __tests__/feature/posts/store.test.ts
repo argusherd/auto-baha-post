@@ -146,6 +146,35 @@ describe("the create a new post api", () => {
     expect(post.subject).toEqual(1);
   });
 
+  it("is okay to provide empty demonstratio, sub_board, or subject", async () => {
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        demonstratio: "",
+      })
+      .expect(201);
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        sub_board: "",
+      })
+      .expect(201);
+
+    await request(app)
+      .post("/api/posts")
+      .send({
+        title: "my first post",
+        content: "content in the first post",
+        subject: "",
+      })
+      .expect(201);
+  });
+
   it("should set demontratio, sub_board, and subject as number", async () => {
     await request(app)
       .post("/api/posts")
