@@ -83,6 +83,37 @@ describe("the update a post api", () => {
     expect(updated.subject).toEqual(1);
   });
 
+  it("is okay to provide empty demonstratio, sub_board, or subject", async () => {
+    const post = await new PostFactory().create();
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: "new title",
+        content: "new content",
+        demonstratio: "",
+      })
+      .expect(200);
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: "new title",
+        content: "new content",
+        sub_board: "",
+      })
+      .expect(200);
+
+    await request(app)
+      .put(`/api/posts/${post.id}`)
+      .send({
+        title: "new title",
+        content: "new content",
+        subject: "",
+      })
+      .expect(200);
+  });
+
   it("should set demonstratio, sub_board, and subject as number", async () => {
     const post = await new PostFactory().create();
 

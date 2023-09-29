@@ -11,9 +11,9 @@ const router = Router();
 
 const validatePost = [
   body("title").trim().notEmpty(),
-  body("demonstratio").isNumeric().optional(),
-  body("sub_board").isNumeric().optional(),
-  body("subject").isNumeric().optional(),
+  body("demonstratio").isNumeric().optional({ values: "falsy" }),
+  body("sub_board").isNumeric().optional({ values: "falsy" }),
+  body("subject").isNumeric().optional({ values: "falsy" }),
   body("content").notEmpty(),
   body("board_id").if(body("board_id").notEmpty()).custom(existingBoard),
   body("scheduled_at")
