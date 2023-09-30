@@ -149,6 +149,14 @@ export default class PostPublisher {
   }
 
   public async publish() {
+    await this.page.click(".BH-menu__post__btn");
+
+    await this.page.waitForSelector("button[type='submit']");
+
+    await this.page.click("button[type='submit']");
+
+    await this.page.waitForNavigation();
+
     this.post.published_at = moment().toISOString();
 
     await this.post.save();

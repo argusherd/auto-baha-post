@@ -36,6 +36,8 @@ describe("the publish delegator", () => {
       evaluate: jest.fn(),
       select: jest.fn(),
       type: jest.fn(),
+      waitForSelector: jest.fn(),
+      waitForNavigation: jest.fn(),
     });
   });
 
@@ -287,11 +289,19 @@ describe("the publish delegator", () => {
   });
 
   it("can execute publish action", async () => {
+    const mockedClick = jest.fn();
+    const mockedWaitForSelector = jest.fn();
+    const mockedWaitForNavigation = jest.fn();
     const mockedDestroy = jest.fn();
     const publisher = new Publisher();
     const post = await new PostFactory().create();
 
     BrowserWindow.prototype.destroy = mockedDestroy;
+    pie.getPage = jest.fn().mockResolvedValue({
+      click: mockedClick,
+      waitForSelector: mockedWaitForSelector,
+      waitForNavigation: mockedWaitForNavigation,
+    });
 
     publisher.post = post;
     await publisher.init();
@@ -300,6 +310,10 @@ describe("the publish delegator", () => {
     const published = await Post.findOneBy({ id: post.id });
 
     expect(published.published_at).not.toBeNull();
+    expect(mockedClick).toBeCalledWith(".BH-menu__post__btn");
+    expect(mockedWaitForSelector).toBeCalledWith("button[type='submit']");
+    expect(mockedClick).toBeCalledWith("button[type='submit']");
+    expect(mockedWaitForNavigation).toBeCalled();
     expect(mockedDestroy).toBeCalled();
   });
 
