@@ -9,6 +9,12 @@ Object.defineProperty(window, "backendUrl", {
   writable: true,
 });
 
+Object.defineProperty(window, "electron", {
+  configurable: true,
+  value: {},
+  writable: true,
+});
+
 afterEach(() => {
   jest.clearAllMocks();
 });

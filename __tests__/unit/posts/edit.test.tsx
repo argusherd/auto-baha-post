@@ -11,8 +11,9 @@ import {
 } from "../setup/mock";
 
 describe("edit a post in show a post page", () => {
+  let unmount;
   const POST_ID = "1";
-  const mockedPut = jest.fn();
+  const mockedPut = jest.fn().mockResolvedValue({ data: {} });
 
   mockedAxios.put = mockedPut;
   mockParamsGet(POST_ID);
@@ -20,7 +21,7 @@ describe("edit a post in show a post page", () => {
   userEvent.setup();
 
   beforeEach(async () => {
-    await waitFor(() => render(<ShowPost />));
+    await waitFor(() => ({ unmount } = render(<ShowPost />)));
   });
 
   it("can change a post's title and content", async () => {
@@ -106,5 +107,28 @@ describe("edit a post in show a post page", () => {
 
     expect(board).toHaveValue("1");
     expect(scheduledAt).toBeInTheDocument();
+  });
+
+  it("can manaully publish the post if it has assigned to a board", async () => {
+    mockPostPageApi(POST_ID, {
+      board_id: null,
+    });
+
+    unmount();
+
+    await waitFor(() => render(<ShowPost />));
+
+    const publishNow = screen.getByRole("button", { name: "Publish Now" });
+
+    expect(publishNow).toBeDisabled();
+
+    mockedAxios.put.mockResolvedValue({ data: { board_id: 1 } });
+
+    const gaming = screen.getByText("Gaming");
+    const submit = screen.getByRole("button", { name: "Save" });
+    await userEvent.click(gaming);
+    await userEvent.click(submit);
+
+    expect(publishNow).not.toBeDisabled();
   });
 });

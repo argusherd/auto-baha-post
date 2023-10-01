@@ -1,16 +1,24 @@
 import ShowPost from "@/renderer/app/posts/show/page";
+import { Electron } from "@/renderer/renderer";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import moment from "moment";
 import {
+  backendUrl,
   mockedAxios,
   mockParamsGet,
   mockPostPageApi,
   mockRouterPush,
 } from "../setup/mock";
 
+interface Window {
+  electron: Electron;
+}
+
 describe("show a post page", () => {
   let rerender;
+  let unmount;
   const POST_ID = "1";
   const mockedPush = mockRouterPush();
   const datetime = moment().toISOString();
@@ -26,7 +34,7 @@ describe("show a post page", () => {
     });
 
     await waitFor(() => {
-      ({ rerender } = render(<ShowPost />));
+      ({ rerender, unmount } = render(<ShowPost />));
     });
   });
 
@@ -62,9 +70,21 @@ describe("show a post page", () => {
   });
 
   it("redirecting you to the create post page if the post is not exist", async () => {
-    mockedAxios.get.mockResolvedValue({
-      status: 404,
+    mockedAxios.get.mockImplementation(async (url: string) => {
+      const request = {
+        [backendUrl + "/api/boards"]: {
+          data: [],
+        },
+        [backendUrl + `/api/posts/${POST_ID}`]: {
+          status: 404,
+          data: {},
+        },
+      };
+
+      return request[url];
     });
+
+    unmount();
 
     await waitFor(() => render(<ShowPost />));
 
@@ -80,5 +100,17 @@ describe("show a post page", () => {
     expect(scheduledAt).toHaveValue(
       moment(datetime).format("YYYY-MM-DDTHH:mm")
     );
+  });
+
+  it("can manaully publish the post", async () => {
+    const mockedPublishNow = jest.fn();
+
+    window.electron.publishNow = mockedPublishNow;
+
+    const publishNow = screen.getByRole("button", { name: "Publish Now" });
+
+    await userEvent.click(publishNow);
+
+    expect(mockedPublishNow).toBeCalled();
   });
 });

@@ -15,7 +15,7 @@ export default class PostPublisher {
     const format = "YYYY-MM-DD HH:mm:ss.SSS";
     const datetime = moment().utc();
 
-    this.post = await Post.findOne({
+    return (this.post = await Post.findOne({
       where: {
         scheduled_at: Between(
           datetime.startOf("minute").format(format),
@@ -25,11 +25,11 @@ export default class PostPublisher {
       relations: {
         board: true,
       },
-    });
+    }));
   }
 
   public async run() {
-    await this.findScheduled();
+    this.post = this.post || (await this.findScheduled());
 
     if (!this.post) return;
 
