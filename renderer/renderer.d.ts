@@ -1,5 +1,6 @@
 export interface Electron {
   openBaha(): Promise<void>;
+  publishNow(postId: number): Promise<void>;
 }
 
 declare global {
