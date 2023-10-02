@@ -37,7 +37,7 @@ describe("the publish delegator", () => {
       select: jest.fn(),
       type: jest.fn(),
       waitForSelector: jest.fn(),
-      waitForNavigation: jest.fn(),
+      waitForNavigation: jest.fn().mockResolvedValue(true),
     });
   });
 
@@ -291,7 +291,7 @@ describe("the publish delegator", () => {
   it("can execute publish action", async () => {
     const mockedClick = jest.fn();
     const mockedWaitForSelector = jest.fn();
-    const mockedWaitForNavigation = jest.fn();
+    const mockedWaitForNavigation = jest.fn().mockResolvedValue(true);
     const mockedDestroy = jest.fn();
     const publisher = new Publisher();
     const post = await new PostFactory().create();
@@ -305,16 +305,34 @@ describe("the publish delegator", () => {
 
     publisher.post = post;
     await publisher.init();
-    await publisher.publish();
+    const result = await publisher.publish();
 
     const published = await Post.findOneBy({ id: post.id });
 
+    expect(result).toBeTrue();
     expect(published.published_at).not.toBeNull();
     expect(mockedClick).toBeCalledWith(".BH-menu__post__btn");
     expect(mockedWaitForSelector).toBeCalledWith("button[type='submit']");
     expect(mockedClick).toBeCalledWith("button[type='submit']");
     expect(mockedWaitForNavigation).toBeCalled();
     expect(mockedDestroy).toBeCalled();
+  });
+
+  it("returns false if there was no navigation happened during the publishing action", async () => {
+    const publisher = new Publisher();
+    const post = await new PostFactory().create();
+
+    pie.getPage = jest.fn().mockResolvedValue({
+      click: jest.fn(),
+      waitForSelector: jest.fn(),
+      waitForNavigation: jest.fn().mockResolvedValue(null),
+    });
+
+    publisher.post = post;
+    await publisher.init();
+    const result = await publisher.publish();
+
+    expect(result).toBeFalse();
   });
 
   it("can run the publishing process", async () => {
@@ -517,5 +535,23 @@ describe("the publish delegator", () => {
     );
     expect(mockedClickAwayPostTips).toHaveBeenCalledBefore(mockedSetupContent);
     expect(mockedSetupContent).toHaveBeenCalledBefore(mockedPublish);
+  });
+
+  it("fails the publishing if the publish action returns false", async () => {
+    const publisher = new Publisher();
+    const post = await new PostFactory().create();
+
+    Object.defineProperty(publisher, "publish", {
+      value: jest.fn().mockResolvedValue(false),
+    });
+
+    publisher.post = post;
+    await publisher.init();
+    await publisher.run();
+
+    const failed = await Post.findOneBy({ id: post.id });
+
+    expect(failed.published_at).toBeNull();
+    expect(failed.publish_failed).toEqual("UNABLE_TO_PUBLISH");
   });
 });
