@@ -46,7 +46,8 @@ export default class PostPublisher {
     await this.fallbackSubBoard();
     await this.clickAwayPostTips();
     await this.setupContent();
-    await this.publish();
+
+    if (!(await this.publish())) return await this.fail("UNABLE_TO_PUBLISH");
   }
 
   public async init() {
@@ -155,12 +156,16 @@ export default class PostPublisher {
 
     await this.page.click("button[type='submit']");
 
-    await this.page.waitForNavigation();
+    const redirected = await this.page.waitForNavigation();
+
+    if (!redirected) return false;
 
     this.post.published_at = moment().toISOString();
 
     await this.post.save();
 
     this.window.destroy();
+
+    return true;
   }
 }
