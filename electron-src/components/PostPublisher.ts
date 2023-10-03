@@ -42,6 +42,7 @@ export default class PostPublisher {
     if (!(await this.toPublishPage()))
       return await this.fail("BOARD_NOT_EXISTS");
 
+    await this.clickAwayDialog();
     await this.setupProperties();
     await this.fallbackSubBoard();
     await this.clickAwayPostTips();
@@ -92,6 +93,16 @@ export default class PostPublisher {
     await this.post.save();
 
     this.window.destroy();
+  }
+
+  public async clickAwayDialog() {
+    const dialog = await this.page.$(".dialogify__close");
+
+    if (dialog) {
+      await this.page.click(".dialogify__close");
+
+      await this.page.waitForSelector(".dialogify__close", { timeout: 1 });
+    }
   }
 
   public async setupProperties() {
