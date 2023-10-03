@@ -172,6 +172,22 @@ describe("the publish delegator", () => {
     expect(failedPost.publish_failed).toEqual("THE_FAILING_REASON");
   });
 
+  it("can click away the load draft dialog", async () => {
+    const mockedClick = jest.fn();
+    const publisher = new Publisher();
+
+    pie.getPage = jest.fn().mockResolvedValue({
+      $: jest.fn().mockResolvedValue(true),
+      click: mockedClick,
+      waitForSelector: jest.fn(),
+    });
+
+    await publisher.init();
+    await publisher.clickAwayDialog();
+
+    expect(mockedClick).toBeCalled();
+  });
+
   it("can setup the post properties in the publish page", async () => {
     const mockedSelect = jest.fn();
     const mockedType = jest.fn();
@@ -242,7 +258,6 @@ describe("the publish delegator", () => {
 
   it("can click the post tips image away", async () => {
     const publisher = new Publisher();
-    const post = await new PostFactory().create();
     const mockedClick = jest.fn();
     const mockedBoundingBox = jest.fn().mockResolvedValue({
       x: 100,
@@ -257,7 +272,6 @@ describe("the publish delegator", () => {
       click: mockedClick,
     });
 
-    publisher.post = post;
     await publisher.init();
     await publisher.clickAwayPostTips();
 
