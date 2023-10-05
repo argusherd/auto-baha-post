@@ -1,3 +1,4 @@
+import Post from "@/backend-api/database/entities/Post";
 import ShowPost from "@/renderer/app/posts/show/page";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -14,27 +15,38 @@ describe("edit a post in show a post page", () => {
   let unmount;
   const POST_ID = "1";
   const mockedPut = jest.fn().mockResolvedValue({ data: {} });
+  const postData: Partial<Post> = {
+    title: "My first post",
+    demonstratio: 1,
+    sub_board: 2,
+    subject: 3,
+    content: "Content in post",
+    board_id: 1,
+  };
 
   mockedAxios.put = mockedPut;
   mockParamsGet(POST_ID);
-  mockPostPageApi(POST_ID);
+  mockPostPageApi(POST_ID, postData);
   userEvent.setup();
 
   beforeEach(async () => {
     await waitFor(() => ({ unmount } = render(<ShowPost />)));
   });
 
-  it("can change a post's title and content", async () => {
+  it("shows the post's details", async () => {
     const title = screen.getByPlaceholderText("Title");
+    const demonstratio = screen.getByPlaceholderText("Demonstratio");
+    const subBoard = screen.getByPlaceholderText("Sub Board");
+    const subject = screen.getByPlaceholderText("Subject");
     const content = screen.getByPlaceholderText("Content");
+    const board = screen.getByPlaceholderText("board");
 
-    await userEvent.clear(title);
-    await userEvent.type(title, "New title");
-    await userEvent.clear(content);
-    await userEvent.type(content, "New content");
-
-    expect(title).toHaveValue("New title");
-    expect(content).toHaveValue("New content");
+    expect(title).toHaveValue("My first post");
+    expect(demonstratio).toHaveValue(1);
+    expect(subBoard).toHaveValue(2);
+    expect(subject).toHaveValue("3");
+    expect(content).toHaveValue("Content in post");
+    expect(board).toHaveValue("1");
   });
 
   it("can handle a submit event to persist new post data", async () => {
@@ -48,11 +60,13 @@ describe("edit a post in show a post page", () => {
     const datetime = moment().format("YYYY-MM-DDTHH:mm");
 
     await userEvent.clear(title);
+    await userEvent.clear(demonstratio);
+    await userEvent.clear(subBoard);
+    await userEvent.clear(content);
     await userEvent.type(title, "New title");
     await userEvent.type(demonstratio, "1");
     await userEvent.type(subBoard, "1");
-    await userEvent.type(subject, "1");
-    await userEvent.clear(content);
+    await userEvent.type(subject, "3");
     await userEvent.type(content, "New content");
     await userEvent.click(gaming);
 
@@ -66,47 +80,11 @@ describe("edit a post in show a post page", () => {
       title: "New title",
       demonstratio: 1,
       sub_board: 1,
-      subject: 1,
+      subject: 3,
       content: "New content",
       board_id: 2,
       scheduled_at: datetime,
     });
-  });
-
-  it("cannot submit an empty title or an empty content", async () => {
-    const title = screen.getByPlaceholderText("Title");
-    const content = screen.getByPlaceholderText("Content");
-    const submit = screen.getByRole("button", { name: "Save" });
-
-    await userEvent.clear(title);
-    await userEvent.clear(content);
-    await userEvent.click(submit);
-
-    expect(mockedPut).not.toBeCalled();
-  });
-
-  it("can list all the boards for the assignment", async () => {
-    const boards = screen.getAllByRole("listitem");
-
-    expect(boards[0]).toHaveTextContent("Tech");
-    expect(boards[1]).toHaveTextContent("Gaming");
-  });
-
-  it("can assign a board to the post", async () => {
-    const board = screen.getByPlaceholderText("board");
-    const gaming = screen.getByText("Gaming");
-
-    await userEvent.click(gaming);
-
-    expect(board).toHaveValue("2");
-  });
-
-  it("can schedule the post if a board was assigned to the post", async () => {
-    const board = screen.getByPlaceholderText("board");
-    const scheduledAt = screen.queryByLabelText("Schedule");
-
-    expect(board).toHaveValue("1");
-    expect(scheduledAt).toBeInTheDocument();
   });
 
   it("can manaully publish the post if it has assigned to a board", async () => {

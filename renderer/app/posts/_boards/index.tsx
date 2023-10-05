@@ -42,7 +42,11 @@ export default function Boards() {
       {isCreating && (
         <CreateBoard fetchBoards={fetchBoards} setIsCreating={setIsCreating} />
       )}
-      <input type="hidden" placeholder="board" {...register("board_id")} />
+      <input
+        type="hidden"
+        placeholder="board"
+        {...register("board_id", { valueAsNumber: true })}
+      />
       <ul>
         {boards &&
           boards.map((board) => (
