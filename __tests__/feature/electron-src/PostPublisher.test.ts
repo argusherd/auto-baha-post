@@ -1,44 +1,14 @@
 import Post from "@/backend-api/database/entities/Post";
 import PostFactory from "@/backend-api/database/factories/PostFactory";
 import Publisher from "@/electron-src/components/PostPublisher";
-import CrossProcessExports, { BrowserWindow, clipboard } from "electron";
+import { BrowserWindow, clipboard } from "electron";
 import moment from "moment";
 import pie from "puppeteer-in-electron";
-
-jest.mock<typeof pie>("puppeteer-in-electron");
-jest.mock<typeof CrossProcessExports>("electron", () => {
-  const electron = jest.requireActual("electron");
-  const mockedBrowserWindow = jest.fn(() => ({
-    loadURL: jest.fn(),
-    webContents: {
-      executeJavaScript: jest.fn(),
-    },
-  }));
-
-  return {
-    ...electron,
-    BrowserWindow: mockedBrowserWindow,
-    clipboard: jest.fn(),
-  };
-});
+import { resetElectronAndPie } from "../mock";
 
 describe("the publish delegator", () => {
   beforeEach(() => {
-    BrowserWindow.prototype.loadURL = jest.fn();
-    BrowserWindow.prototype.destroy = jest.fn();
-
-    pie.getPage = jest.fn().mockResolvedValue({
-      $: jest.fn().mockResolvedValue({
-        boundingBox: jest.fn().mockResolvedValue({ x: 0, y: 0 }),
-      }),
-      $eval: jest.fn(),
-      click: jest.fn(),
-      evaluate: jest.fn(),
-      select: jest.fn(),
-      type: jest.fn(),
-      waitForSelector: jest.fn(),
-      waitForNavigation: jest.fn().mockResolvedValue(true),
-    });
+    resetElectronAndPie();
   });
 
   it("can find one scheduled post", async () => {
@@ -75,7 +45,7 @@ describe("the publish delegator", () => {
 
     await publisher.init();
 
-    expect(await publisher.isLogin()).toBeTruthy();
+    expect(await publisher.isLoggedIn()).toBeTruthy();
   });
 
   it("can check if the user is NOT logged in", async () => {
@@ -87,7 +57,7 @@ describe("the publish delegator", () => {
 
     await publisher.init();
 
-    expect(await publisher.isLogin()).toBeFalsy();
+    expect(await publisher.isLoggedIn()).toBeFalsy();
   });
 
   it("can setup the window's local storage", async () => {
@@ -382,7 +352,7 @@ describe("the publish delegator", () => {
       scheduled_at: moment().toISOString(),
     });
 
-    Object.defineProperty(publisher, "isLogin", {
+    Object.defineProperty(publisher, "isLoggedIn", {
       value: jest.fn().mockResolvedValue(false),
     });
 
@@ -419,7 +389,7 @@ describe("the publish delegator", () => {
       scheduled_at: moment().toISOString(),
     });
 
-    Object.defineProperty(publisher, "isLogin", {
+    Object.defineProperty(publisher, "isLoggedIn", {
       value: jest.fn().mockResolvedValue(true),
     });
     pie.getPage = jest.fn().mockResolvedValue({

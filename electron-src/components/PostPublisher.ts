@@ -35,7 +35,7 @@ export default class PostPublisher {
 
     await this.init();
 
-    if (!(await this.isLogin())) return await this.fail("USER_IS_NOT_LOGIN");
+    if (!(await this.isLoggedIn())) return await this.fail("USER_IS_NOT_LOGIN");
 
     await this.setupLocalStorage();
 
@@ -57,7 +57,7 @@ export default class PostPublisher {
     this.page = await pie.getPage(this.browser, this.window);
   }
 
-  public async isLogin() {
+  public async isLoggedIn() {
     await this.window.loadURL("https://forum.gamer.com.tw");
 
     const loggedIn = await this.page.$(".topbar_member-home");
