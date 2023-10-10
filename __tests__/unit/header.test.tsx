@@ -1,21 +1,23 @@
 import Header from "@/renderer/app/header";
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import moment from "moment";
+import { mockedAxios } from "./setup/mock";
 
 describe("the navbar", () => {
-  const fakeOpenBaha = jest.fn();
   userEvent.setup();
 
-  Object.defineProperty(window, "electron", {
-    value: { openBaha: fakeOpenBaha },
-  });
-
-  beforeEach(() => {
-    render(<Header />);
-  });
-
   it("has a button that has the ability to open the baha login page", async () => {
+    const fakeOpenBaha = jest.fn();
+
+    Object.defineProperty(window, "electron", {
+      value: { openBaha: fakeOpenBaha },
+      configurable: true,
+    });
+
+    render(<Header />);
+
     const bahaBtn = await screen.findByRole("button", { name: "Open Baha" });
 
     expect(bahaBtn).toBeInTheDocument();
@@ -23,5 +25,41 @@ describe("the navbar", () => {
     await userEvent.click(bahaBtn);
 
     expect(fakeOpenBaha).toBeCalled();
+  });
+
+  it("can indicate the user is logged in successfully", async () => {
+    const created_at = moment().toISOString();
+    mockedAxios.get = jest.fn().mockResolvedValue({
+      data: {
+        name: "foo",
+        account: "bar",
+        logged_in: true,
+        created_at,
+      },
+    });
+
+    await waitFor(() => render(<Header />));
+
+    const userInfo = screen.getByTestId("userinfo");
+
+    expect(userInfo).toHaveTextContent("foo (bar)");
+    expect(userInfo).toHaveAttribute("title");
+  });
+
+  it("can indicate the user is not logged in yet", async () => {
+    mockedAxios.get = jest.fn().mockResolvedValue({
+      data: {
+        name: null,
+        account: null,
+        logged_in: false,
+        created_at: moment().toISOString(),
+      },
+    });
+
+    await waitFor(() => render(<Header />));
+
+    const userInfo = screen.getByTestId("userinfo");
+
+    expect(userInfo).toHaveTextContent("User is not logged in yet");
   });
 });
