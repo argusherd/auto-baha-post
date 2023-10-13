@@ -81,4 +81,32 @@ describe("the post-inputs component", () => {
 
     expect(scheduledAt).toBeInTheDocument();
   });
+
+  it("can refresh the post properties list", async () => {
+    const mockedGetPostProperties = jest.fn();
+    const gaming = screen.getByText("Gaming");
+
+    window.electron.getPostProperties = mockedGetPostProperties;
+
+    await userEvent.click(gaming);
+    await waitFor(rerenderPostInputs);
+
+    const refresh = screen.getByRole("button", { name: "Refresh" });
+
+    await userEvent.click(refresh);
+
+    expect(mockedGetPostProperties).toBeCalledWith(2);
+  });
+
+  it("can refresh the post properties only if it is assigned to a board", async () => {
+    const gaming = screen.getByText("Gaming");
+    const refresh = screen.getByRole("button", { name: "Refresh" });
+
+    expect(refresh).toBeDisabled();
+
+    await userEvent.click(gaming);
+    await waitFor(rerenderPostInputs);
+
+    expect(refresh).toBeEnabled();
+  });
 });

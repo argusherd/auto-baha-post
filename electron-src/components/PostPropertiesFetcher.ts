@@ -63,8 +63,8 @@ export default class PostPropertiesFetcher {
 
       const newRecord = new entity();
       newRecord.board_id = this.board.id;
-      newRecord.value = value.toString();
-      newRecord.text = text.toString();
+      newRecord.value = await value.jsonValue();
+      newRecord.text = await text.jsonValue();
       await newRecord.save();
     }
   }

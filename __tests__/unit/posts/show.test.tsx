@@ -1,5 +1,4 @@
 import ShowPost from "@/renderer/app/posts/show/page";
-import { Electron } from "@/renderer/renderer";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -11,10 +10,6 @@ import {
   mockPostPageApi,
   mockRouterPush,
 } from "../setup/mock";
-
-interface Window {
-  electron: Electron;
-}
 
 describe("show a post page", () => {
   let rerender;
