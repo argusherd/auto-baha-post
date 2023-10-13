@@ -10,6 +10,8 @@ export default function PostInputs() {
     formState: { errors },
   } = useFormContext();
 
+  const boardId = watch("board_id");
+
   return (
     <>
       <input
@@ -33,7 +35,16 @@ export default function PostInputs() {
       />
       <Subject />
 
-      {watch("board_id") && <ScheduledAt />}
+      <button
+        disabled={!boardId}
+        onClick={() => {
+          window.electron.getPostProperties(boardId);
+        }}
+      >
+        Refresh
+      </button>
+
+      {boardId && <ScheduledAt />}
 
       <textarea
         className="border"

@@ -71,20 +71,20 @@ describe("the post properties fetcher", () => {
           getProperty: jest
             .fn()
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "12"),
+              jsonValue: jest.fn().mockResolvedValue("12"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "foo"),
+              jsonValue: jest.fn().mockResolvedValue("foo"),
             }),
         },
         {
           getProperty: jest
             .fn()
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "34"),
+              jsonValue: jest.fn().mockResolvedValue("34"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "bar"),
+              jsonValue: jest.fn().mockResolvedValue("bar"),
             }),
         },
       ]),
@@ -116,10 +116,10 @@ describe("the post properties fetcher", () => {
           getProperty: jest
             .fn()
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "12"),
+              jsonValue: jest.fn().mockResolvedValue("12"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "foo"),
+              jsonValue: jest.fn().mockResolvedValue("foo"),
             }),
         },
       ]),
@@ -147,20 +147,20 @@ describe("the post properties fetcher", () => {
           getProperty: jest
             .fn()
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "12"),
+              jsonValue: jest.fn().mockResolvedValue("12"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "foo"),
+              jsonValue: jest.fn().mockResolvedValue("foo"),
             }),
         },
         {
           getProperty: jest
             .fn()
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "34"),
+              jsonValue: jest.fn().mockResolvedValue("34"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "bar"),
+              jsonValue: jest.fn().mockResolvedValue("bar"),
             }),
         },
       ]),
@@ -192,10 +192,10 @@ describe("the post properties fetcher", () => {
           getProperty: jest
             .fn()
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "12"),
+              jsonValue: jest.fn().mockResolvedValue("12"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "foo"),
+              jsonValue: jest.fn().mockResolvedValue("foo"),
             }),
         },
       ]),
@@ -224,16 +224,16 @@ describe("the post properties fetcher", () => {
           getProperty: jest
             .fn()
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "12"),
+              jsonValue: jest.fn().mockResolvedValue("12"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "foo"),
+              jsonValue: jest.fn().mockResolvedValue("foo"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "34"),
+              jsonValue: jest.fn().mockResolvedValue("34"),
             })
             .mockResolvedValueOnce({
-              toString: jest.fn(() => "bar"),
+              jsonValue: jest.fn().mockResolvedValue("bar"),
             }),
         },
       ]),
