@@ -3,7 +3,9 @@ import { body } from "express-validator";
 import moment from "moment";
 import { MoreThanOrEqual, Not } from "typeorm";
 import Board from "../database/entities/Board";
+import Demonstratio from "../database/entities/Demonstratio";
 import Post from "../database/entities/Post";
+import SubBoard from "../database/entities/SubBoard";
 import bindEntity from "../middlewares/route-entity-binding";
 import validator from "../middlewares/validate-request";
 
@@ -69,6 +71,26 @@ router.delete(
     await req.board.remove();
 
     res.sendStatus(200);
+  }
+);
+
+router.get(
+  "/boards/:board/demonstratios",
+  bindEntity(Board),
+  async (req: Request, res: Response) => {
+    const { id: board_id } = req.board;
+
+    res.json(await Demonstratio.findBy({ board_id }));
+  }
+);
+
+router.get(
+  "/boards/:board/sub-boards",
+  bindEntity(Board),
+  async (req: Request, res: Response) => {
+    const { id: board_id } = req.board;
+
+    res.json(await SubBoard.findBy({ board_id }));
   }
 );
 
