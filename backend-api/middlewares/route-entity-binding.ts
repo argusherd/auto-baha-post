@@ -14,10 +14,9 @@ const bindEntity =
   (entity: typeof HasId) =>
   async (req: Request, res: Response, next: NextFunction) => {
     const key = entity.name.toLowerCase();
-
-    if (!req.params[key]) return res.sendStatus(404);
-
     const id = Number(req.params[key]);
+
+    if (!req.params[key] || !id) return res.sendStatus(404);
 
     const target = await entity.findOneBy({ id });
 
