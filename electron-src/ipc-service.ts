@@ -11,7 +11,7 @@ export default function registerIpcMain() {
     "publishNow",
     async (_event, postId: number) => await publishNow(postId)
   );
-  ipcMain.on("getPostProperties", async (_event, boardId: number) => {
+  ipcMain.handle("getPostProperties", async (_event, boardId: number) => {
     await getPostProperties(boardId);
   });
 }

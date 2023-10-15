@@ -24,29 +24,38 @@ export const mockParamsGet = (param: string) =>
   });
 
 export const mockPostPageApi = (
-  postId: string | number,
+  postId?: string | number,
   postData?: object | Post
 ) => {
   mockedAxios.get.mockImplementation(async (url: string) => {
-    const request = {
-      [backendUrl + "/api/boards"]: {
+    if (url === backendUrl + "/api/boards")
+      return {
         data: [
           { id: 1, name: "Tech" },
           { id: 2, name: "Gaming" },
           { id: 3, name: "Cooking" },
         ],
-      },
-      [backendUrl + `/api/posts/${postId}`]: {
+      };
+
+    if (url === backendUrl + `/api/posts/${postId}`)
+      return {
         data: {
           title: "My first post",
           content: "Content in post",
           board_id: 1,
           ...postData,
         },
-      },
-    };
+      };
 
-    return request[url];
+    if (url.endsWith("/demonstratios") || url.endsWith("/sub-boards")) {
+      return {
+        data: [
+          { id: 1, value: "1", text: "Property 1" },
+          { id: 2, value: "2", text: "Property 2" },
+          { id: 3, value: "3", text: "Property 3" },
+        ],
+      };
+    }
   });
 };
 

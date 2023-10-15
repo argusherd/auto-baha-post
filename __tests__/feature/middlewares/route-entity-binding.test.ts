@@ -73,7 +73,7 @@ describe("route entity binding middleware", () => {
   it("returns 404 response if cannot find an existed entity", async () => {
     findOneBy.mockResolvedValue(null);
 
-    mockedReq.params = { hasid: "NOT_EXISTS" };
+    mockedReq.params = { hasid: "999999" };
 
     const shouldBind = bindEntity(HasId);
 
