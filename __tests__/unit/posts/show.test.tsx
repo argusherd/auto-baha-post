@@ -22,9 +22,9 @@ describe("show a post page", () => {
 
   beforeEach(async () => {
     mockPostPageApi(POST_ID, {
-      demonstratio: 1,
-      sub_board: 1,
-      subject: 1,
+      demonstratio: 2,
+      sub_board: 2,
+      subject: 2,
       scheduled_at: datetime,
     });
 
@@ -34,16 +34,20 @@ describe("show a post page", () => {
   });
 
   it("can view a specified post", async () => {
+    await waitFor(() => rerender(<ShowPost />));
+
     const title = screen.getByPlaceholderText("Title");
     const demonstratio = screen.getByPlaceholderText("Demonstratio");
     const subBoard = screen.getByPlaceholderText("Sub Board");
     const subject = screen.getByPlaceholderText("Subject");
     const content = screen.getByPlaceholderText("Content");
 
+    await waitFor(() => rerender(<ShowPost />));
+
     expect(title).toHaveDisplayValue("My first post");
-    expect(demonstratio).toHaveValue(1);
-    expect(subBoard).toHaveValue(1);
-    expect(subject).toHaveValue("1");
+    expect(subBoard).toHaveValue("2");
+    expect(demonstratio).toHaveValue("2");
+    expect(subject).toHaveValue("2");
     expect(content).toHaveDisplayValue("Content in post");
   });
 
@@ -66,17 +70,14 @@ describe("show a post page", () => {
 
   it("redirecting you to the create post page if the post is not exist", async () => {
     mockedAxios.get.mockImplementation(async (url: string) => {
-      const request = {
-        [backendUrl + "/api/boards"]: {
-          data: [],
-        },
-        [backendUrl + `/api/posts/${POST_ID}`]: {
-          status: 404,
-          data: {},
-        },
-      };
-
-      return request[url];
+      return url === backendUrl + `/api/posts/${POST_ID}`
+        ? {
+            status: 404,
+            data: {},
+          }
+        : {
+            data: [],
+          };
     });
 
     unmount();

@@ -12,12 +12,13 @@ import {
 } from "../setup/mock";
 
 describe("edit a post in show a post page", () => {
+  let rerender;
   let unmount;
   const POST_ID = "1";
   const mockedPut = jest.fn().mockResolvedValue({ data: {} });
   const postData: Partial<Post> = {
     title: "My first post",
-    demonstratio: 1,
+    demonstratio: 2,
     sub_board: 2,
     subject: 3,
     content: "Content in post",
@@ -30,10 +31,12 @@ describe("edit a post in show a post page", () => {
   userEvent.setup();
 
   beforeEach(async () => {
-    await waitFor(() => ({ unmount } = render(<ShowPost />)));
+    await waitFor(() => ({ rerender, unmount } = render(<ShowPost />)));
   });
 
   it("shows the post's details", async () => {
+    await waitFor(() => rerender(<ShowPost />));
+
     const title = screen.getByPlaceholderText("Title");
     const demonstratio = screen.getByPlaceholderText("Demonstratio");
     const subBoard = screen.getByPlaceholderText("Sub Board");
@@ -41,15 +44,19 @@ describe("edit a post in show a post page", () => {
     const content = screen.getByPlaceholderText("Content");
     const board = screen.getByPlaceholderText("board");
 
+    await waitFor(() => rerender(<ShowPost />));
+
     expect(title).toHaveValue("My first post");
-    expect(demonstratio).toHaveValue(1);
-    expect(subBoard).toHaveValue(2);
+    expect(demonstratio).toHaveValue("2");
+    expect(subBoard).toHaveValue("2");
     expect(subject).toHaveValue("3");
     expect(content).toHaveValue("Content in post");
     expect(board).toHaveValue("1");
   });
 
   it("can handle a submit event to persist new post data", async () => {
+    await waitFor(() => rerender(<ShowPost />));
+
     const title = screen.getByPlaceholderText("Title");
     const demonstratio = screen.getByPlaceholderText("Demonstratio");
     const subBoard = screen.getByPlaceholderText("Sub Board");
@@ -60,12 +67,10 @@ describe("edit a post in show a post page", () => {
     const datetime = moment().format("YYYY-MM-DDTHH:mm");
 
     await userEvent.clear(title);
-    await userEvent.clear(demonstratio);
-    await userEvent.clear(subBoard);
     await userEvent.clear(content);
     await userEvent.type(title, "New title");
-    await userEvent.type(demonstratio, "1");
-    await userEvent.type(subBoard, "1");
+    await userEvent.selectOptions(demonstratio, "1");
+    await userEvent.selectOptions(subBoard, "1");
     await userEvent.type(subject, "3");
     await userEvent.type(content, "New content");
     await userEvent.click(gaming);

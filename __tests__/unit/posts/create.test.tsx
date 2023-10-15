@@ -3,18 +3,19 @@ import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import moment from "moment";
-import { backendUrl, mockedAxios, mockRouterPush } from "../setup/mock";
+import {
+  backendUrl,
+  mockedAxios,
+  mockPostPageApi,
+  mockRouterPush,
+} from "../setup/mock";
 
 describe("create post page", () => {
   const HTTP_CREATED = 201;
   const mockedPush = mockRouterPush();
-  const boards = [
-    { id: 1, name: "Tech" },
-    { id: 2, name: "Gaming" },
-  ];
 
   mockedAxios.post.mockResolvedValue({ status: HTTP_CREATED });
-  mockedAxios.get.mockResolvedValue({ data: boards });
+  mockPostPageApi();
   userEvent.setup();
 
   beforeEach(async () => {
@@ -32,11 +33,11 @@ describe("create post page", () => {
     const datetime = moment().format("YYYY-MM-DDTHH:mm");
 
     await userEvent.type(title, "My first post");
-    await userEvent.type(demonstratio, "1");
-    await userEvent.type(subBoard, "1");
-    await userEvent.type(subject, "1");
-    await userEvent.type(content, "The content in my first post");
     await userEvent.click(gaming);
+    await userEvent.selectOptions(demonstratio, "2");
+    await userEvent.selectOptions(subBoard, "2");
+    await userEvent.selectOptions(subject, "2");
+    await userEvent.type(content, "The content in my first post");
 
     const scheduledAt = screen.getByLabelText("Schedule");
 
@@ -46,9 +47,9 @@ describe("create post page", () => {
     expect(mockedAxios.post).toBeCalledTimes(1);
     expect(mockedAxios.post).toBeCalledWith(`${backendUrl}/api/posts`, {
       title: "My first post",
-      demonstratio: 1,
-      sub_board: 1,
-      subject: 1,
+      demonstratio: 2,
+      sub_board: 2,
+      subject: 2,
       content: "The content in my first post",
       board_id: 2,
       scheduled_at: datetime,
