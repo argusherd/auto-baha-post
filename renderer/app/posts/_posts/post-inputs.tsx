@@ -1,8 +1,9 @@
-import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 import Boards from "../_boards";
+import Demonstratio from "./demonstratio";
 import ScheduledAt from "./scheduled-at";
+import SubBoard from "./sub-board";
 import Subject from "./subject";
 
 export default function PostInputs() {
@@ -10,41 +11,11 @@ export default function PostInputs() {
     register,
     watch,
     formState: { errors },
-    setValue,
-    getValues,
   } = useFormContext();
 
   const boardId = watch("board_id");
-  const [demonstratios, setDemonstratios] = useState([]);
-  const [subBoards, setSubBoards] = useState([]);
-  const demonstratio = getValues("demonstratio");
-  const subBoard = getValues("sub_board");
-
-  const getProperties = useCallback(async () => {
-    if (!boardId) return;
-
-    const getDemonstratios = await axios.get(
-      `${window.backendUrl}/api/boards/${boardId}/demonstratios`
-    );
-    const getSubBoards = await axios.get(
-      `${window.backendUrl}/api/boards/${boardId}/sub-boards`
-    );
-
-    setDemonstratios(getDemonstratios.data);
-    setSubBoards(getSubBoards.data);
-  }, [boardId]);
-
-  useEffect(() => {
-    getProperties();
-  }, [boardId, getProperties]);
-
-  React.useEffect(() => {
-    if (demonstratio) setValue("demonstratio", demonstratio);
-  }, [demonstratios, setValue, demonstratio]);
-
-  React.useEffect(() => {
-    if (subBoard) setValue("sub_board", subBoard);
-  }, [subBoards, setValue, subBoard]);
+  const forDemonstratio = React.useRef(null);
+  const forSubBoard = React.useRef(null);
 
   return (
     <>
@@ -57,31 +28,9 @@ export default function PostInputs() {
 
       <Boards />
 
-      <select
-        placeholder="Demonstratio"
-        {...register("demonstratio", {
-          valueAsNumber: true,
-        })}
-      >
-        {demonstratios.map((demonstratio) => (
-          <option key={demonstratio.id} value={demonstratio.value}>
-            {demonstratio.text}
-          </option>
-        ))}
-      </select>
+      <Demonstratio ref={forDemonstratio} />
 
-      <select
-        placeholder="Sub Board"
-        {...register("sub_board", {
-          valueAsNumber: true,
-        })}
-      >
-        {subBoards.map((subBoard) => (
-          <option key={subBoard.id} value={subBoard.value}>
-            {subBoard.text}
-          </option>
-        ))}
-      </select>
+      <SubBoard ref={forSubBoard} />
 
       <Subject />
 
@@ -89,7 +38,8 @@ export default function PostInputs() {
         disabled={!boardId}
         onClick={async () => {
           await window.electron.getPostProperties(boardId);
-          await getProperties();
+          await forDemonstratio.current.getDemonstratios();
+          await forSubBoard.current.getSubBoards();
         }}
       >
         Refresh
