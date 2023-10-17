@@ -2,8 +2,24 @@ import PostInputs from "@/renderer/app/posts/_posts/post-inputs";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
 import { FormProvider, UseFormReturn } from "react-hook-form";
 import { mockedAxios, renderUseFormHook } from "../../setup/mock";
+
+jest.mock("react", () => {
+  const originReact = jest.requireActual("react");
+  const mUseRef = jest.fn().mockImplementation(() => ({
+    current: {
+      getDemonstratios: jest.fn(),
+      getSubBoards: jest.fn(),
+    },
+  }));
+  return {
+    ...originReact,
+    useRef: mUseRef,
+    useImperativeHandle: jest.fn(),
+  };
+});
 
 describe("the post-inputs component", () => {
   let formHook: UseFormReturn;
@@ -108,5 +124,27 @@ describe("the post-inputs component", () => {
     await waitFor(rerenderPostInputs);
 
     expect(refresh).toBeEnabled();
+  });
+
+  it("calls children's function to retrieve the post properties after refresh", async () => {
+    const mockedGetDemonstratios = jest.fn();
+    const mockedGetSubBoards = jest.fn();
+
+    React.useRef = jest.fn().mockReturnValue({
+      current: {
+        getDemonstratios: mockedGetDemonstratios,
+        getSubBoards: mockedGetSubBoards,
+      },
+    });
+
+    const gaming = screen.getByText("Gaming");
+    const refresh = screen.getByRole("button", { name: "Refresh" });
+
+    await userEvent.click(gaming);
+    await waitFor(rerenderPostInputs);
+    await userEvent.click(refresh);
+
+    expect(mockedGetDemonstratios).toBeCalled();
+    expect(mockedGetSubBoards).toBeCalled();
   });
 });

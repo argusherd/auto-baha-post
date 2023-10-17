@@ -1,4 +1,7 @@
+import * as matchers from "jest-extended";
 import { backendUrl } from "./mock";
+
+expect.extend(matchers);
 
 jest.mock("axios");
 jest.mock("next/navigation");
