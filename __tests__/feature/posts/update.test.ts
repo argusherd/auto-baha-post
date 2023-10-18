@@ -71,16 +71,16 @@ describe("the update a post api", () => {
     await request(app).put(`/api/posts/${post.id}`).send({
       title: "new title",
       content: "new content",
-      demonstratio: 1,
-      sub_board: 1,
-      subject: 1,
+      demonstratio: "1",
+      sub_board: "1",
+      subject: "1",
     });
 
     const updated = await Post.findOneBy({ id: post.id });
 
-    expect(updated.demonstratio).toEqual(1);
-    expect(updated.sub_board).toEqual(1);
-    expect(updated.subject).toEqual(1);
+    expect(updated.demonstratio).toEqual("1");
+    expect(updated.sub_board).toEqual("1");
+    expect(updated.subject).toEqual("1");
   });
 
   it("is okay to provide empty demonstratio, sub_board, or subject", async () => {
@@ -112,46 +112,6 @@ describe("the update a post api", () => {
         subject: "",
       })
       .expect(200);
-  });
-
-  it("should set demonstratio, sub_board, and subject as number", async () => {
-    const post = await new PostFactory().create();
-
-    await request(app)
-      .put(`/api/posts/${post.id}`)
-      .send({
-        title: "new title",
-        content: "new content",
-        demonstratio: "foobar",
-      })
-      .expect(422)
-      .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "demonstratio" }] });
-      });
-
-    await request(app)
-      .put(`/api/posts/${post.id}`)
-      .send({
-        title: "new title",
-        content: "new content",
-        sub_board: "foobar",
-      })
-      .expect(422)
-      .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "sub_board" }] });
-      });
-
-    await request(app)
-      .put(`/api/posts/${post.id}`)
-      .send({
-        title: "new title",
-        content: "new content",
-        subject: "foobar",
-      })
-      .expect(422)
-      .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "subject" }] });
-      });
   });
 
   it("can assign a board to the post", async () => {

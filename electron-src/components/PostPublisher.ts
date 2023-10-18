@@ -108,13 +108,10 @@ export default class PostPublisher {
   public async setupProperties() {
     await this.page.select(
       "select[name='demonstratioType']",
-      String(this.post.demonstratio)
+      this.post.demonstratio
     );
-    await this.page.select(
-      "select[name='nsubbsn']",
-      String(this.post.sub_board)
-    );
-    await this.page.select("select[name='subject']", String(this.post.subject));
+    await this.page.select("select[name='nsubbsn']", this.post.sub_board);
+    await this.page.select("select[name='subject']", this.post.subject);
     await this.page.type("input[name='title']", this.post.title);
   }
 
@@ -124,7 +121,7 @@ export default class PostPublisher {
       (subBoard) => subBoard.value
     );
 
-    if (pickedValue === String(this.post.sub_board)) {
+    if (pickedValue === this.post.sub_board) {
       return;
     }
 

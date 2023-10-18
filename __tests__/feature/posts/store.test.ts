@@ -133,17 +133,17 @@ describe("the create a new post api", () => {
       .send({
         title: "my first post",
         content: "content in the first post",
-        demonstratio: 1,
-        sub_board: 1,
-        subject: 1,
+        demonstratio: "1",
+        sub_board: "1",
+        subject: "1",
       })
       .expect(201);
 
     const post = await Post.findOneBy({});
 
-    expect(post.demonstratio).toEqual(1);
-    expect(post.sub_board).toEqual(1);
-    expect(post.subject).toEqual(1);
+    expect(post.demonstratio).toEqual("1");
+    expect(post.sub_board).toEqual("1");
+    expect(post.subject).toEqual("1");
   });
 
   it("is okay to provide empty demonstratio, sub_board, or subject", async () => {
@@ -173,44 +173,6 @@ describe("the create a new post api", () => {
         subject: "",
       })
       .expect(201);
-  });
-
-  it("should set demontratio, sub_board, and subject as number", async () => {
-    await request(app)
-      .post("/api/posts")
-      .send({
-        title: "my first post",
-        content: "content in the first post",
-        demonstratio: "foobar",
-      })
-      .expect(422)
-      .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "demonstratio" }] });
-      });
-
-    await request(app)
-      .post("/api/posts")
-      .send({
-        title: "my first post",
-        content: "content in the first post",
-        sub_board: "foobar",
-      })
-      .expect(422)
-      .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "sub_board" }] });
-      });
-
-    await request(app)
-      .post("/api/posts")
-      .send({
-        title: "my first post",
-        content: "content in the first post",
-        subject: "foobar",
-      })
-      .expect(422)
-      .expect((res) => {
-        expect(res.body).toMatchObject({ errors: [{ path: "subject" }] });
-      });
   });
 
   it("can schedule the post during the creating process", async () => {
