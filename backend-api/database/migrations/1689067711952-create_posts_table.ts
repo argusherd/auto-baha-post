@@ -24,17 +24,17 @@ export class CreatePostsTable_1689067711952 implements MigrationInterface {
           },
           {
             name: "demonstratio",
-            type: "interger",
+            type: "varchar",
             isNullable: true,
           },
           {
             name: "sub_board",
-            type: "interger",
+            type: "varchar",
             isNullable: true,
           },
           {
             name: "subject",
-            type: "interger",
+            type: "varchar",
             isNullable: true,
           },
           {

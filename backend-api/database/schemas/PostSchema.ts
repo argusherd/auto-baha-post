@@ -18,15 +18,15 @@ const PostSchema = new EntitySchema<Post>({
       type: "varchar",
     },
     demonstratio: {
-      type: "integer",
+      type: "varchar",
       nullable: true,
     },
     sub_board: {
-      type: "integer",
+      type: "varchar",
       nullable: true,
     },
     subject: {
-      type: "integer",
+      type: "varchar",
       nullable: true,
     },
     content: {

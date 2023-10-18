@@ -163,9 +163,9 @@ describe("the publish delegator", () => {
     const mockedType = jest.fn();
     const publisher = new Publisher();
     const post = await new PostFactory().create({
-      demonstratio: 1,
-      sub_board: 2,
-      subject: 3,
+      demonstratio: "1",
+      sub_board: "2",
+      subject: "3",
     });
 
     pie.getPage = jest.fn().mockResolvedValue({
@@ -190,7 +190,7 @@ describe("the publish delegator", () => {
   it("can fallback the sub board property if the value is invalid", async () => {
     const mockedSelect = jest.fn();
     const publisher = new Publisher();
-    const post = await new PostFactory().create({ sub_board: 99 });
+    const post = await new PostFactory().create({ sub_board: "99" });
 
     pie.getPage = jest.fn().mockResolvedValue({
       $eval: jest.fn().mockResolvedValue("0"),
@@ -210,7 +210,7 @@ describe("the publish delegator", () => {
     const mockedSelect = jest.fn();
 
     const publisher = new Publisher();
-    const post = await new PostFactory().create({ sub_board: 2 });
+    const post = await new PostFactory().create({ sub_board: "2" });
 
     pie.getPage = jest.fn().mockResolvedValue({
       $eval: jest.fn().mockResolvedValue("2"),
