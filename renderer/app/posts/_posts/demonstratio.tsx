@@ -35,12 +35,7 @@ const Demonstratio = forwardRef(function Demonstratio(_props, ref) {
   }, [demonstratios, setValue, demonstratio]);
 
   return (
-    <select
-      placeholder="Demonstratio"
-      {...register("demonstratio", {
-        valueAsNumber: true,
-      })}
-    >
+    <select placeholder="Demonstratio" {...register("demonstratio")}>
       {demonstratios.map((demonstratio) => (
         <option key={demonstratio.id} value={demonstratio.value}>
           {demonstratio.text}

@@ -13,18 +13,41 @@ describe("the available sub-boards for posts api", () => {
   });
 
   it("can get the sub-boards that available for posts", async () => {
-    const board = await new BoardFactory().create();
-    const subBoard = await new SubBoardFactory().create({
-      board_id: board.id,
-    });
+    const subBoard = await new SubBoardFactory().create();
 
     await supertest(app)
-      .get(`/api/boards/${board.id}/sub-boards`)
+      .get(`/api/boards/${subBoard.board_id}/sub-boards`)
       .expect(200)
       .expect((res) => {
         expect(res.body).toHaveLength(1);
         expect(res.body[0].value).toEqual(subBoard.value);
         expect(res.body[0].text).toEqual(subBoard.text);
+      });
+  });
+
+  it("excludes the sub-board that value equals to 0", async () => {
+    const equals0 = await new SubBoardFactory().create({
+      value: "0",
+    });
+
+    await supertest(app)
+      .get(`/api/boards/${equals0.board_id}/sub-boards`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toHaveLength(0);
+      });
+  });
+
+  it("excludes the sub-board that text contains 已鎖定", async () => {
+    const isLocked = await new SubBoardFactory().create({
+      text: "鎖定測試 (已鎖定)",
+    });
+
+    await supertest(app)
+      .get(`/api/boards/${isLocked.board_id}/sub-boards`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toHaveLength(0);
       });
   });
 });

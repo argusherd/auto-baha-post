@@ -47,9 +47,9 @@ describe("create post page", () => {
     expect(mockedAxios.post).toBeCalledTimes(1);
     expect(mockedAxios.post).toBeCalledWith(`${backendUrl}/api/posts`, {
       title: "My first post",
-      demonstratio: 2,
-      sub_board: 2,
-      subject: 2,
+      demonstratio: "2",
+      sub_board: "2",
+      subject: "2",
       content: "The content in my first post",
       board_id: 2,
       scheduled_at: datetime,

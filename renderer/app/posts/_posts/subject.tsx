@@ -4,10 +4,7 @@ export default function Subject() {
   const { register } = useFormContext();
 
   return (
-    <select
-      placeholder="Subject"
-      {...register("subject", { valueAsNumber: true })}
-    >
+    <select placeholder="Subject" {...register("subject")}>
       <option value="1">問題</option>
       <option value="2">情報</option>
       <option value="3">心得</option>

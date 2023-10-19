@@ -18,9 +18,9 @@ describe("edit a post in show a post page", () => {
   const mockedPut = jest.fn().mockResolvedValue({ data: {} });
   const postData: Partial<Post> = {
     title: "My first post",
-    demonstratio: 2,
-    sub_board: 2,
-    subject: 3,
+    demonstratio: "2",
+    sub_board: "2",
+    subject: "3",
     content: "Content in post",
     board_id: 1,
   };
@@ -83,9 +83,9 @@ describe("edit a post in show a post page", () => {
     expect(mockedPut).toBeCalled();
     expect(mockedPut).toBeCalledWith(`${backendUrl}/api/posts/${POST_ID}`, {
       title: "New title",
-      demonstratio: 1,
-      sub_board: 1,
-      subject: 3,
+      demonstratio: "1",
+      sub_board: "1",
+      subject: "3",
       content: "New content",
       board_id: 2,
       scheduled_at: datetime,

@@ -27,6 +27,16 @@ const DemonstratioSchema = new EntitySchema<Demonstratio>({
       createDate: true,
     },
   },
+  relations: {
+    board: {
+      type: "many-to-one",
+      target: "Board",
+      joinColumn: {
+        name: "board_id",
+        referencedColumnName: "id",
+      },
+    },
+  },
 });
 
 export default DemonstratioSchema;

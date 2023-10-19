@@ -2,6 +2,7 @@ import Demonstratio from "@/backend-api/database/entities/Demonstratio";
 import SubBoard from "@/backend-api/database/entities/SubBoard";
 import BoardFactory from "@/backend-api/database/factories/BoardFactory";
 import DemonstratioFactory from "@/backend-api/database/factories/DemonstratioFactory";
+import SubBoardFactory from "@/backend-api/database/factories/SubBoardFactory";
 import Fetcher from "@/electron-src/components/PostPropertiesFetcher";
 import { BrowserWindow } from "electron";
 import pie from "puppeteer-in-electron";
@@ -108,7 +109,7 @@ describe("the post properties fetcher", () => {
   it("removes all existing demonstratios before saving the new result", async () => {
     const fetcher = new Fetcher();
     const board = await new BoardFactory().create();
-    await new DemonstratioFactory().createMany(2, { board_id: board.id });
+    await new DemonstratioFactory().createMany(2, { board });
 
     pie.getPage = jest.fn().mockResolvedValue({
       $$: jest.fn().mockResolvedValue([
@@ -125,13 +126,15 @@ describe("the post properties fetcher", () => {
       ]),
     });
 
+    expect(await Demonstratio.count()).toEqual(2);
+
     fetcher.board = board;
     await fetcher.init();
     await fetcher.save(Demonstratio);
 
     const saved = await Demonstratio.findBy({ id: null });
 
-    expect(saved).toHaveLength(1);
+    expect(await Demonstratio.count()).toEqual(1);
     expect(saved[0].board_id).toEqual(board.id);
     expect(saved[0].value).toEqual("12");
     expect(saved[0].text).toEqual("foo");
@@ -184,7 +187,7 @@ describe("the post properties fetcher", () => {
   it("removes all existing sub boards before saving the new result", async () => {
     const fetcher = new Fetcher();
     const board = await new BoardFactory().create();
-    await new DemonstratioFactory().createMany(2, { board_id: board.id });
+    await new SubBoardFactory().createMany(2, { board });
 
     pie.getPage = jest.fn().mockResolvedValue({
       $$: jest.fn().mockResolvedValue([
@@ -201,13 +204,15 @@ describe("the post properties fetcher", () => {
       ]),
     });
 
+    expect(await SubBoard.count()).toEqual(2);
+
     fetcher.board = board;
     await fetcher.init();
     await fetcher.save(SubBoard);
 
     const saved = await SubBoard.findBy({ id: null });
 
-    expect(saved).toHaveLength(1);
+    expect(await SubBoard.count()).toEqual(1);
     expect(saved[0].board_id).toEqual(board.id);
     expect(saved[0].value).toEqual("12");
     expect(saved[0].text).toEqual("foo");
