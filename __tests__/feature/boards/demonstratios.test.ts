@@ -17,18 +17,28 @@ describe("the available demonstratios for posts api", () => {
   });
 
   it("can get the demonstratios that available for posts", async () => {
-    const board = await new BoardFactory().create();
-    const demonstratio = await new DemonstratioFactory().create({
-      board_id: board.id,
-    });
+    const demonstratio = await new DemonstratioFactory().create();
 
     await supertest(app)
-      .get(`/api/boards/${board.id}/demonstratios`)
+      .get(`/api/boards/${demonstratio.board_id}/demonstratios`)
       .expect(200)
       .expect((res) => {
         expect(res.body).toHaveLength(1);
         expect(res.body[0].value).toEqual(demonstratio.value);
         expect(res.body[0].text).toEqual(demonstratio.text);
+      });
+  });
+
+  it("excludes the demonstratio that value equals to 0", async () => {
+    const equals0 = await new DemonstratioFactory().create({
+      value: "0",
+    });
+
+    await supertest(app)
+      .get(`/api/boards/${equals0.board_id}/demonstratios`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toHaveLength(0);
       });
   });
 });

@@ -35,12 +35,7 @@ const SubBoard = forwardRef(function SubBoard(_props, ref) {
   }, [subBoards, setValue, subBoard]);
 
   return (
-    <select
-      placeholder="Sub Board"
-      {...register("sub_board", {
-        valueAsNumber: true,
-      })}
-    >
+    <select placeholder="Sub Board" {...register("sub_board")}>
       {subBoards.map((subBoard) => (
         <option key={subBoard.id} value={subBoard.value}>
           {subBoard.text}

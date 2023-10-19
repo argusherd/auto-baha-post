@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { body } from "express-validator";
 import moment from "moment";
-import { MoreThanOrEqual, Not } from "typeorm";
+import { Like, MoreThanOrEqual, Not } from "typeorm";
 import Board from "../database/entities/Board";
 import Demonstratio from "../database/entities/Demonstratio";
 import Post from "../database/entities/Post";
@@ -80,7 +80,7 @@ router.get(
   async (req: Request, res: Response) => {
     const { id: board_id } = req.board;
 
-    res.json(await Demonstratio.findBy({ board_id }));
+    res.json(await Demonstratio.findBy({ board_id, value: Not("0") }));
   }
 );
 
@@ -90,7 +90,13 @@ router.get(
   async (req: Request, res: Response) => {
     const { id: board_id } = req.board;
 
-    res.json(await SubBoard.findBy({ board_id }));
+    res.json(
+      await SubBoard.findBy({
+        board_id,
+        value: Not("0"),
+        text: Not(Like("%已鎖定%")),
+      })
+    );
   }
 );
 
