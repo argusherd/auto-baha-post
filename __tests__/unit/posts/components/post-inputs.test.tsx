@@ -130,11 +130,13 @@ describe("the post-inputs component", () => {
     const mockedGetDemonstratios = jest.fn();
     const mockedGetSubBoards = jest.fn();
 
-    React.useRef = jest.fn().mockReturnValue({
-      current: {
-        getDemonstratios: mockedGetDemonstratios,
-        getSubBoards: mockedGetSubBoards,
-      },
+    Object.defineProperty(React, "useRef", {
+      value: jest.fn().mockReturnValue({
+        current: {
+          getDemonstratios: mockedGetDemonstratios,
+          getSubBoards: mockedGetSubBoards,
+        },
+      }),
     });
 
     const gaming = screen.getByText("Gaming");
@@ -146,5 +148,16 @@ describe("the post-inputs component", () => {
 
     expect(mockedGetDemonstratios).toBeCalled();
     expect(mockedGetSubBoards).toBeCalled();
+  });
+
+  it("can insert an emoji to the content textarea", async () => {
+    const emoji = screen.getAllByRole("img")[0];
+    const content = screen.queryByPlaceholderText("Content");
+
+    await userEvent.click(emoji);
+
+    expect(content).toHaveDisplayValue(
+      "https://i2.bahamut.com.tw/editor/emotion/1.gif" + "\n"
+    );
   });
 });
