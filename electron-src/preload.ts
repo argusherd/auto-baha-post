@@ -5,6 +5,8 @@ contextBridge.exposeInMainWorld("electron", {
   publishNow: (postId: number) => ipcRenderer.send("publishNow", postId),
   getPostProperties: async (boardId: number) =>
     await ipcRenderer.invoke("getPostProperties", boardId),
+  refreshLoginStatus: (callback: any) =>
+    ipcRenderer.on("refreshLoginStatus", callback),
 });
 
 contextBridge.exposeInMainWorld(

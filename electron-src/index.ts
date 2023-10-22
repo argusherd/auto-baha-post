@@ -16,6 +16,8 @@ app.on("ready", async () => {
 
   const mainWindow = createWindow();
 
+  process.env.MAIN_WINDOW_ID = `${mainWindow.id}`;
+
   if (parseInt(process.env.DEBUG as string, 10)) {
     mainWindow.webContents.openDevTools();
   }

@@ -6,6 +6,9 @@ const checkLogin = new AsyncTask("check login status", async () => {
   await waitUntilAppFullyReady();
   const loginChecker = new LoginChecker();
   await loginChecker.run();
+
+  const mainWindow = BrowserWindow.fromId(Number(process.env.MAIN_WINDOW_ID));
+  mainWindow.webContents.send("refreshLoginStatus");
 });
 
 /**

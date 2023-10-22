@@ -12,14 +12,16 @@ export default function Header() {
   });
 
   useEffect(() => {
-    const checkLogin = async () => {
-      const res = await axios.get(`${window.backendUrl}/api/login/check`);
-
-      setUserInfo(res?.data);
-    };
+    window.electron.refreshLoginStatus(checkLogin);
 
     checkLogin();
   }, []);
+
+  async function checkLogin() {
+    const res = await axios.get(`${window.backendUrl}/api/login/check`);
+
+    setUserInfo(res?.data);
+  }
 
   return (
     <header>
