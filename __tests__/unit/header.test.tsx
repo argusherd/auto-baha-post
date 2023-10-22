@@ -6,13 +6,19 @@ import moment from "moment";
 import { mockedAxios } from "./setup/mock";
 
 describe("the navbar", () => {
+  const electronProperty = {
+    openBaha: jest.fn(),
+    refreshLoginStatus: jest.fn(),
+  };
+
   userEvent.setup();
 
   it("has a button that has the ability to open the baha login page", async () => {
     const fakeOpenBaha = jest.fn();
+    electronProperty.openBaha = fakeOpenBaha;
 
     Object.defineProperty(window, "electron", {
-      value: { openBaha: fakeOpenBaha },
+      value: electronProperty,
       configurable: true,
     });
 
