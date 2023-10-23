@@ -1,4 +1,5 @@
 import axios from "axios";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Login from "../../backend-api/database/entities/Login";
@@ -23,6 +24,12 @@ export default function Header() {
     setUserInfo(res?.data);
   }
 
+  function avatarUrl() {
+    const { account } = userInfo;
+
+    return `https://avatar2.bahamut.com.tw/avataruserpic/${account[0]}/${account[1]}/${account}/${account}_s.png`;
+  }
+
   return (
     <header>
       <Link href={"/"}>Home</Link>
@@ -31,6 +38,13 @@ export default function Header() {
           data-testid="userinfo"
           title={`Last time checked at: ${new Date(userInfo.created_at)}`}
         >
+          <Image
+            src={avatarUrl()}
+            alt="avatart"
+            width={40}
+            height={40}
+            unoptimized={true}
+          />
           {`${userInfo.name} (${userInfo.account})`}
         </span>
       ) : (

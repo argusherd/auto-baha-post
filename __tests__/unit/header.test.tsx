@@ -68,4 +68,41 @@ describe("the navbar", () => {
 
     expect(userInfo).toHaveTextContent("User is not logged in yet");
   });
+
+  it("does not show avatar if the user is not logged in yet", async () => {
+    mockedAxios.get = jest.fn().mockResolvedValue({
+      data: {
+        name: null,
+        account: null,
+        logged_in: false,
+        created_at: moment().toISOString(),
+      },
+    });
+
+    await waitFor(() => render(<Header />));
+
+    const avatar = screen.queryByRole("img");
+
+    expect(avatar).not.toBeInTheDocument();
+  });
+
+  it("shows avatar if the user is logged in", async () => {
+    mockedAxios.get = jest.fn().mockResolvedValue({
+      data: {
+        name: "foo",
+        account: "bar",
+        logged_in: true,
+        created_at: moment().toISOString(),
+      },
+    });
+
+    await waitFor(() => render(<Header />));
+
+    const avatar = screen.getByRole("img");
+
+    expect(avatar).toHaveAttribute(
+      "src",
+      "https://avatar2.bahamut.com.tw/avataruserpic/b/a/bar/bar_s.png"
+    );
+  });
 });
