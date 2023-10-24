@@ -6,6 +6,7 @@ import { constants, copyFile } from "fs/promises";
 import { join } from "path";
 import pie from "puppeteer-in-electron";
 import { resolveDB } from "../backend-api/database/connection";
+import { startServer } from "../backend-api/server";
 import registerIpcMain from "./ipc-service";
 
 export function serveProduction() {
@@ -29,6 +30,8 @@ export function initializeApp() {
       configDotenv();
 
       resolveDB().initialize();
+
+      startServer();
 
       registerIpcMain();
 

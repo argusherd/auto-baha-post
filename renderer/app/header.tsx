@@ -2,6 +2,7 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Login from "../../backend-api/database/entities/Login";
 
 export default function Header() {
@@ -11,6 +12,7 @@ export default function Header() {
     logged_in: false,
     created_at: null,
   });
+  const { t } = useTranslation();
 
   useEffect(() => {
     window.electron.refreshLoginStatus(checkLogin);
@@ -32,7 +34,7 @@ export default function Header() {
 
   return (
     <header>
-      <Link href={"/"}>Home</Link>
+      <Link href={"/"}>{t("home")}</Link>
       {userInfo?.name ? (
         <span
           data-testid="userinfo"

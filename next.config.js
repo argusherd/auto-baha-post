@@ -6,6 +6,7 @@ const nextConfig = {
   eslint: {
     dirs: ["renderer", "electron-src"],
   },
+  transpilePackages: ["ui"],
 };
 
 module.exports = nextConfig;

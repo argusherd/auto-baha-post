@@ -9,5 +9,6 @@ declare global {
   interface Window {
     electron: Electron;
     backendUrl: string;
+    lng: string;
   }
 }
