@@ -1,3 +1,4 @@
+import "@/i18n";
 import * as matchers from "jest-extended";
 import { backendUrl } from "./mock";
 
