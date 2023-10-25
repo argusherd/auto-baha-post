@@ -12,8 +12,16 @@ describe("the navbar", () => {
   };
 
   userEvent.setup();
+  mockedAxios.get = jest.fn().mockResolvedValue({
+    data: {
+      name: null,
+      account: null,
+      logged_in: true,
+      created_at: null,
+    },
+  });
 
-  it("has a button that has the ability to open the baha login page", async () => {
+  it("has a button that has the ability to open the baha's page", async () => {
     const fakeOpenBaha = jest.fn();
     electronProperty.openBaha = fakeOpenBaha;
 
@@ -22,9 +30,9 @@ describe("the navbar", () => {
       configurable: true,
     });
 
-    render(<Header />);
+    await waitFor(() => render(<Header />));
 
-    const bahaBtn = await screen.findByRole("button", { name: "Open Baha" });
+    const bahaBtn = screen.getByTestId("userinfo");
 
     expect(bahaBtn).toBeInTheDocument();
 
@@ -48,8 +56,7 @@ describe("the navbar", () => {
 
     const userInfo = screen.getByTestId("userinfo");
 
-    expect(userInfo).toHaveTextContent("foo (bar)");
-    expect(userInfo).toHaveAttribute("title");
+    expect(userInfo).toHaveTextContent("foo" + "bar");
   });
 
   it("can indicate the user is not logged in yet", async () => {
@@ -66,10 +73,10 @@ describe("the navbar", () => {
 
     const userInfo = screen.getByTestId("userinfo");
 
-    expect(userInfo).toHaveTextContent("User is not logged in yet");
+    expect(userInfo).toHaveTextContent("Login");
   });
 
-  it("does not show avatar if the user is not logged in yet", async () => {
+  it("shows the default avatar if the user is not logged in yet", async () => {
     mockedAxios.get = jest.fn().mockResolvedValue({
       data: {
         name: null,
@@ -83,7 +90,7 @@ describe("the navbar", () => {
 
     const avatar = screen.queryByRole("img");
 
-    expect(avatar).not.toBeInTheDocument();
+    expect(avatar).toHaveAttribute("src", "https://i2.bahamut.com.tw/none.gif");
   });
 
   it("shows avatar if the user is logged in", async () => {
@@ -102,7 +109,7 @@ describe("the navbar", () => {
 
     expect(avatar).toHaveAttribute(
       "src",
-      "https://avatar2.bahamut.com.tw/avataruserpic/b/a/bar/bar_s.png"
+      "https://avatar2.bahamut.com.tw/avataruserpic/b/a/bar/bar_s.png",
     );
   });
 });

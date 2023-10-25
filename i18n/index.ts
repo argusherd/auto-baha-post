@@ -1,7 +1,7 @@
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "./lang/en.json";
-import zhTW from "./lang/zh-TW.json";
+import zhTW from "./lang/zh-tw.json";
 
 type Translation = typeof en;
 
@@ -15,7 +15,7 @@ const resources: Resources = {
   en: {
     translation: en,
   },
-  "zh-TW": {
+  "zh-tw": {
     translation: zhTW,
   },
 };
