@@ -1,3 +1,5 @@
 {
-  "home": "Home"
+  "dashboard": "Dashboard",
+  "last_time_checked_at": "Last time checked at {{checked_at}}",
+  "open_baha": "Open Baha's page"
 }

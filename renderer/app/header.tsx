@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -27,32 +28,47 @@ export default function Header() {
   }
 
   function avatarUrl() {
-    const { account } = userInfo;
+    const account = userInfo?.account;
+
+    if (!account) return "https://i2.bahamut.com.tw/none.gif";
 
     return `https://avatar2.bahamut.com.tw/avataruserpic/${account[0]}/${account[1]}/${account}/${account}_s.png`;
   }
 
   return (
-    <header>
-      <Link href={"/"}>{t("home")}</Link>
-      {userInfo?.name ? (
-        <span
+    <header className="flex items-center justify-between gap-2 bg-teal-600 p-2  text-white">
+      <Link href={"/"} className="text-lg font-bold">
+        {t("dashboard")}
+      </Link>
+      <div className="flex items-center gap-3">
+        <button
+          className="flex items-center gap-2"
           data-testid="userinfo"
-          title={`Last time checked at: ${new Date(userInfo.created_at)}`}
+          onClick={() => window.electron.openBaha()}
+          title={t("open_baha")}
         >
           <Image
             src={avatarUrl()}
-            alt="avatart"
+            alt="avatar"
             width={40}
             height={40}
             unoptimized={true}
           />
-          {`${userInfo.name} (${userInfo.account})`}
-        </span>
-      ) : (
-        <span data-testid="userinfo">User is not logged in yet</span>
-      )}
-      <button onClick={() => window.electron.openBaha()}>Open Baha</button>
+          <div className="flex flex-col">
+            <span>{userInfo?.name ? userInfo.name : "Login"}</span>
+            {userInfo?.name && (
+              <span className="text-xs">{userInfo.account}</span>
+            )}
+          </div>
+        </button>
+        <button
+          className="icon-[material-symbols--refresh] text-xl"
+          onClick={() => checkLogin()}
+          title={t("last_time_checked_at", {
+            checked_at: moment(userInfo.created_at).fromNow(),
+          })}
+        ></button>
+      </div>
     </header>
   );
 }

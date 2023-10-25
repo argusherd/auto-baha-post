@@ -1,3 +1,5 @@
 {
-  "home": "首頁"
+  "dashboard": "儀表板",
+  "last_time_checked_at": "最後確認於 {{checked_at}}",
+  "open_baha": "開啟巴哈介面"
 }
