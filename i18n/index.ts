@@ -20,6 +20,8 @@ const resources: Resources = {
   },
 };
 
-i18next.use(initReactI18next).init({ fallbackLng: "en", resources });
+i18next
+  .use(initReactI18next)
+  .init({ fallbackLng: "en", resources, lowerCaseLng: true });
 
 export default i18next;

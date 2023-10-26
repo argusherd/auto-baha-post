@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Login from "../../backend-api/database/entities/Login";
+import Languages from "./languages";
 
 export default function Header() {
   const [userInfo, setUserInfo] = useState<Partial<Login>>({
@@ -41,6 +42,7 @@ export default function Header() {
         {t("dashboard")}
       </Link>
       <div className="flex items-center gap-3">
+        <Languages />
         <button
           className="flex items-center gap-2"
           data-testid="userinfo"
