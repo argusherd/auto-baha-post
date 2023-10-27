@@ -4,6 +4,11 @@ import pie from "puppeteer-in-electron";
 export const resetElectronAndPie = () => {
   BrowserWindow.prototype.loadURL = jest.fn();
   BrowserWindow.prototype.destroy = jest.fn();
+  BrowserWindow.fromId = jest.fn().mockReturnValue({
+    webContents: {
+      send: jest.fn(),
+    },
+  });
 
   pie.getPage = jest.fn().mockResolvedValue({
     $: jest.fn().mockResolvedValue({

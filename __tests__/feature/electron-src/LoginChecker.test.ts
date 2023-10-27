@@ -107,6 +107,21 @@ describe("check baha login status", () => {
     expect(notLoggedIn.logged_in).toBeFalse();
   });
 
+  it("sends an event to the main window to tell the frontend refresh the login status", async () => {
+    const mockedSend = jest.fn();
+    const checker = new LoginChecker();
+
+    BrowserWindow.fromId = jest.fn().mockReturnValue({
+      webContents: {
+        send: mockedSend,
+      },
+    });
+
+    checker.sendEvent();
+
+    expect(mockedSend).toBeCalledWith("loginStatusRefreshed");
+  });
+
   it("can run the process to keep a record to indicate the user is logged in", async () => {
     const checker = new LoginChecker();
 
@@ -164,6 +179,7 @@ describe("check baha login status", () => {
       .fn()
       .mockResolvedValue({ name: "foo", account: "bar" });
     const mockedSave = jest.fn();
+    const mockedSendEvent = jest.fn();
     const checker = new LoginChecker();
 
     Object.defineProperty(checker, "init", { value: mockedInit });
@@ -174,6 +190,7 @@ describe("check baha login status", () => {
     Object.defineProperty(checker, "getUserInfo", { value: mockedGetUserInfo });
     Object.defineProperty(checker, "save", { value: mockedSave });
     Object.defineProperty(checker, "window", { value: { destroy: jest.fn() } });
+    Object.defineProperty(checker, "sendEvent", { value: mockedSendEvent });
 
     await checker.run();
 
@@ -181,6 +198,7 @@ describe("check baha login status", () => {
     expect(mockedIsLoggedIn).toHaveBeenCalledBefore(mockedOpenUserInfo);
     expect(mockedOpenUserInfo).toHaveBeenCalledBefore(mockedGetUserInfo);
     expect(mockedGetUserInfo).toHaveBeenCalledBefore(mockedSave);
+    expect(mockedSave).toHaveBeenCalledBefore(mockedSendEvent);
     expect(mockedSave).toBeCalledWith("foo", "bar");
   });
 });
