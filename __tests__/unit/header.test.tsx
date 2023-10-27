@@ -8,7 +8,7 @@ import { mockedAxios } from "./setup/mock";
 describe("the navbar", () => {
   const electronProperty = {
     openBaha: jest.fn(),
-    refreshLoginStatus: jest.fn(),
+    loginStatusRefreshed: jest.fn(),
   };
 
   userEvent.setup();

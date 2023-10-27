@@ -1,6 +1,7 @@
 import { ipcMain } from "electron";
 import Board from "../backend-api/database/entities/Board";
 import Post from "../backend-api/database/entities/Post";
+import LoginChecker from "./components/LoginChecker";
 import PostPropertiesFetcher from "./components/PostPropertiesFetcher";
 import PostPublisher from "./components/PostPublisher";
 import { createWindow } from "./initialization";
@@ -9,11 +10,12 @@ export default function registerIpcMain() {
   ipcMain.on("openBaha", openBaha);
   ipcMain.on(
     "publishNow",
-    async (_event, postId: number) => await publishNow(postId)
+    async (_event, postId: number) => await publishNow(postId),
   );
   ipcMain.handle("getPostProperties", async (_event, boardId: number) => {
     await getPostProperties(boardId);
   });
+  ipcMain.handle("refreshLoginStatus", refreshLoginStatus);
 }
 
 async function openBaha() {
@@ -41,4 +43,9 @@ async function getPostProperties(boardId: number) {
   fetcher.board = await Board.findOneBy({ id: boardId });
 
   await fetcher.run();
+}
+
+async function refreshLoginStatus() {
+  const checker = new LoginChecker();
+  await checker.run();
 }

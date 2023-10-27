@@ -15,9 +15,10 @@ export default function Header() {
     created_at: null,
   });
   const { t } = useTranslation();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    window.electron.refreshLoginStatus(checkLogin);
+    window.electron.loginStatusRefreshed(checkLogin);
 
     checkLogin();
   }, []);
@@ -34,6 +35,16 @@ export default function Header() {
     if (!account) return "https://i2.bahamut.com.tw/none.gif";
 
     return `https://avatar2.bahamut.com.tw/avataruserpic/${account[0]}/${account[1]}/${account}/${account}_s.png`;
+  }
+
+  async function refreshLoginStatus() {
+    setIsRefreshing(true);
+
+    await window.electron.refreshLoginStatus();
+
+    await checkLogin();
+
+    setIsRefreshing(false);
   }
 
   return (
@@ -64,12 +75,19 @@ export default function Header() {
           </div>
         </button>
         <button
-          className="icon-[material-symbols--refresh] text-xl"
-          onClick={() => checkLogin()}
+          className="text-xl"
+          disabled={isRefreshing}
+          onClick={() => refreshLoginStatus()}
           title={t("last_time_checked_at", {
             checked_at: moment(userInfo.created_at).fromNow(),
           })}
-        ></button>
+        >
+          {isRefreshing ? (
+            <i className="icon-[eos-icons--loading]" />
+          ) : (
+            <i className="icon-[material-symbols--refresh]" />
+          )}
+        </button>
       </div>
     </header>
   );

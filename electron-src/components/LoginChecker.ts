@@ -22,6 +22,7 @@ export default class LoginChecker {
     }
 
     this.window.destroy();
+    this.sendEvent();
   }
 
   public async init() {
@@ -59,5 +60,11 @@ export default class LoginChecker {
     login.logged_in = name != null;
 
     return await login.save();
+  }
+
+  public sendEvent() {
+    const mainWindow = BrowserWindow.fromId(Number(process.env.MAIN_WINDOW_ID));
+
+    mainWindow.webContents.send("loginStatusRefreshed");
   }
 }
