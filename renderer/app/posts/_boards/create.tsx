@@ -2,59 +2,50 @@
 
 import Board from "@/backend-api/database/entities/Board";
 import axios from "axios";
+import { FieldValidationError } from "express-validator";
 import { useForm } from "react-hook-form";
+import BoardName from "./board/name";
+import BoardNo from "./board/no";
 
 export default function CreateBoard({
   fetchBoards,
-  setIsCreating,
 }: {
   fetchBoards: Function;
-  setIsCreating: Function;
 }) {
   const {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
+    setError,
   } = useForm();
 
   async function onSubmit(data: Board) {
-    await axios.post(`${window.backendUrl}/api/boards`, data);
-    await fetchBoards();
-  }
+    try {
+      await axios.post(`${window.backendUrl}/api/boards`, data);
 
-  function notEmpty(errorMessage: string) {
-    return (value: string) => value.trim().length > 0 || errorMessage;
+      reset();
+
+      fetchBoards();
+    } catch (error) {
+      error.response.data.errors.forEach((item: FieldValidationError) => {
+        setError(item.path, { message: item.msg });
+      });
+    }
   }
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="No"
-        {...register("no", {
-          required: true,
-          validate: {
-            notEmpty: notEmpty("The board's no should not be empty"),
-            isNumber: (value) =>
-              !isNaN(value) || "The board's no should be a number",
-          },
-        })}
-      />
-      {errors.no && <p>{errors.no.message}</p>}
+    <li className="flex items-center justify-between gap-2 p-1">
+      <div className="flex gap-2">
+        <BoardName register={register} errors={errors} />
+        <BoardNo register={register} errors={errors} />
+      </div>
 
-      <input
-        type="text"
-        placeholder="Name"
-        {...register("name", {
-          validate: {
-            notEmpty: notEmpty("The board's name should not be empty"),
-          },
-        })}
+      <button
+        className="icon-[material-symbols--add] text-3xl"
+        type="button"
+        onClick={handleSubmit(onSubmit)}
       />
-      {errors.name && <p>{errors.name.message}</p>}
-
-      <button onClick={handleSubmit(onSubmit)}>Add</button>
-      <button onClick={() => setIsCreating(false)}>Cancel</button>
-    </div>
+    </li>
   );
 }

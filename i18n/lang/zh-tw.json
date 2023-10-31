@@ -1,5 +1,15 @@
 {
   "dashboard": "儀表板",
   "last_time_checked_at": "最後確認於 {{checked_at}}",
-  "open_baha": "開啟巴哈介面"
+  "open_baha": "開啟巴哈介面",
+  "publish_to": "發布至",
+  "select_a_board": "選擇要發布的哈拉板",
+  "input": {
+    "board_name": "看板名稱",
+    "board_no": "看板編號"
+  },
+  "error": {
+    "not_empty": "{{column}} 不應為空白",
+    "not_numeric": "{{column}} 需要是數字"
+  }
 }
