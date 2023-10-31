@@ -1,5 +1,4 @@
 import Board from "@/backend-api/database/entities/Board";
-import BoardFactory from "@/backend-api/database/factories/BoardFactory";
 import BoardItem from "@/renderer/app/posts/_boards/board";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
@@ -9,72 +8,77 @@ import { backendUrl, mockedAxios, renderUseFormHook } from "../setup/mock";
 
 describe("edit in board item component", () => {
   const boardId = 1;
-  let board: Board;
+  const board = {
+    id: boardId,
+    name: "foo",
+    no: "123456",
+  };
   let formHook: UseFormReturn;
   const mockedFetchBoards = jest.fn();
 
-  userEvent.setup();
-
   beforeEach(async () => {
-    board = await new BoardFactory().make({ id: boardId });
     formHook = renderUseFormHook();
 
     render(
       <FormProvider {...formHook}>
-        <BoardItem board={board} fetchBoards={mockedFetchBoards} />
-      </FormProvider>
+        <BoardItem board={board as Board} fetchBoards={mockedFetchBoards} />
+      </FormProvider>,
     );
   });
 
   it("can switch to edit mode", async () => {
-    const editBtn = screen.getByRole("button", { name: "Edit" });
+    let editBtn = screen.getByRole("button", { name: /edit/ });
+    let deleteBtn = screen.getByRole("button", { name: /delete/ });
+    let display = screen.getByTestId("display");
 
     await userEvent.click(editBtn);
 
-    const boardNo = screen.getByPlaceholderText("No");
-    const boardName = screen.getByPlaceholderText("Name");
+    const inputName = screen.getByPlaceholderText("Board name");
+    const inputNo = screen.getByPlaceholderText("Board serial number");
 
-    expect(boardNo).toHaveValue(board.no);
-    expect(boardName).toHaveValue(board.name);
+    editBtn = screen.queryByRole("button", { name: /edit/ });
+    deleteBtn = screen.queryByRole("button", { name: /delete/ });
+    display = screen.queryByTestId("display");
+
+    expect(editBtn).not.toBeInTheDocument();
+    expect(deleteBtn).not.toBeInTheDocument();
+    expect(display).not.toBeInTheDocument();
+    expect(inputName).toHaveValue(board.name);
+    expect(inputNo).toHaveValue(board.no);
   });
 
   it("can switch back to display mode", async () => {
-    let editBtn = screen.getByRole("button", { name: "Edit" });
+    await userEvent.click(screen.getByRole("button", { name: /edit/ }));
 
-    await userEvent.click(editBtn);
-
-    editBtn = screen.queryByRole("button", { name: "Edit" });
-
-    expect(editBtn).not.toBeInTheDocument();
-
-    let cancelBtn = screen.getByRole("button", { name: "Cancel" });
+    let confirmBtn = screen.getByRole("button", { name: /confirm/ });
+    let cancelBtn = screen.getByRole("button", { name: /cancel/ });
 
     await userEvent.click(cancelBtn);
 
-    cancelBtn = screen.queryByRole("button", { name: "Cancel" });
-    editBtn = screen.queryByRole("button", { name: "Edit" });
+    const display = screen.getByTestId("display");
 
+    confirmBtn = screen.queryByRole("button", { name: /confirm/ });
+    cancelBtn = screen.queryByRole("button", { name: /cancel/ });
+
+    expect(confirmBtn).not.toBeInTheDocument();
     expect(cancelBtn).not.toBeInTheDocument();
-    expect(editBtn).toBeInTheDocument();
+    expect(display).toBeInTheDocument();
   });
 
   it("can handle the submit event to update a board", async () => {
     const mockedPut = jest.fn();
     mockedAxios.put = mockedPut;
 
-    const editBtn = screen.getByRole("button", { name: "Edit" });
+    await userEvent.click(screen.getByRole("button", { name: /edit/ }));
 
-    await userEvent.click(editBtn);
+    const boardName = screen.getByPlaceholderText("Board name");
+    const boardNo = screen.getByPlaceholderText("Board serial number");
 
-    const boardNo = screen.getByPlaceholderText("No");
-    const boardName = screen.getByPlaceholderText("Name");
-    const confirm = screen.getByRole("button", { name: "Confirm" });
-
-    await userEvent.clear(boardNo);
     await userEvent.clear(boardName);
-    await userEvent.type(boardNo, "123456");
+    await userEvent.clear(boardNo);
     await userEvent.type(boardName, "New board");
-    await userEvent.click(confirm);
+    await userEvent.type(boardNo, "123456");
+    await userEvent.click(screen.getByRole("button", { name: /confirm/ }));
 
     expect(mockedPut).toBeCalledWith(`${backendUrl}/api/boards/${boardId}`, {
       no: "123456",
@@ -82,37 +86,30 @@ describe("edit in board item component", () => {
     });
   });
 
-  it("refreshes the board list after update the board", async () => {
-    const editBtn = screen.getByRole("button", { name: "Edit" });
+  it("refreshes the board list after updating the board", async () => {
+    await userEvent.click(screen.getByRole("button", { name: /edit/ }));
 
-    await userEvent.click(editBtn);
-
-    const confirm = screen.getByRole("button", { name: "Confirm" });
-
-    await userEvent.click(confirm);
+    await userEvent.click(screen.getByRole("button", { name: /confirm/ }));
 
     expect(mockedFetchBoards).toBeCalled();
   });
 
   it("switches from edit mode to display mode after successfully update the board", async () => {
-    const editBtn = screen.getByRole("button", { name: "Edit" });
+    await userEvent.click(screen.getByRole("button", { name: /edit/ }));
 
-    await userEvent.click(editBtn);
+    const boardName = screen.getByPlaceholderText("Board name");
+    const boardNo = screen.getByPlaceholderText("Board serial number");
 
-    const boardNo = screen.getByPlaceholderText("No");
-    const boardName = screen.getByPlaceholderText("Name");
-    let confirm = screen.getByRole("button", { name: "Confirm" });
-
-    await userEvent.clear(boardNo);
     await userEvent.clear(boardName);
-    await userEvent.type(boardNo, "123456");
+    await userEvent.clear(boardNo);
     await userEvent.type(boardName, "New board");
-    await userEvent.click(confirm);
+    await userEvent.type(boardNo, "123456");
+    await userEvent.click(screen.getByRole("button", { name: /confirm/ }));
 
-    confirm = screen.queryByRole("button", { name: "Confirm" });
+    const display = screen.getByTestId("display");
 
     expect(boardNo).not.toBeInTheDocument();
     expect(boardName).not.toBeInTheDocument();
-    expect(confirm).not.toBeInTheDocument();
+    expect(display).toBeInTheDocument();
   });
 });

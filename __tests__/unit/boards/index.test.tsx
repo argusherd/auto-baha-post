@@ -10,7 +10,7 @@ import {
 } from "react-hook-form";
 import { mockedAxios, renderUseFormHook } from "../setup/mock";
 
-describe("the boards component", () => {
+describe("the board list component", () => {
   let rerender;
   let formHook: UseFormReturn;
   let setValue: UseFormSetValue<FieldValues>;
@@ -18,7 +18,7 @@ describe("the boards component", () => {
     rerender(
       <FormProvider {...formHook}>
         <Boards />
-      </FormProvider>
+      </FormProvider>,
     );
 
   mockedAxios.get.mockResolvedValue({
@@ -38,24 +38,38 @@ describe("the boards component", () => {
       ({ rerender } = render(
         <FormProvider {...formHook}>
           <Boards />
-        </FormProvider>
+        </FormProvider>,
       ));
     });
   });
 
-  it("can list all the boards", async () => {
+  it("can open the list that displays all the boards", async () => {
+    await userEvent.click(screen.getByRole("heading"));
+
     const boards = screen.getAllByRole("listitem");
 
-    expect(boards[0]).toHaveTextContent("Tech");
-    expect(boards[1]).toHaveTextContent("Gaming");
+    expect(boards[1]).toHaveTextContent("Tech");
+    expect(boards[2]).toHaveTextContent("Gaming");
   });
 
-  it("has a default value of 'Publish to'", async () => {
+  it("can close the list that displays all the boards", async () => {
+    await userEvent.click(screen.getByRole("heading"));
+
+    const boardList = screen.getByRole("list");
+
+    expect(boardList).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("heading"));
+
+    expect(boardList).not.toBeInTheDocument();
+  });
+
+  it("has a default value of 'null'", async () => {
     const defaultValue = screen.getByPlaceholderText("board");
     const display = screen.getByRole("heading");
 
     expect(defaultValue).toHaveValue("");
-    expect(display).toBeInTheDocument();
+    expect(display).toHaveTextContent("Select a board to publish on.");
   });
 
   it("can reflect the one we pick", async () => {
@@ -79,10 +93,12 @@ describe("the boards component", () => {
 
     const display = screen.getByRole("heading");
 
-    expect(display).toHaveTextContent("Publish to");
+    expect(display).toHaveTextContent("Select a board to publish on.");
   });
 
   it("can select a board as an assignment", async () => {
+    await userEvent.click(screen.getByRole("heading"));
+
     const gaming = screen.getByText("Gaming");
 
     await userEvent.click(gaming);
@@ -94,55 +110,35 @@ describe("the boards component", () => {
     expect(display).toBeInTheDocument();
   });
 
-  it("opens the form that create a new board", async () => {
-    const addBtn = screen.getByRole("button", { name: "Add new board" });
-    let no = screen.queryByPlaceholderText("No");
-    let name = screen.queryByPlaceholderText("Name");
+  it("closes the board list after selecting a board for an assignment", async () => {
+    await userEvent.click(screen.getByRole("heading"));
 
-    expect(no).toBeNull();
-    expect(name).toBeNull();
+    const gaming = screen.getByText("Gaming");
+    const boardList = screen.getByRole("list");
 
-    await userEvent.click(addBtn);
+    await userEvent.click(gaming);
 
-    no = screen.queryByPlaceholderText("No");
-    name = screen.queryByPlaceholderText("Name");
+    await waitFor(rerenderBoards);
 
-    expect(no).toBeInTheDocument();
-    expect(name).toBeInTheDocument();
+    expect(boardList).not.toBeInTheDocument();
   });
 
-  it("close the form that create a new board after successfully create one", async () => {
-    const addBoardBtn = screen.getByRole("button", { name: "Add new board" });
+  it("can open the form that create a new board", async () => {
+    let inputName = screen.queryByPlaceholderText("Board name");
+    let inputNo = screen.queryByPlaceholderText("Board serial number");
 
-    await userEvent.click(addBoardBtn);
+    expect(inputNo).toBeNull();
+    expect(inputName).toBeNull();
 
-    const no = screen.getByPlaceholderText("No");
-    const name = screen.getByPlaceholderText("Name");
-    const add = screen.getByRole("button", { name: "Add" });
+    const openList = screen.getByRole("heading");
 
-    await userEvent.type(no, "123456");
-    await userEvent.type(name, "New board");
-    await userEvent.click(add);
+    await userEvent.click(openList);
 
-    expect(no).not.toBeInTheDocument();
-    expect(name).not.toBeInTheDocument();
-  });
+    inputName = screen.queryByPlaceholderText("Board name");
+    inputNo = screen.queryByPlaceholderText("Board serial number");
 
-  it("can cancel the creation of a new board", async () => {
-    const addBoardBtn = screen.getByRole("button", { name: "Add new board" });
-
-    await userEvent.click(addBoardBtn);
-
-    const add = screen.queryByRole("button", { name: "Add" });
-    const cancel = screen.getByRole("button", { name: "Cancel" });
-
-    expect(add).toBeInTheDocument();
-    expect(cancel).toBeInTheDocument();
-
-    await userEvent.click(cancel);
-
-    expect(add).not.toBeInTheDocument();
-    expect(cancel).not.toBeInTheDocument();
+    expect(inputNo).toBeInTheDocument();
+    expect(inputName).toBeInTheDocument();
   });
 
   it("should display the default string if the board value is set to null", async () => {
@@ -160,6 +156,6 @@ describe("the boards component", () => {
       rerenderBoards();
     });
 
-    expect(display).toHaveTextContent("Publish to");
+    expect(display).toHaveTextContent("Select a board to publish on.");
   });
 });

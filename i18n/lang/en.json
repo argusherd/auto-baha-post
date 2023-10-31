@@ -1,5 +1,15 @@
 {
   "dashboard": "Dashboard",
   "last_time_checked_at": "Last time checked at {{checked_at}}",
-  "open_baha": "Open Baha's page"
+  "open_baha": "Open Baha's page",
+  "publish_to": "Publish to",
+  "select_a_board": "Select a board to publish on.",
+  "input": {
+    "board_name": "Board name",
+    "board_no": "Board serial number"
+  },
+  "error": {
+    "not_empty": "{{column}} should not be empty.",
+    "not_numeric": "{{column}} should be a numberic."
+  }
 }

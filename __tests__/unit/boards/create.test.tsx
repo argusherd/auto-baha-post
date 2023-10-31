@@ -4,7 +4,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { backendUrl, mockedAxios } from "../setup/mock";
 
-describe("create a board component", () => {
+describe("the create a board component", () => {
+  let rerender;
   const mockedPost = jest.fn();
   const mockedFetchBoards = jest.fn();
 
@@ -12,19 +13,17 @@ describe("create a board component", () => {
   mockedAxios.post = mockedPost;
 
   beforeEach(async () => {
-    await waitFor(() =>
-      render(
-        <CreateBoard
-          fetchBoards={mockedFetchBoards}
-          setIsCreating={jest.fn()}
-        />
-      )
+    await waitFor(
+      () =>
+        ({ rerender } = render(
+          <CreateBoard fetchBoards={mockedFetchBoards} />,
+        )),
     );
   });
 
   it("has inputs for the properties of a board", async () => {
-    const no = screen.getByPlaceholderText("No");
-    const name = screen.getByPlaceholderText("Name");
+    const name = screen.getByPlaceholderText("Board name");
+    const no = screen.getByPlaceholderText("Board serial number");
 
     expect(no).toBeInTheDocument();
     expect(name).toBeInTheDocument();
@@ -37,9 +36,9 @@ describe("create a board component", () => {
   });
 
   it("handles the submission of creating a board", async () => {
-    const no = screen.getByPlaceholderText("No");
-    const name = screen.getByPlaceholderText("Name");
-    const submit = screen.getByRole("button", { name: "Add" });
+    const name = screen.getByPlaceholderText("Board name");
+    const no = screen.getByPlaceholderText("Board serial number");
+    const submit = screen.getByRole("button");
 
     await userEvent.type(no, "123456");
     await userEvent.type(name, "Gaming");
@@ -53,17 +52,17 @@ describe("create a board component", () => {
   });
 
   it("does not accept an empty value", async () => {
-    const no = screen.getByPlaceholderText("No");
-    const name = screen.getByPlaceholderText("Name");
-    const submit = screen.getByRole("button", { name: "Add" });
+    const name = screen.getByPlaceholderText("Board name");
+    const no = screen.getByPlaceholderText("Board serial number");
+    const submit = screen.getByRole("button");
 
     await userEvent.type(no, " ");
     await userEvent.type(name, " ");
     await userEvent.click(submit);
 
-    const errorNo = screen.queryByText("The board's no should not be empty");
-    const errorName = screen.queryByText(
-      "The board's name should not be empty"
+    const errorName = screen.queryByText("Board name should not be empty.");
+    const errorNo = screen.queryByText(
+      "Board serial number should not be empty.",
     );
 
     expect(mockedPost).not.toBeCalled();
@@ -71,22 +70,24 @@ describe("create a board component", () => {
     expect(errorName).toBeInTheDocument();
   });
 
-  it("only accepts that the board's no is a number", async () => {
-    const no = screen.getByPlaceholderText("No");
-    const submit = screen.getByRole("button", { name: "Add" });
+  it("only accepts that the board serial number is a number", async () => {
+    const no = screen.getByPlaceholderText("Board serial number");
+    const submit = screen.getByRole("button");
 
     await userEvent.type(no, "foobar");
     await userEvent.click(submit);
 
-    const errorNo = screen.queryByText("The board's no should be a number");
+    const errorNo = screen.getByText(
+      "Board serial number should be a numberic.",
+    );
 
     expect(errorNo).toBeInTheDocument();
   });
 
   it("refreshes the board list after added a new board", async () => {
-    const no = screen.getByPlaceholderText("No");
-    const name = screen.getByPlaceholderText("Name");
-    const submit = screen.getByRole("button", { name: "Add" });
+    const name = screen.getByPlaceholderText("Board name");
+    const no = screen.getByPlaceholderText("Board serial number");
+    const submit = screen.getByRole("button");
 
     await userEvent.type(no, "123456");
     await userEvent.type(name, "Gaming");

@@ -19,7 +19,7 @@ export default function Languages() {
       ></button>
       {show && (
         <ul
-          className="absolute right-0 top-8 whitespace-nowrap rounded border bg-white text-black shadow-lg"
+          className="absolute right-0 top-8 z-50 whitespace-nowrap rounded border bg-white text-black shadow-lg"
           onMouseOut={() => setShow(false)}
         >
           <li
