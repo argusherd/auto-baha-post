@@ -58,7 +58,7 @@ export default function Header() {
           className="flex items-center gap-2"
           data-testid="userinfo"
           onClick={() => window.electron.openBaha()}
-          title={t("open_baha")}
+          title={t("action.open_baha")}
         >
           <Image
             src={avatarUrl()}

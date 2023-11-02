@@ -3,7 +3,7 @@
 import Board from "@/backend-api/database/entities/Board";
 import axios from "axios";
 import { FieldValidationError } from "express-validator";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import BoardName from "./board/name";
 import BoardNo from "./board/no";
 
@@ -12,19 +12,24 @@ export default function CreateBoard({
 }: {
   fetchBoards: Function;
 }) {
+  const defaultValues = {
+    name: "",
+    no: "",
+  };
+
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
     setError,
-  } = useForm();
+  } = useForm<FieldValues>({ defaultValues });
 
   async function onSubmit(data: Board) {
     try {
       await axios.post(`${window.backendUrl}/api/boards`, data);
 
-      reset();
+      reset(defaultValues);
 
       fetchBoards();
     } catch (error) {
@@ -35,13 +40,14 @@ export default function CreateBoard({
   }
 
   return (
-    <li className="flex items-center justify-between gap-2 p-1">
+    <li className="flex items-center gap-2 p-1">
       <div className="flex gap-2">
         <BoardName register={register} errors={errors} />
         <BoardNo register={register} errors={errors} />
       </div>
 
       <button
+        aria-label="create-board"
         className="icon-[material-symbols--add] text-3xl"
         type="button"
         onClick={handleSubmit(onSubmit)}

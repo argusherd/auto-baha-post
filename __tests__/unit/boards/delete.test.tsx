@@ -3,6 +3,7 @@ import BoardItem from "@/renderer/app/posts/_boards/board";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import moment from "moment";
 import { FormProvider, UseFormReturn } from "react-hook-form";
 import { backendUrl, mockedAxios, renderUseFormHook } from "../setup/mock";
 
@@ -51,13 +52,18 @@ describe("delete in board item component", () => {
   });
 
   it("resets parent form value after delete the corresponsive board", async () => {
-    const { getValues } = formHook;
+    const { getValues, setValue } = formHook;
+
     const deleteBtn = screen.getByRole("button", { name: /delete/ });
 
+    setValue("scheduled_at", moment().toISOString());
+
     expect(getValues("board_id")).toEqual(boardId);
+    expect(getValues("scheduled_at")).not.toEqual("");
 
     await userEvent.click(deleteBtn);
 
     expect(getValues("board_id")).toEqual("");
+    expect(getValues("scheduled_at")).toEqual("");
   });
 });

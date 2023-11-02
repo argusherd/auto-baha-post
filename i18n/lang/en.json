@@ -1,10 +1,20 @@
 {
   "dashboard": "Dashboard",
   "last_time_checked_at": "Last time checked at {{checked_at}}",
-  "open_baha": "Open Baha's page",
   "publish_to": "Publish to",
   "select_a_board": "Select a board to publish on.",
+  "select_a_board_to_unlock": "Select a board to unlock.",
+  "refresh_to_retrieve_latest": "Refresh to retrieve the latest record.",
+  "action": {
+    "open_baha": "Open Baha's page",
+    "refresh": "Refresh"
+  },
   "input": {
+    "title": "Title",
+    "demonstratio": "Demonstratio",
+    "sub_board": "Sub board",
+    "content": "Content",
+    "scheduled_at": "Schedule publishing time",
     "board_name": "Board name",
     "board_no": "Board serial number"
   },

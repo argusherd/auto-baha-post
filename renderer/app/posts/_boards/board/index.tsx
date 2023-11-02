@@ -34,7 +34,10 @@ export default function BoardItem({
   async function handleDelete() {
     await axios.delete(`${window.backendUrl}/api/boards/${board.id}`);
 
-    if (getParentValues("board_id") == board.id) setParentValue("board_id", "");
+    if (getParentValues("board_id") == board.id) {
+      setParentValue("board_id", "");
+      setParentValue("scheduled_at", "");
+    }
 
     fetchBoards();
   }
