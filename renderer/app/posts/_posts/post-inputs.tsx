@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import Boards from "../_boards";
 import BahaEmojis from "./baha-emojis";
 import Demonstratio from "./demonstratio";
@@ -20,50 +21,77 @@ export default function PostInputs() {
   const demonstratioRef = React.useRef(null);
   const subBoardRef = React.useRef(null);
   const contentRef = useRef(null);
-  const { ref, ...rest } = register("content", {
-    required: "Content is required",
+  const { ref: contentRegisterRef, ...contentRegister } = register("content", {
+    required: true,
+    validate: {
+      notEmpty: (value) =>
+        value.trim().length > 0 ||
+        t("error.not_empty", { column: t("input.content") }),
+    },
   });
+  const { t } = useTranslation();
 
   return (
-    <>
-      <input
-        className="border"
-        placeholder="Title"
-        {...register("title", { required: "Title is required" })}
-      />
-      {errors.title && <small>{errors.title.message}</small>}
+    <div className="flex flex-col gap-2">
+      <div>
+        <input
+          className="w-full rounded border px-2 py-1"
+          placeholder={t("input.title")}
+          {...register("title", {
+            required: true,
+            validate: {
+              notEmpty: (value) =>
+                value.trim().length > 0 ||
+                t("error.not_empty", { column: t("input.title") }),
+            },
+          })}
+        />
+        {errors.title && (
+          <small className="text-red-600">{errors.title.message}</small>
+        )}
+      </div>
 
       <Boards />
 
-      <Demonstratio ref={demonstratioRef} />
+      <div className="flex gap-6">
+        <div
+          className="flex items-center gap-1"
+          title={boardId ? "" : t("select_a_board_to_unlock")}
+        >
+          <Demonstratio ref={demonstratioRef} />
 
-      <SubBoard ref={subBoardRef} />
+          <SubBoard ref={subBoardRef} />
 
-      <Subject />
+          <button
+            aria-label="refresh"
+            className="icon-[material-symbols--refresh] text-xl disabled:cursor-not-allowed disabled:bg-gray-300"
+            disabled={!boardId}
+            title={boardId ? t("refresh_to_retrieve_latest") : undefined}
+            onClick={async () => {
+              await window.electron.getPostProperties(boardId);
+              await demonstratioRef.current.getDemonstratios();
+              await subBoardRef.current.getSubBoards();
+            }}
+          ></button>
+        </div>
 
-      <button
-        disabled={!boardId}
-        onClick={async () => {
-          await window.electron.getPostProperties(boardId);
-          await demonstratioRef.current.getDemonstratios();
-          await subBoardRef.current.getSubBoards();
-        }}
-      >
-        Refresh
-      </button>
+        <Subject />
+      </div>
 
-      {boardId && <ScheduledAt />}
-
-      <textarea
-        className="border p-1"
-        placeholder="Content"
-        {...rest}
-        ref={(el) => {
-          ref(el);
-          contentRef.current = el;
-        }}
-      ></textarea>
-      {errors.content && <small>{errors.content.message}</small>}
+      <div>
+        <textarea
+          className="min-h-[100px] w-full rounded border p-2"
+          placeholder={t("input.content")}
+          {...contentRegister}
+          ref={(el) => {
+            contentRegisterRef(el);
+            contentRef.current = el;
+          }}
+        ></textarea>
+        {errors.content && (
+          <small className="text-red-600">{errors.content.message}</small>
+        )}
+      </div>
 
       <BahaEmojis
         insertEmoji={(emoji: string) => {
@@ -78,6 +106,8 @@ export default function PostInputs() {
           contentRef.current.selectionEnd = position + insert.length;
         }}
       />
-    </>
+
+      <ScheduledAt />
+    </div>
   );
 }

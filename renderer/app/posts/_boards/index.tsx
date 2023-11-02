@@ -44,23 +44,26 @@ export default function Boards() {
   }
 
   function closeBoardList(event: MouseEvent) {
-    if (boardListRef.current.contains(event.target)) return;
-
-    setIsSelecting(false);
+    if (boardListRef.current && !boardListRef.current.contains(event.target))
+      setIsSelecting(false);
   }
 
   return (
     <div className="rounded border p-1" ref={boardListRef}>
       <div className="flex items-center justify-between">
         <h5
-          className="flex grow cursor-pointer items-center justify-between rounded px-2 py-1 hover:bg-gray-200"
+          className="flex grow cursor-pointer items-center justify-between rounded p-1 hover:bg-gray-200"
           onClick={() => setIsSelecting((prev) => !prev)}
         >
-          <span>
-            {publishTo?.name
-              ? `${t("publish_to")}: ${publishTo.name}`
-              : t("select_a_board")}
-          </span>
+          {publishTo?.name ? (
+            <span>
+              {t("publish_to")}: {publishTo.name}
+            </span>
+          ) : (
+            <span className="w-full text-gray-400 hover:text-black">
+              {t("select_a_board")}
+            </span>
+          )}
           <i className="icon-[ph--triangle-fill] rotate-180 text-sm"></i>
         </h5>
       </div>
@@ -73,7 +76,7 @@ export default function Boards() {
 
       <div className="relative">
         {isSelecting && (
-          <ul className="absolute left-1/2 w-[99%] -translate-x-1/2 rounded border bg-white shadow-lg">
+          <ul className="absolute left-1/2 z-10 max-h-48 w-[99%] -translate-x-1/2 overflow-y-auto rounded border bg-white shadow-lg">
             <CreateBoard fetchBoards={fetchBoards} />
             {boards && <hr />}
             {boards &&

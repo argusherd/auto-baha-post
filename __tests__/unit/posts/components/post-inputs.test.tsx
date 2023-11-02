@@ -51,72 +51,58 @@ describe("the post-inputs component", () => {
     await waitFor(() => ({ rerender } = render(postInputs())));
   });
 
-  it("has a input field for the title", async () => {
-    const titleInput = screen.queryByPlaceholderText("Title");
-
-    expect(titleInput).toBeInTheDocument();
-
-    await userEvent.type(titleInput, "Hello world");
-
-    expect(titleInput).toHaveDisplayValue("Hello world");
-  });
-
-  it("has a input field for the content", async () => {
-    const contentInput = screen.queryByPlaceholderText("Content");
-
-    expect(contentInput).toBeInTheDocument();
-
-    await userEvent.type(contentInput, "Hello world");
-
-    expect(contentInput).toHaveDisplayValue("Hello world");
-  });
-
-  test("all required inputs should be filled", async () => {
+  test("all required inputs should be filled and not a blank string", async () => {
+    const inputTitle = screen.getByPlaceholderText("Title");
+    const inputContent = screen.getByPlaceholderText("Content");
     const submit = screen.getByTestId("submit");
 
+    await userEvent.type(inputTitle, "  ");
+    await userEvent.type(inputContent, "  ");
     await userEvent.click(submit);
     await waitFor(rerenderPostInputs);
 
-    const titleError = screen.queryByText("Title is required");
-    const contentError = screen.queryByText("Content is required");
+    const titleError = screen.queryByText("Title should not be empty.");
+    const contentError = screen.queryByText("Content should not be empty.");
 
     expect(titleError).toBeInTheDocument();
     expect(contentError).toBeInTheDocument();
   });
 
   it("can schedule the post after it is assigning a board", async () => {
-    const gaming = screen.getByText("Gaming");
-    let scheduledAt = screen.queryByLabelText("Schedule");
+    await userEvent.click(screen.getByRole("heading"));
 
-    expect(scheduledAt).not.toBeInTheDocument();
+    const gaming = screen.getByText("Gaming");
+    const scheduledAt = screen.getByPlaceholderText("Scheduled At");
+
+    expect(scheduledAt).toBeDisabled();
 
     await userEvent.click(gaming);
     await waitFor(rerenderPostInputs);
 
-    scheduledAt = screen.queryByLabelText("Schedule");
-
-    expect(scheduledAt).toBeInTheDocument();
+    expect(scheduledAt).toBeEnabled();
   });
 
   it("can refresh the post properties list", async () => {
+    await userEvent.click(screen.getByRole("heading"));
+
     const mockedGetPostProperties = jest.fn();
     const gaming = screen.getByText("Gaming");
+    const refresh = screen.getByRole("button", { name: /refresh/ });
 
     window.electron.getPostProperties = mockedGetPostProperties;
 
     await userEvent.click(gaming);
     await waitFor(rerenderPostInputs);
-
-    const refresh = screen.getByRole("button", { name: "Refresh" });
-
     await userEvent.click(refresh);
 
     expect(mockedGetPostProperties).toBeCalledWith(2);
   });
 
   it("can refresh the post properties only if it is assigned to a board", async () => {
+    await userEvent.click(screen.getByRole("heading"));
+
     const gaming = screen.getByText("Gaming");
-    const refresh = screen.getByRole("button", { name: "Refresh" });
+    const refresh = screen.getByRole("button", { name: /refresh/ });
 
     expect(refresh).toBeDisabled();
 
@@ -126,7 +112,7 @@ describe("the post-inputs component", () => {
     expect(refresh).toBeEnabled();
   });
 
-  it("calls children's function to retrieve the post properties after refresh", async () => {
+  it("calls children's function to retrieve the post properties after clicking the refresh button", async () => {
     const mockedGetDemonstratios = jest.fn();
     const mockedGetSubBoards = jest.fn();
 
@@ -139,8 +125,10 @@ describe("the post-inputs component", () => {
       }),
     });
 
+    await userEvent.click(screen.getByRole("heading"));
+
     const gaming = screen.getByText("Gaming");
-    const refresh = screen.getByRole("button", { name: "Refresh" });
+    const refresh = screen.getByRole("button", { name: /refresh/ });
 
     await userEvent.click(gaming);
     await waitFor(rerenderPostInputs);
@@ -157,7 +145,25 @@ describe("the post-inputs component", () => {
     await userEvent.click(emoji);
 
     expect(content).toHaveDisplayValue(
-      "https://i2.bahamut.com.tw/editor/emotion/1.gif" + "\n"
+      "https://i2.bahamut.com.tw/editor/emotion/1.gif" + "\n",
     );
+  });
+
+  it("does not reset fields other than those in the create board form after creating a new board", async () => {
+    mockedAxios.post = jest.fn();
+
+    await userEvent.click(screen.getByRole("heading"));
+
+    const title = screen.getByPlaceholderText("Title");
+    const boardName = screen.getByPlaceholderText("Board name");
+    const boardNo = screen.getByPlaceholderText("Board serial number");
+    const createBtn = screen.getByRole("button", { name: "create-board" });
+
+    await userEvent.type(title, "New post");
+    await userEvent.type(boardName, "Foobar");
+    await userEvent.type(boardNo, "123456");
+    await userEvent.click(createBtn);
+
+    expect(title).toHaveDisplayValue("New post");
   });
 });

@@ -4,7 +4,11 @@ export default function Subject() {
   const { register } = useFormContext();
 
   return (
-    <select placeholder="Subject" {...register("subject")}>
+    <select
+      className="rounded border p-1"
+      placeholder="Subject"
+      {...register("subject")}
+    >
       <option value="1">問題</option>
       <option value="2">情報</option>
       <option value="3">心得</option>

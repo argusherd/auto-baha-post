@@ -1,10 +1,20 @@
 {
   "dashboard": "儀表板",
   "last_time_checked_at": "最後確認於 {{checked_at}}",
-  "open_baha": "開啟巴哈介面",
   "publish_to": "發布至",
   "select_a_board": "選擇要發布的哈拉板",
+  "select_a_board_to_unlock": "選擇要發布的哈拉板以解鎖",
+  "refresh_to_retrieve_latest": "刷新以獲取最新的資料",
+  "action": {
+    "open_baha": "開啟巴哈介面",
+    "refresh": "刷新"
+  },
   "input": {
+    "title": "標題",
+    "demonstratio": "稱號",
+    "sub_board": "子板",
+    "content": "內文",
+    "scheduled_at": "排程發布時間",
     "board_name": "看板名稱",
     "board_no": "看板編號"
   },
