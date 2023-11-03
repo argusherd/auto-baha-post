@@ -139,6 +139,8 @@ describe("the post-inputs component", () => {
   });
 
   it("can insert an emoji to the content textarea", async () => {
+    await userEvent.hover(screen.getByRole("button", { name: /open-emojis/ }));
+
     const emoji = screen.getAllByRole("img")[0];
     const content = screen.queryByPlaceholderText("Content");
 

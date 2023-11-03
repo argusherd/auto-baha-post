@@ -31,6 +31,18 @@ export default function PostInputs() {
   });
   const { t } = useTranslation();
 
+  function insertEmoji(emoji: string) {
+    contentRef.current.focus();
+    const position = contentRef.current.selectionStart;
+    const oldContent = getValues("content");
+    const before = oldContent.substring(0, position);
+    const after = oldContent.substring(position, oldContent.length);
+    const insert = emoji + "\n";
+    setValue("content", before + insert + after);
+    contentRef.current.selectionStart = position + insert.length;
+    contentRef.current.selectionEnd = position + insert.length;
+  }
+
   return (
     <div className="flex flex-col gap-2">
       <div>
@@ -75,7 +87,11 @@ export default function PostInputs() {
           ></button>
         </div>
 
-        <Subject />
+        <div className="flex grow justify-between">
+          <Subject />
+
+          <BahaEmojis insertEmoji={insertEmoji} />
+        </div>
       </div>
 
       <div>
@@ -92,20 +108,6 @@ export default function PostInputs() {
           <small className="text-red-600">{errors.content.message}</small>
         )}
       </div>
-
-      <BahaEmojis
-        insertEmoji={(emoji: string) => {
-          contentRef.current.focus();
-          const position = contentRef.current.selectionStart;
-          const oldContent = getValues("content");
-          const before = oldContent.substring(0, position);
-          const after = oldContent.substring(position, oldContent.length);
-          const insert = emoji + "\n";
-          setValue("content", before + insert + after);
-          contentRef.current.selectionStart = position + insert.length;
-          contentRef.current.selectionEnd = position + insert.length;
-        }}
-      />
 
       <ScheduledAt />
     </div>
