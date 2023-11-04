@@ -13,34 +13,37 @@ import {
 describe("create post page", () => {
   const HTTP_CREATED = 201;
   const mockedPush = mockRouterPush();
+  let rerender;
 
   mockedAxios.post.mockResolvedValue({ status: HTTP_CREATED });
   mockPostPageApi();
   userEvent.setup();
 
   beforeEach(async () => {
-    await waitFor(() => render(<CreatePost />));
+    await waitFor(() => ({ rerender } = render(<CreatePost />)));
   });
 
   it("can handle submit event in order to persist post data", async () => {
+    await userEvent.click(screen.getByRole("heading"));
+
     const title = screen.getByPlaceholderText("Title");
     const demonstratio = screen.getByPlaceholderText("Demonstratio");
     const subBoard = screen.getByPlaceholderText("Sub Board");
     const subject = screen.getByPlaceholderText("Subject");
     const content = screen.getByPlaceholderText("Content");
-    const submitBtn = screen.getByRole("button", { name: "Save" });
+    const submitBtn = screen.getByRole("button", { name: /save/ });
     const gaming = screen.getByText("Gaming");
     const datetime = moment().format("YYYY-MM-DDTHH:mm");
+    const scheduledAt = screen.getByLabelText("Schedule publishing time");
+
+    await userEvent.click(gaming);
+    await waitFor(() => rerender(<CreatePost />));
 
     await userEvent.type(title, "My first post");
-    await userEvent.click(gaming);
     await userEvent.selectOptions(demonstratio, "2");
     await userEvent.selectOptions(subBoard, "2");
     await userEvent.selectOptions(subject, "2");
     await userEvent.type(content, "The content in my first post");
-
-    const scheduledAt = screen.getByLabelText("Schedule");
-
     await userEvent.type(scheduledAt, datetime);
     await userEvent.click(submitBtn);
 
@@ -59,7 +62,7 @@ describe("create post page", () => {
   it("resets input fields after submit create a post", async () => {
     const title = screen.getByPlaceholderText("Title");
     const content = screen.getByPlaceholderText("Content");
-    const submitBtn = screen.getByRole("button", { name: "Save" });
+    const submitBtn = screen.getByRole("button", { name: /save/ });
 
     await userEvent.type(title, "My first post");
     await userEvent.type(content, "The content in my first post");
@@ -72,7 +75,7 @@ describe("create post page", () => {
   it("redirect you to all posts page after successfully create a post", async () => {
     const title = screen.getByPlaceholderText("Title");
     const content = screen.getByPlaceholderText("Content");
-    const submitBtn = screen.getByRole("button", { name: "Save" });
+    const submitBtn = screen.getByRole("button", { name: /save/ });
 
     await userEvent.type(title, "My first post");
     await userEvent.type(content, "The content in my first post");
