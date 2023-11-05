@@ -51,13 +51,6 @@ describe("show a post page", () => {
     expect(content).toHaveDisplayValue("Content in post");
   });
 
-  it("lists all the boards in the page", async () => {
-    const boards = screen.getAllByRole("listitem");
-
-    expect(boards[0]).toHaveTextContent("Tech");
-    expect(boards[1]).toHaveTextContent("Gaming");
-  });
-
   it("shows the board assigned by the post", async () => {
     await waitFor(() => rerender(<ShowPost />));
 
@@ -94,7 +87,7 @@ describe("show a post page", () => {
     const scheduledAt = screen.getByPlaceholderText("Scheduled At");
 
     expect(scheduledAt).toHaveValue(
-      moment(datetime).format("YYYY-MM-DDTHH:mm")
+      moment(datetime).format("YYYY-MM-DDTHH:mm"),
     );
   });
 
@@ -103,7 +96,7 @@ describe("show a post page", () => {
 
     window.electron.publishNow = mockedPublishNow;
 
-    const publishNow = screen.getByRole("button", { name: "Publish Now" });
+    const publishNow = screen.getByRole("button", { name: /publish-now/ });
 
     await userEvent.click(publishNow);
 

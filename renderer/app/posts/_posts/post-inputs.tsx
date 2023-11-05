@@ -94,7 +94,7 @@ export default function PostInputs() {
         </div>
       </div>
 
-      <div>
+      <div className="flex flex-wrap gap-1">
         <textarea
           className="min-h-[100px] w-full rounded border p-2"
           placeholder={t("input.content")}

@@ -7,7 +7,9 @@
   "refresh_to_retrieve_latest": "刷新以獲取最新的資料",
   "action": {
     "open_baha": "開啟巴哈介面",
-    "save": "儲存"
+    "save": "儲存",
+    "publish_now": "立即發布",
+    "delete": "刪除"
   },
   "input": {
     "title": "標題",

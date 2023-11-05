@@ -13,7 +13,7 @@ export default function ScheduledAt() {
           {t("input.scheduled_at")}
         </label>
         <input
-          className="px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-100"
+          className="px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-200"
           disabled={!boardId}
           id="scheduled_at"
           title={boardId ? undefined : t("select_a_board_to_unlock")}

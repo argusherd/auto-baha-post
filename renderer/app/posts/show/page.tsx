@@ -2,10 +2,11 @@
 
 import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
+import { FieldValidationError } from "express-validator";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import PostInputs from "../_posts/post-inputs";
 
 export default function ShowPost() {
@@ -16,8 +17,15 @@ export default function ShowPost() {
   const methods = useForm<Partial<Post>>({
     defaultValues: getPostData,
   });
-  const { handleSubmit } = methods;
-  const [isAssignedToBoard, setIsAssignedToBoard] = useState(false);
+  const {
+    handleSubmit,
+    watch,
+    formState: { isDirty },
+    reset,
+    setError,
+  } = methods;
+  const boardId = watch("board_id");
+  const { t } = useTranslation();
 
   async function getPostData() {
     const getPost = await axios.get<Post>(requestUrl);
@@ -26,9 +34,11 @@ export default function ShowPost() {
       router.push("/posts/create");
     }
 
-    const { scheduled_at, ...others } = getPost.data;
+    return formatPostData(getPost.data);
+  }
 
-    setIsAssignedToBoard(Boolean(others.board_id));
+  function formatPostData(data: Post) {
+    const { scheduled_at, ...others } = data;
 
     return {
       ...others,
@@ -39,9 +49,15 @@ export default function ShowPost() {
   }
 
   async function onSubmit(data: Post) {
-    const updatePost = await axios.put<Post>(requestUrl, data);
+    try {
+      const updatedPost = await axios.put(requestUrl, data);
 
-    setIsAssignedToBoard(Boolean(updatePost.data.board_id));
+      reset(formatPostData(updatedPost.data));
+    } catch (error) {
+      error.response.data.errors.forEach((item: FieldValidationError) => {
+        setError(item.path as any, { message: item.msg });
+      });
+    }
   }
 
   async function handleDelete() {
@@ -56,16 +72,39 @@ export default function ShowPost() {
         <PostInputs />
       </FormProvider>
 
-      <button onClick={handleSubmit(onSubmit)}>Save</button>
-      <button
-        disabled={!isAssignedToBoard}
-        onClick={() => window.electron.publishNow(Number(POST_ID))}
-      >
-        Publish Now
-      </button>
-      <button data-testid="delete-post" onClick={handleDelete}>
-        Delete
-      </button>
+      <div className="mt-2 flex justify-between">
+        <button
+          className="relative rounded bg-teal-500 px-2 py-1 text-white"
+          onClick={handleSubmit(onSubmit)}
+        >
+          {t("action.save")}
+
+          {isDirty && (
+            <span
+              data-testid="is-dirty"
+              className="absolute -top-1 h-3 w-3 rounded-full bg-red-500"
+            ></span>
+          )}
+        </button>
+        <div className="flex gap-2">
+          <button
+            aria-label="publish-now"
+            className="rounded border px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-200"
+            disabled={!boardId}
+            title={boardId ? undefined : t("select_a_board_to_unlock")}
+            onClick={() => window.electron.publishNow(Number(POST_ID))}
+          >
+            {t("action.publish_now")}
+          </button>
+          <button
+            className="rounded bg-red-600 px-2 py-1 text-white"
+            data-testid="delete-post"
+            onClick={handleDelete}
+          >
+            {t("action.delete")}
+          </button>
+        </div>
+      </div>
     </form>
   );
 }

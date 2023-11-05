@@ -7,7 +7,9 @@
   "refresh_to_retrieve_latest": "Refresh to retrieve the latest record.",
   "action": {
     "open_baha": "Open Baha's page",
-    "save": "Save"
+    "save": "Save",
+    "publish_now": "Publish now",
+    "delete": "Delete"
   },
   "input": {
     "title": "Title",
