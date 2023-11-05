@@ -37,7 +37,6 @@ describe("create post page", () => {
     const scheduledAt = screen.getByLabelText("Schedule publishing time");
 
     await userEvent.click(gaming);
-    await waitFor(() => rerender(<CreatePost />));
 
     await userEvent.type(title, "My first post");
     await userEvent.selectOptions(demonstratio, "2");

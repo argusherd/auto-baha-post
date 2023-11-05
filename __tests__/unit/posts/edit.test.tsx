@@ -56,6 +56,7 @@ describe("edit a post in show a post page", () => {
 
   it("can handle a submit event to persist new post data", async () => {
     await waitFor(() => rerender(<ShowPost />));
+    await userEvent.click(screen.getByRole("heading"));
 
     const title = screen.getByPlaceholderText("Title");
     const demonstratio = screen.getByPlaceholderText("Demonstratio");
@@ -64,7 +65,10 @@ describe("edit a post in show a post page", () => {
     const content = screen.getByPlaceholderText("Content");
     const gaming = screen.getByText("Gaming");
     const submit = screen.getByRole("button", { name: "Save" });
+    const scheduledAt = screen.getByPlaceholderText("Scheduled At");
     const datetime = moment().format("YYYY-MM-DDTHH:mm");
+
+    await userEvent.click(gaming);
 
     await userEvent.clear(title);
     await userEvent.clear(content);
@@ -73,10 +77,6 @@ describe("edit a post in show a post page", () => {
     await userEvent.selectOptions(subBoard, "1");
     await userEvent.type(subject, "3");
     await userEvent.type(content, "New content");
-    await userEvent.click(gaming);
-
-    const scheduledAt = screen.getByLabelText("Schedule");
-
     await userEvent.type(scheduledAt, datetime);
     await userEvent.click(submit);
 
@@ -101,17 +101,43 @@ describe("edit a post in show a post page", () => {
 
     await waitFor(() => render(<ShowPost />));
 
-    const publishNow = screen.getByRole("button", { name: "Publish Now" });
+    const publishNow = screen.getByRole("button", { name: /publish-now/ });
 
     expect(publishNow).toBeDisabled();
 
     mockedAxios.put.mockResolvedValue({ data: { board_id: 1 } });
 
+    await userEvent.click(screen.getByRole("heading"));
+
     const gaming = screen.getByText("Gaming");
     const submit = screen.getByRole("button", { name: "Save" });
+
     await userEvent.click(gaming);
     await userEvent.click(submit);
 
-    expect(publishNow).not.toBeDisabled();
+    expect(publishNow).toBeEnabled();
+  });
+
+  it("reminds you if the inputs are changed (dirty)", async () => {
+    expect(screen.queryByTestId("is-dirty")).not.toBeInTheDocument();
+
+    const title = screen.getByPlaceholderText("Title");
+
+    await userEvent.type(title, "new");
+
+    expect(screen.queryByTestId("is-dirty")).toBeInTheDocument();
+  });
+
+  it("removes the dirty reminder after editing the post", async () => {
+    const title = screen.getByPlaceholderText("Title");
+    const submit = screen.getByRole("button", { name: "Save" });
+
+    await userEvent.type(title, "new");
+
+    expect(screen.queryByTestId("is-dirty")).toBeInTheDocument();
+
+    await userEvent.click(submit);
+
+    expect(screen.queryByTestId("is-dirty")).not.toBeInTheDocument();
   });
 });
