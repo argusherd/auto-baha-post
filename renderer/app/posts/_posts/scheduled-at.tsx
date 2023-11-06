@@ -2,13 +2,17 @@ import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 export default function ScheduledAt() {
-  const { register, getValues } = useFormContext();
+  const {
+    register,
+    getValues,
+    formState: { errors },
+  } = useFormContext();
   const { t } = useTranslation();
   const boardId = getValues("board_id");
 
   return (
-    <div className="flex items-center">
-      <div className="shrink rounded border">
+    <div>
+      <div className="w-fit rounded border">
         <label className="border-r p-2" htmlFor="scheduled_at">
           {t("input.scheduled_at")}
         </label>
@@ -22,6 +26,9 @@ export default function ScheduledAt() {
           {...register("scheduled_at")}
         />
       </div>
+      {errors.scheduled_at && (
+        <small className="text-red-600">{errors.scheduled_at.message}</small>
+      )}
     </div>
   );
 }
