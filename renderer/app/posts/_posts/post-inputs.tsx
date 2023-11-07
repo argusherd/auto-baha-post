@@ -38,7 +38,7 @@ export default function PostInputs() {
     const before = oldContent.substring(0, position);
     const after = oldContent.substring(position, oldContent.length);
     const insert = emoji + "\n";
-    setValue("content", before + insert + after);
+    setValue("content", before + insert + after, { shouldDirty: true });
     contentRef.current.selectionStart = position + insert.length;
     contentRef.current.selectionEnd = position + insert.length;
   }

@@ -158,4 +158,22 @@ describe("the board list component", () => {
 
     expect(display).toHaveTextContent("Select a board to publish on.");
   });
+
+  it("makes the form dirty after assigning a board", async () => {
+    let {
+      formState: { isDirty },
+    } = formHook;
+
+    await userEvent.click(screen.getByRole("heading"));
+
+    expect(isDirty).toBeFalse();
+
+    await userEvent.click(screen.getByText("Gaming"));
+
+    ({
+      formState: { isDirty },
+    } = formHook);
+
+    expect(isDirty).toBeTrue();
+  });
 });

@@ -85,7 +85,9 @@ export default function BoardItem({
           <p
             className="grow cursor-pointer rounded border border-transparent px-2 py-1 hover:bg-gray-200"
             data-testid="display"
-            onClick={() => setParentValue("board_id", board.id)}
+            onClick={() =>
+              setParentValue("board_id", board.id, { shouldDirty: true })
+            }
           >
             <span>{board.name}</span>
             <span className="ml-1 text-sm underline">{board.no}</span>
