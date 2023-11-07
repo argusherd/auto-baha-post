@@ -151,6 +151,24 @@ describe("the post-inputs component", () => {
     );
   });
 
+  it("makes the form dirty after insert an emoji to the content", async () => {
+    let {
+      formState: { isDirty },
+    } = formHook;
+
+    expect(isDirty).toBeFalse();
+
+    await userEvent.hover(screen.getByRole("button", { name: /open-emojis/ }));
+
+    await userEvent.click(screen.getAllByRole("img")[0]);
+
+    ({
+      formState: { isDirty },
+    } = formHook);
+
+    expect(isDirty).toBeTrue();
+  });
+
   it("does not reset fields other than those in the create board form after creating a new board", async () => {
     mockedAxios.post = jest.fn();
 

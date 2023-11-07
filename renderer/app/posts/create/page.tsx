@@ -11,7 +11,11 @@ const HTTP_CREATED = 201;
 
 export default function CreatePost() {
   const methods = useForm();
-  const { handleSubmit, reset } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = methods;
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -35,10 +39,17 @@ export default function CreatePost() {
 
       <button
         aria-label="save"
-        className="mt-2 rounded bg-teal-500 px-2 py-1 text-white"
+        className="relative mt-2 rounded bg-teal-500 px-2 py-1 text-white"
         onClick={handleSubmit(onSubmit)}
       >
         {t("action.save")}
+
+        {isDirty && (
+          <span
+            data-testid="is-dirty"
+            className="absolute -top-1 h-3 w-3 rounded-full bg-red-500"
+          ></span>
+        )}
       </button>
     </form>
   );

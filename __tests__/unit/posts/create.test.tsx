@@ -13,14 +13,13 @@ import {
 describe("create post page", () => {
   const HTTP_CREATED = 201;
   const mockedPush = mockRouterPush();
-  let rerender;
 
   mockedAxios.post.mockResolvedValue({ status: HTTP_CREATED });
   mockPostPageApi();
   userEvent.setup();
 
   beforeEach(async () => {
-    await waitFor(() => ({ rerender } = render(<CreatePost />)));
+    await waitFor(() => render(<CreatePost />));
   });
 
   it("can handle submit event in order to persist post data", async () => {
@@ -82,5 +81,15 @@ describe("create post page", () => {
 
     expect(mockedPush).toBeCalledTimes(1);
     expect(mockedPush).toBeCalledWith("/posts");
+  });
+
+  it("reminds you if the inputs are changed (dirty)", async () => {
+    expect(screen.queryByTestId("is-dirty")).not.toBeInTheDocument();
+
+    const title = screen.getByPlaceholderText("Title");
+
+    await userEvent.type(title, "new");
+
+    expect(screen.queryByTestId("is-dirty")).toBeInTheDocument();
   });
 });
