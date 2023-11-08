@@ -76,7 +76,7 @@ export default function Boards() {
 
       <div className="relative">
         {isSelecting && (
-          <ul className="absolute left-1/2 z-10 max-h-48 w-[99%] -translate-x-1/2 overflow-y-auto rounded border bg-white shadow-lg">
+          <ul className="absolute left-1/2 z-10 max-h-60 w-[99%] -translate-x-1/2 overflow-y-auto rounded border bg-white shadow-lg">
             <CreateBoard fetchBoards={fetchBoards} />
             {boards && <hr />}
             {boards &&

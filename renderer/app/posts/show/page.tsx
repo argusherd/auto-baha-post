@@ -1,8 +1,8 @@
 "use client";
 
 import Post from "@/backend-api/database/entities/Post";
+import handleFormRequest from "@/renderer/helpers/handleFormRequest";
 import axios from "axios";
-import { FieldValidationError } from "express-validator";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
@@ -49,15 +49,11 @@ export default function ShowPost() {
   }
 
   async function onSubmit(data: Post) {
-    try {
+    handleFormRequest(async () => {
       const updatedPost = await axios.put(requestUrl, data);
 
       reset(formatPostData(updatedPost.data));
-    } catch (error) {
-      error.response.data.errors.forEach((item: FieldValidationError) => {
-        setError(item.path as any, { message: item.msg });
-      });
-    }
+    }, setError);
   }
 
   async function handleDelete() {
