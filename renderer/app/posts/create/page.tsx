@@ -1,13 +1,12 @@
 "use client";
 
 import Post from "@/backend-api/database/entities/Post";
+import handleFormRequest from "@/renderer/helpers/handleFormRequest";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import PostInputs from "../_posts/post-inputs";
-
-const HTTP_CREATED = 201;
 
 export default function CreatePost() {
   const methods = useForm();
@@ -15,20 +14,19 @@ export default function CreatePost() {
     handleSubmit,
     reset,
     formState: { isDirty },
+    setError,
   } = methods;
   const router = useRouter();
   const { t } = useTranslation();
 
   async function onSubmit(data: Post) {
-    const url = window.backendUrl + "/api/posts";
+    handleFormRequest(async () => {
+      await axios.post(`${window.backendUrl}/api/posts`, data);
 
-    const res = await axios.post(url, data);
-
-    if (res.status == HTTP_CREATED) {
       reset();
 
       router.push("/posts");
-    }
+    }, setError);
   }
 
   return (
