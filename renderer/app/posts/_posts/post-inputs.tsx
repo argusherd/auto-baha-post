@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Boards from "../_boards";
@@ -30,6 +30,7 @@ export default function PostInputs() {
     },
   });
   const { t } = useTranslation();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   function insertEmoji(emoji: string) {
     contentRef.current.focus();
@@ -76,15 +77,23 @@ export default function PostInputs() {
 
           <button
             aria-label="refresh"
-            className="icon-[material-symbols--refresh] text-xl disabled:cursor-not-allowed disabled:bg-gray-300"
-            disabled={!boardId}
+            className="text-xl leading-3 disabled:cursor-not-allowed"
+            disabled={!boardId || isRefreshing}
             title={boardId ? t("refresh_to_retrieve_latest") : undefined}
             onClick={async () => {
+              setIsRefreshing(true);
               await window.electron.getPostProperties(boardId);
               await demonstratioRef.current.getDemonstratios();
               await subBoardRef.current.getSubBoards();
+              setIsRefreshing(false);
             }}
-          ></button>
+          >
+            {isRefreshing ? (
+              <i className="icon-[eos-icons--loading]"></i>
+            ) : (
+              <i className="icon-[material-symbols--refresh]"></i>
+            )}
+          </button>
         </div>
 
         <div className="flex grow justify-between">

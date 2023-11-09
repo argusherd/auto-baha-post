@@ -1,13 +1,9 @@
-import { app, BrowserWindow } from "electron";
-import puppeteer, { Browser, Page } from "puppeteer-core";
-import pie from "puppeteer-in-electron";
+import { BrowserWindow } from "electron";
+
 import Login from "../../backend-api/database/entities/Login";
+import InteractableWindow from "./InteractableWindow";
 
-export default class LoginChecker {
-  browser: Browser;
-  window: BrowserWindow;
-  page: Page;
-
+export default class LoginChecker extends InteractableWindow {
   public async run() {
     await this.init();
 
@@ -23,12 +19,6 @@ export default class LoginChecker {
 
     this.window.destroy();
     this.sendEvent();
-  }
-
-  public async init() {
-    this.browser = await pie.connect(app, puppeteer as any);
-    this.window = new BrowserWindow();
-    this.page = await pie.getPage(this.browser, this.window);
   }
 
   public async isLoggedIn() {
