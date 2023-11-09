@@ -1,14 +1,10 @@
-import { app, BrowserWindow, clipboard } from "electron";
+import { clipboard } from "electron";
 import moment from "moment";
-import puppeteer, { Browser, Page } from "puppeteer-core";
-import pie from "puppeteer-in-electron";
 import { Between } from "typeorm";
 import Post from "../../backend-api/database/entities/Post";
+import InteractableWindow from "./InteractableWindow";
 
-export default class PostPublisher {
-  browser: Browser;
-  window: BrowserWindow;
-  page: Page;
+export default class PostPublisher extends InteractableWindow {
   post: Post;
 
   public async findScheduled() {
@@ -19,7 +15,7 @@ export default class PostPublisher {
       where: {
         scheduled_at: Between(
           datetime.startOf("minute").format(format),
-          datetime.endOf("minute").format(format)
+          datetime.endOf("minute").format(format),
         ),
       },
       relations: {
@@ -51,12 +47,6 @@ export default class PostPublisher {
     if (!(await this.publish())) return await this.fail("UNABLE_TO_PUBLISH");
   }
 
-  public async init() {
-    this.browser = await pie.connect(app, puppeteer as any);
-    this.window = new BrowserWindow();
-    this.page = await pie.getPage(this.browser, this.window);
-  }
-
   public async isLoggedIn() {
     await this.window.loadURL("https://forum.gamer.com.tw");
 
@@ -67,19 +57,19 @@ export default class PostPublisher {
 
   public async setupLocalStorage() {
     await this.window.webContents.executeJavaScript(
-      "localStorage.setItem('FOURM_TOUR_vote_apply', 'shown')"
+      "localStorage.setItem('FOURM_TOUR_vote_apply', 'shown')",
     );
     await this.window.webContents.executeJavaScript(
-      "localStorage.setItem('FOURM_TOUR_comment', 'shown')"
+      "localStorage.setItem('FOURM_TOUR_comment', 'shown')",
     );
     await this.window.webContents.executeJavaScript(
-      "localStorage.setItem('FOURM_DEMONSTRATIO_HINT', 'shown')"
+      "localStorage.setItem('FOURM_DEMONSTRATIO_HINT', 'shown')",
     );
   }
 
   public async toPublishPage() {
     await this.window.loadURL(
-      `https://forum.gamer.com.tw/post1.php?bsn=${this.post.board.no}&type=1`
+      `https://forum.gamer.com.tw/post1.php?bsn=${this.post.board.no}&type=1`,
     );
 
     const publishPage = await this.page.$(".c-post__header");
@@ -108,7 +98,7 @@ export default class PostPublisher {
   public async setupProperties() {
     await this.page.select(
       "select[name='demonstratioType']",
-      this.post.demonstratio
+      this.post.demonstratio,
     );
     await this.page.select("select[name='nsubbsn']", this.post.sub_board);
     await this.page.select("select[name='subject']", this.post.subject);
@@ -118,7 +108,7 @@ export default class PostPublisher {
   public async fallbackSubBoard() {
     const pickedValue = await this.page.$eval(
       "select[name='nsubbsn']",
-      (subBoard) => subBoard.value
+      (subBoard) => subBoard.value,
     );
 
     if (pickedValue === this.post.sub_board) {
@@ -127,7 +117,7 @@ export default class PostPublisher {
 
     const fallbackValue = await this.page.evaluate(() => {
       const options = document.querySelectorAll(
-        "select[name='nsubbsn'] > option"
+        "select[name='nsubbsn'] > option",
       );
 
       for (let el of options.values()) {
