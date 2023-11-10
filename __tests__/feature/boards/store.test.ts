@@ -27,7 +27,7 @@ describe("create a board api", () => {
       .send({ no: "123456", name: " " })
       .expect(422)
       .expect((res) =>
-        expect(res.body).toMatchObject({ errors: [{ path: "name" }] })
+        expect(res.body).toMatchObject({ errors: [{ path: "name" }] }),
       );
   });
 
@@ -39,7 +39,7 @@ describe("create a board api", () => {
       .send({ no: existBoard.no, name: "new board" })
       .expect(422)
       .expect((res) =>
-        expect(res.body).toMatchObject({ errors: [{ path: "no" }] })
+        expect(res.body).toMatchObject({ errors: [{ path: "no" }] }),
       );
 
     await request(app)
@@ -47,17 +47,35 @@ describe("create a board api", () => {
       .send({ no: "123456", name: existBoard.name })
       .expect(422)
       .expect((res) =>
-        expect(res.body).toMatchObject({ errors: [{ path: "name" }] })
+        expect(res.body).toMatchObject({ errors: [{ path: "name" }] }),
       );
   });
 
-  it("only allow digits in board no", async () => {
+  it("only allow digits and integer in board no", async () => {
     await request(app)
       .post("/api/boards")
       .send({ no: "not_digits", name: "new board" })
       .expect(422)
       .expect((res) =>
-        expect(res.body).toMatchObject({ errors: [{ path: "no" }] })
+        expect(res.body).toMatchObject({ errors: [{ path: "no" }] }),
+      );
+
+    await request(app)
+      .post("/api/boards")
+      .send({ no: "123.456", name: "new board" })
+      .expect(422)
+      .expect((res) =>
+        expect(res.body).toMatchObject({ errors: [{ path: "no" }] }),
+      );
+  });
+
+  it("only allow positive board no", async () => {
+    await request(app)
+      .post("/api/boards")
+      .send({ no: "-123456", name: "new board" })
+      .expect(422)
+      .expect((res) =>
+        expect(res.body).toMatchObject({ errors: [{ path: "no" }] }),
       );
   });
 });
