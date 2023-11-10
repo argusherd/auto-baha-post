@@ -12,7 +12,7 @@ import validator from "../middlewares/validate-request";
 const router = Router();
 
 const validateBoard = [
-  body("no").trim().notEmpty().isNumeric(),
+  body("no").isInt({ min: 0 }),
   body("name").trim().notEmpty(),
 ];
 
@@ -33,7 +33,7 @@ router.post(
     ({ no: board.no, name: board.name } = req.body);
 
     res.status(201).json(await board.save());
-  }
+  },
 );
 
 router.put(
@@ -52,7 +52,7 @@ router.put(
     ({ no: board.no, name: board.name } = req.body);
 
     res.json(await board.save());
-  }
+  },
 );
 
 router.delete(
@@ -62,7 +62,7 @@ router.delete(
     const notDeletable = await Post.countBy({
       board_id: req.board.id,
       scheduled_at: MoreThanOrEqual(
-        moment().utc().format("YYYY-MM-DD HH:mm:ss")
+        moment().utc().format("YYYY-MM-DD HH:mm:ss"),
       ),
     });
 
@@ -71,7 +71,7 @@ router.delete(
     await req.board.remove();
 
     res.sendStatus(200);
-  }
+  },
 );
 
 router.get(
@@ -81,7 +81,7 @@ router.get(
     const { id: board_id } = req.board;
 
     res.json(await Demonstratio.findBy({ board_id, value: Not("0") }));
-  }
+  },
 );
 
 router.get(
@@ -95,9 +95,9 @@ router.get(
         board_id,
         value: Not("0"),
         text: Not(Like("%已鎖定%")),
-      })
+      }),
     );
-  }
+  },
 );
 
 function notInUse(column: string, ignoreId?: number) {
