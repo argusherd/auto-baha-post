@@ -22,6 +22,8 @@
   },
   "error": {
     "not_empty": "{{column}} 不應為空白",
-    "not_numeric": "{{column}} 需要是數字"
+    "not_numeric": "{{column}} 需要是數字",
+    "not_positive_int": "{{column}} 需要是正整數",
+    "not_in_use": "{{column}} 已被使用"
   }
 }

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { body } from "express-validator";
+import { t } from "i18next";
 import moment from "moment";
 import { Like, MoreThanOrEqual, Not } from "typeorm";
 import Board from "../database/entities/Board";
@@ -12,8 +13,15 @@ import validator from "../middlewares/validate-request";
 const router = Router();
 
 const validateBoard = [
-  body("no").isInt({ min: 0 }),
-  body("name").trim().notEmpty(),
+  body("no")
+    .isInt({ min: 0 })
+    .withMessage(() =>
+      t("error.not_positive_int", { column: t("input.board_no") }),
+    ),
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage(() => t("error.not_empty", { column: t("input.board_name") })),
 ];
 
 router.get("/boards", async (_req: Request, res: Response) => {
@@ -24,8 +32,16 @@ router.post(
   "/boards",
   validator([
     ...validateBoard,
-    body("no").custom(notInUse("no")),
-    body("name").custom(notInUse("name")),
+    body("no")
+      .custom(notInUse("no"))
+      .withMessage(() =>
+        t("error.not_in_use", { column: t("input.board_no") }),
+      ),
+    body("name")
+      .custom(notInUse("name"))
+      .withMessage(() =>
+        t("error.not_in_use", { column: t("input.board_name") }),
+      ),
   ]),
   async (req: Request, res: Response) => {
     const board = new Board();
@@ -42,8 +58,16 @@ router.put(
   validator(validateBoard),
   (req: Request, res: Response, next: NextFunction) => {
     validator([
-      body("no").custom(notInUse("no", req.board.id)),
-      body("name").custom(notInUse("name", req.board.id)),
+      body("no")
+        .custom(notInUse("no", req.board.id))
+        .withMessage(() =>
+          t("error.not_in_use", { column: t("input.board_no") }),
+        ),
+      body("name")
+        .custom(notInUse("name", req.board.id))
+        .withMessage(() =>
+          t("error.not_in_use", { column: t("input.board_name") }),
+        ),
     ])(req, res, next);
   },
   async (req: Request, res: Response) => {

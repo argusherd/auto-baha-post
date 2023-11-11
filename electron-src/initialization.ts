@@ -15,7 +15,7 @@ export function serveProduction() {
       isDev || process.env.NODE_ENV == "test"
         ? process.cwd()
         : app.getAppPath(),
-      "./renderer/out"
+      "./renderer/out",
     ),
   });
 }
