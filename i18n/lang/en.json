@@ -22,6 +22,8 @@
   },
   "error": {
     "not_empty": "{{column}} should not be empty.",
-    "not_numeric": "{{column}} should be a numberic."
+    "not_numeric": "{{column}} should be a numberic.",
+    "not_positive_int": "{{column}} should be a positive integer.",
+    "not_in_use": "{{column}} is already in use."
   }
 }
