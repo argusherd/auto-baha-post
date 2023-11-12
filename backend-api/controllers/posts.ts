@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { body } from "express-validator";
+import { t } from "i18next";
 import moment from "moment";
 import { Between, Not } from "typeorm";
 import Board from "../database/entities/Board";
@@ -10,17 +11,33 @@ import validator from "../middlewares/validate-request";
 const router = Router();
 
 const validatePost = [
-  body("title").trim().notEmpty(),
+  body("title")
+    .trim()
+    .notEmpty()
+    .withMessage(() => t("error.not_empty", { column: t("input.title") })),
   body("demonstratio").optional({ values: "falsy" }),
   body("sub_board").optional({ values: "falsy" }),
   body("subject").optional({ values: "falsy" }),
-  body("content").notEmpty(),
+  body("content")
+    .notEmpty()
+    .withMessage(() => t("error.not_empty", { column: t("input.content") })),
   body("board_id").if(body("board_id").notEmpty()).custom(existingBoard),
   body("scheduled_at")
     .isISO8601()
+    .withMessage(() => t("error.not_iso8601"))
     .isAfter(moment().toISOString())
+    .withMessage(() =>
+      t("error.not_after", {
+        value: moment().local().format("YYYY-MM-DD HH:mm"),
+      }),
+    )
     .optional({ values: "falsy" }),
-  body("board_id").if(body("scheduled_at").notEmpty()).notEmpty(),
+  body("board_id")
+    .if(body("scheduled_at").notEmpty())
+    .notEmpty()
+    .withMessage(
+      () => () => t("error.not_empty", { column: t("input.board") }),
+    ),
 ];
 
 router.get("/posts", async (_req: Request, res: Response) => {
@@ -32,7 +49,7 @@ router.get(
   bindEntity(Post),
   async (req: Request, res: Response) => {
     res.json(req.post);
-  }
+  },
 );
 
 router.post(
@@ -47,7 +64,7 @@ router.post(
     setPostDate(post, req);
 
     res.status(201).json(await post.save());
-  }
+  },
 );
 
 router.put(
@@ -67,7 +84,7 @@ router.put(
     setPostDate(post, req);
 
     res.status(200).json(await post.save());
-  }
+  },
 );
 
 router.delete(
@@ -77,13 +94,15 @@ router.delete(
     await req.post.remove();
 
     res.sendStatus(200);
-  }
+  },
 );
 
 async function existingBoard(id: number) {
   const isExist = await Board.countBy({ id });
 
-  return isExist ? Promise.resolve() : Promise.reject();
+  return isExist
+    ? Promise.resolve()
+    : Promise.reject(t("error.not_exist", { column: t("input.board") }));
 }
 
 function notOverlapped(ignoreId?: number) {
@@ -94,12 +113,14 @@ function notOverlapped(ignoreId?: number) {
     const isOverlapped = await Post.countBy({
       scheduled_at: Between(
         datetime.startOf("minute").format(format),
-        datetime.endOf("minute").format(format)
+        datetime.endOf("minute").format(format),
       ),
       ...(ignoreId && { id: Not(ignoreId) }),
     });
 
-    return isOverlapped ? Promise.reject() : Promise.resolve();
+    return isOverlapped
+      ? Promise.reject()
+      : Promise.resolve(t("error.not_overlapped"));
   };
 }
 
