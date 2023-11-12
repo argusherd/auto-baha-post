@@ -17,6 +17,7 @@
     "sub_board": "子板",
     "content": "內文",
     "scheduled_at": "排程發布時間",
+    "board": "看板",
     "board_name": "看板名稱",
     "board_no": "看板編號"
   },
@@ -24,6 +25,10 @@
     "not_empty": "{{column}} 不應為空白",
     "not_numeric": "{{column}} 需要是數字",
     "not_positive_int": "{{column}} 需要是正整數",
-    "not_in_use": "{{column}} 已被使用"
+    "not_in_use": "{{column}} 已被使用",
+    "not_exist": "該 {{column}} 不存在",
+    "not_iso8601": "需提供符合ISO 8601格式的日期/時間",
+    "not_after": "需提供 {{value}} 之後的日期/時間",
+    "not_overlapped": "該時段已有其他安排"
   }
 }
