@@ -3,6 +3,7 @@
 import moment from "moment";
 import "moment/locale/zh-tw";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import "./globals.css";
 import Header from "./header";
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
     await i18n.changeLanguage(window.lng);
     moment.locale(window.lng);
   };
+  const { t } = useTranslation();
 
   useEffect(() => {
     setLng();
@@ -19,7 +21,9 @@ export default function RootLayout({ children }) {
 
   return (
     <html>
-      <head></head>
+      <head>
+        <title>{t("app")}</title>
+      </head>
       <body>
         <Header />
 

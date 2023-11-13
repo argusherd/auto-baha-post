@@ -1,4 +1,5 @@
 {
+  "app": "自動巴哈發文",
   "dashboard": "儀表板",
   "last_time_checked_at": "最後確認於 {{checked_at}}",
   "publish_to": "發布至",
@@ -9,7 +10,8 @@
     "open_baha": "開啟巴哈介面",
     "save": "儲存",
     "publish_now": "立即發布",
-    "delete": "刪除"
+    "delete": "刪除",
+    "back_to": "返回{{destination}}"
   },
   "input": {
     "title": "標題",
