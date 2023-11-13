@@ -2,6 +2,7 @@ import axios from "axios";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Login from "../../backend-api/database/entities/Login";
@@ -16,6 +17,7 @@ export default function Header() {
   });
   const { t } = useTranslation();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     window.electron.loginStatusRefreshed(checkLogin);
@@ -50,7 +52,14 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between gap-2 bg-teal-600 p-2  text-white">
       <Link href={"/"} className="text-lg font-bold">
-        {t("dashboard")}
+        {pathname === "/" ? (
+          t("app")
+        ) : (
+          <div className="flex items-center">
+            <i className="icon-[mingcute--back-fill]"></i>
+            <span>{t("action.back_to", { destination: t("dashboard") })}</span>
+          </div>
+        )}
       </Link>
       <div className="flex items-center gap-3">
         <Languages />

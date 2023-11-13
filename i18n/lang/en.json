@@ -1,4 +1,5 @@
 {
+  "app": "Auto Baha Post",
   "dashboard": "Dashboard",
   "last_time_checked_at": "Last time checked at {{checked_at}}",
   "publish_to": "Publish to",
@@ -9,7 +10,8 @@
     "open_baha": "Open Baha's page",
     "save": "Save",
     "publish_now": "Publish now",
-    "delete": "Delete"
+    "delete": "Delete",
+    "back_to": "Back to {{destination}}"
   },
   "input": {
     "title": "Title",
