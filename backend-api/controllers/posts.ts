@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { body } from "express-validator";
 import { t } from "i18next";
 import moment from "moment";
-import { Between, Not } from "typeorm";
+import { Between, IsNull, MoreThanOrEqual, Not } from "typeorm";
 import Board from "../database/entities/Board";
 import Post from "../database/entities/Post";
 import bindEntity from "../middlewares/route-entity-binding";
@@ -42,6 +42,18 @@ const validatePost = [
 
 router.get("/posts", async (_req: Request, res: Response) => {
   res.json(await Post.find());
+});
+
+router.get("/posts/upcoming", async (_req: Request, res: Response) => {
+  res.json(
+    await Post.findBy({
+      scheduled_at: MoreThanOrEqual(
+        moment().utc().format("YYYY-MM-DD HH:mm:ss"),
+      ),
+      published_at: IsNull(),
+      publish_failed: IsNull(),
+    }),
+  );
 });
 
 router.get(
