@@ -56,6 +56,16 @@ router.get("/posts/upcoming", async (_req: Request, res: Response) => {
   );
 });
 
+router.get("/posts/draft", async (_req: Request, res: Response) => {
+  res.json(
+    await Post.findBy({
+      scheduled_at: IsNull(),
+      published_at: IsNull(),
+      publish_failed: IsNull(),
+    }),
+  );
+});
+
 router.get("/posts/published", async (_req: Request, res: Response) => {
   res.json(
     await Post.findBy({
