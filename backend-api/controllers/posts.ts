@@ -56,6 +56,14 @@ router.get("/posts/upcoming", async (_req: Request, res: Response) => {
   );
 });
 
+router.get("/posts/failed", async (_req: Request, res: Response) => {
+  res.json(
+    await Post.findBy({
+      publish_failed: Not(IsNull()),
+    }),
+  );
+});
+
 router.get("/posts/draft", async (_req: Request, res: Response) => {
   res.json(
     await Post.findBy({
