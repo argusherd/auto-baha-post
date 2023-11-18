@@ -30,25 +30,28 @@ export default function CreatePost() {
   }
 
   return (
-    <form onSubmit={(event) => event.preventDefault()}>
-      <FormProvider {...methods}>
-        <PostInputs />
-      </FormProvider>
+    <div>
+      <h2 className="mb-3 text-lg font-semibold">{t("page.create_post")}</h2>
+      <form onSubmit={(event) => event.preventDefault()}>
+        <FormProvider {...methods}>
+          <PostInputs />
+        </FormProvider>
 
-      <button
-        aria-label="save"
-        className="relative mt-2 rounded bg-teal-500 px-2 py-1 text-white"
-        onClick={handleSubmit(onSubmit)}
-      >
-        {t("action.save")}
+        <button
+          aria-label="save"
+          className="relative mt-2 rounded bg-teal-500 px-2 py-1 text-white"
+          onClick={handleSubmit(onSubmit)}
+        >
+          {t("action.save")}
 
-        {isDirty && (
-          <span
-            data-testid="is-dirty"
-            className="absolute -top-1 h-3 w-3 rounded-full bg-red-500"
-          ></span>
-        )}
-      </button>
-    </form>
+          {isDirty && (
+            <span
+              data-testid="is-dirty"
+              className="absolute -top-1 h-3 w-3 rounded-full bg-red-500"
+            ></span>
+          )}
+        </button>
+      </form>
+    </div>
   );
 }

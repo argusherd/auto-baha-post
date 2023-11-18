@@ -56,7 +56,7 @@ describe("edit a post in show a post page", () => {
 
   it("can handle a submit event to persist new post data", async () => {
     await waitFor(() => rerender(<ShowPost />));
-    await userEvent.click(screen.getByRole("heading"));
+    await userEvent.click(screen.getByRole("heading", { level: 5 }));
 
     const title = screen.getByPlaceholderText("Title");
     const demonstratio = screen.getByPlaceholderText("Demonstratio");
@@ -107,7 +107,7 @@ describe("edit a post in show a post page", () => {
 
     mockedAxios.put.mockResolvedValue({ data: { board_id: 1 } });
 
-    await userEvent.click(screen.getByRole("heading"));
+    await userEvent.click(screen.getByRole("heading", { level: 5 }));
 
     const gaming = screen.getByText("Gaming");
     const submit = screen.getByRole("button", { name: "Save" });

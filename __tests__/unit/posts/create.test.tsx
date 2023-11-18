@@ -23,7 +23,7 @@ describe("create post page", () => {
   });
 
   it("can handle submit event in order to persist post data", async () => {
-    await userEvent.click(screen.getByRole("heading"));
+    await userEvent.click(screen.getByRole("heading", { level: 5 }));
 
     const title = screen.getByPlaceholderText("Title");
     const demonstratio = screen.getByPlaceholderText("Demonstratio");
