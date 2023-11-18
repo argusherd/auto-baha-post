@@ -55,7 +55,7 @@ describe("show a post page", () => {
     await waitFor(() => rerender(<ShowPost />));
 
     const board = screen.getByPlaceholderText("board");
-    const display = screen.getByRole("heading");
+    const display = screen.getByRole("heading", { level: 5 });
 
     expect(board).toHaveValue("1");
     expect(display).toHaveTextContent("Tech");

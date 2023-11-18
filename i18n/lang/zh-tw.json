@@ -13,6 +13,10 @@
     "delete": "刪除",
     "back_to": "返回{{destination}}"
   },
+  "page": {
+    "create_post": "建立文章",
+    "update_post": "更新文章"
+  },
   "input": {
     "title": "標題",
     "demonstratio": "稱號",

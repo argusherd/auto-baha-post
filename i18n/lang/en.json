@@ -13,6 +13,10 @@
     "delete": "Delete",
     "back_to": "Back to {{destination}}"
   },
+  "page": {
+    "create_post": "Create a post",
+    "update_post": "Update the post"
+  },
   "input": {
     "title": "Title",
     "demonstratio": "Demonstratio",

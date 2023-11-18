@@ -63,44 +63,47 @@ export default function ShowPost() {
   }
 
   return (
-    <form onSubmit={(event) => event.preventDefault()}>
-      <FormProvider {...methods}>
-        <PostInputs />
-      </FormProvider>
+    <div>
+      <h2 className="mb-3 text-lg font-semibold">{t("page.update_post")}</h2>
+      <form onSubmit={(event) => event.preventDefault()}>
+        <FormProvider {...methods}>
+          <PostInputs />
+        </FormProvider>
 
-      <div className="mt-2 flex justify-between">
-        <button
-          className="relative rounded bg-teal-500 px-2 py-1 text-white"
-          onClick={handleSubmit(onSubmit)}
-        >
-          {t("action.save")}
+        <div className="mt-2 flex justify-between">
+          <button
+            className="relative rounded bg-teal-500 px-2 py-1 text-white"
+            onClick={handleSubmit(onSubmit)}
+          >
+            {t("action.save")}
 
-          {isDirty && (
-            <span
-              data-testid="is-dirty"
-              className="absolute -top-1 h-3 w-3 rounded-full bg-red-500"
-            ></span>
-          )}
-        </button>
-        <div className="flex gap-2">
-          <button
-            aria-label="publish-now"
-            className="rounded border px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-200"
-            disabled={!boardId}
-            title={boardId ? undefined : t("select_a_board_to_unlock")}
-            onClick={() => window.electron.publishNow(Number(POST_ID))}
-          >
-            {t("action.publish_now")}
+            {isDirty && (
+              <span
+                data-testid="is-dirty"
+                className="absolute -top-1 h-3 w-3 rounded-full bg-red-500"
+              ></span>
+            )}
           </button>
-          <button
-            className="rounded bg-red-600 px-2 py-1 text-white"
-            data-testid="delete-post"
-            onClick={handleDelete}
-          >
-            {t("action.delete")}
-          </button>
+          <div className="flex gap-2">
+            <button
+              aria-label="publish-now"
+              className="rounded border px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-200"
+              disabled={!boardId}
+              title={boardId ? undefined : t("select_a_board_to_unlock")}
+              onClick={() => window.electron.publishNow(Number(POST_ID))}
+            >
+              {t("action.publish_now")}
+            </button>
+            <button
+              className="rounded bg-red-600 px-2 py-1 text-white"
+              data-testid="delete-post"
+              onClick={handleDelete}
+            >
+              {t("action.delete")}
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
