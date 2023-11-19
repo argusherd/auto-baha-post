@@ -13,7 +13,6 @@ export default function ShowPost() {
   const router = useRouter();
   const params = useSearchParams();
   const POST_ID = params.get("id");
-  const requestUrl = `${window.backendUrl}/api/posts/${POST_ID}`;
   const methods = useForm<Partial<Post>>({
     defaultValues: getPostData,
   });
@@ -28,7 +27,9 @@ export default function ShowPost() {
   const { t } = useTranslation();
 
   async function getPostData() {
-    const getPost = await axios.get<Post>(requestUrl);
+    const getPost = await axios.get<Post>(
+      `${window.backendUrl}/api/posts/${POST_ID}`,
+    );
 
     if (getPost.status == 404) {
       router.push("/posts/create");
@@ -50,14 +51,17 @@ export default function ShowPost() {
 
   async function onSubmit(data: Post) {
     handleFormRequest(async () => {
-      const updatedPost = await axios.put(requestUrl, data);
+      const updatedPost = await axios.put(
+        `${window.backendUrl}/api/posts/${POST_ID}`,
+        data,
+      );
 
       reset(formatPostData(updatedPost.data));
     }, setError);
   }
 
   async function handleDelete() {
-    const res = await axios.delete(requestUrl);
+    const res = await axios.delete(`${window.backendUrl}/api/posts/${POST_ID}`);
 
     if (res.status == 200) router.push("/posts");
   }
