@@ -6,6 +6,7 @@
   "select_a_board": "選擇要發布的哈拉板",
   "select_a_board_to_unlock": "選擇要發布的哈拉板以解鎖",
   "refresh_to_retrieve_latest": "刷新以獲取最新的資料",
+  "no_posts": "目前沒有文章",
   "action": {
     "open_baha": "開啟巴哈介面",
     "save": "儲存",
@@ -15,7 +16,16 @@
   },
   "page": {
     "create_post": "建立文章",
-    "update_post": "更新文章"
+    "update_post": "更新文章",
+    "post_list": "文章列表"
+  },
+  "post": {
+    "board": "看板: {{board}}",
+    "created_at": "建立於: {{created_at}}",
+    "published_at": "發布於: {{published_at}}",
+    "scheduled_at": "預定發布於: {{scheduled_at}}",
+    "updated_at": "更新於: {{updated_at}}",
+    "publish_failed": "發布失敗: {{publish_failed}}"
   },
   "input": {
     "title": "標題",
