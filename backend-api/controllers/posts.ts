@@ -2,7 +2,13 @@ import { Request, Response, Router } from "express";
 import { body } from "express-validator";
 import { t } from "i18next";
 import moment from "moment";
-import { Between, IsNull, MoreThanOrEqual, Not } from "typeorm";
+import {
+  Between,
+  FindOptionsWhere,
+  IsNull,
+  MoreThanOrEqual,
+  Not,
+} from "typeorm";
 import Board from "../database/entities/Board";
 import Post from "../database/entities/Post";
 import bindEntity from "../middlewares/route-entity-binding";
@@ -40,45 +46,57 @@ const validatePost = [
     ),
 ];
 
-router.get("/posts", async (_req: Request, res: Response) => {
-  res.json(await Post.find());
+router.get("/posts", async (req: Request, res: Response) => {
+  res.json(await paginator({}, req));
 });
 
-router.get("/posts/upcoming", async (_req: Request, res: Response) => {
+router.get("/posts/upcoming", async (req: Request, res: Response) => {
   res.json(
-    await Post.findBy({
-      scheduled_at: MoreThanOrEqual(
-        moment().utc().format("YYYY-MM-DD HH:mm:ss"),
-      ),
-      published_at: IsNull(),
-      publish_failed: IsNull(),
-    }),
+    await paginator(
+      {
+        scheduled_at: MoreThanOrEqual(
+          moment().utc().format("YYYY-MM-DD HH:mm:ss"),
+        ),
+        published_at: IsNull(),
+        publish_failed: IsNull(),
+      },
+      req,
+    ),
   );
 });
 
-router.get("/posts/failed", async (_req: Request, res: Response) => {
+router.get("/posts/failed", async (req: Request, res: Response) => {
   res.json(
-    await Post.findBy({
-      publish_failed: Not(IsNull()),
-    }),
+    await paginator(
+      {
+        publish_failed: Not(IsNull()),
+      },
+      req,
+    ),
   );
 });
 
-router.get("/posts/draft", async (_req: Request, res: Response) => {
+router.get("/posts/draft", async (req: Request, res: Response) => {
   res.json(
-    await Post.findBy({
-      scheduled_at: IsNull(),
-      published_at: IsNull(),
-      publish_failed: IsNull(),
-    }),
+    await paginator(
+      {
+        scheduled_at: IsNull(),
+        published_at: IsNull(),
+        publish_failed: IsNull(),
+      },
+      req,
+    ),
   );
 });
 
-router.get("/posts/published", async (_req: Request, res: Response) => {
+router.get("/posts/published", async (req: Request, res: Response) => {
   res.json(
-    await Post.findBy({
-      published_at: Not(IsNull()),
-    }),
+    await paginator(
+      {
+        published_at: Not(IsNull()),
+      },
+      req,
+    ),
   );
 });
 
@@ -174,6 +192,13 @@ function setPostDate(post: Post, req: Request) {
 
   post.board_id = req.body.board_id || null;
   post.publish_failed = post.scheduled_at ? null : post.publish_failed;
+}
+
+function paginator(where: FindOptionsWhere<Post>, req: Request) {
+  const take = Number(req.query.take || 10);
+  const skip = (Number(req.query.page || 1) - 1) * take;
+
+  return Post.find({ where, take, skip });
 }
 
 export default router;
