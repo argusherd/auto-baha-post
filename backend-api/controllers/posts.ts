@@ -187,10 +187,10 @@ function setPostDate(post: Post, req: Request) {
     sub_board: post.sub_board,
     subject: post.subject,
     content: post.content,
-    scheduled_at: post.scheduled_at,
   } = req.body);
 
   post.board_id = req.body.board_id || null;
+  post.scheduled_at = req.body.scheduled_at || null;
   post.publish_failed = post.scheduled_at ? null : post.publish_failed;
 }
 

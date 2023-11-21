@@ -31,13 +31,13 @@ export default function PostIndex() {
     <div>
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-lg font-semibold">{t("page.post_list")}</h2>
-        <a
+        <Link
           href="/posts/create"
           className="flex items-center gap-1 rounded bg-teal-500 px-2 py-1 text-white"
         >
           <i className="icon-[ic--baseline-add] text-xl"></i>
           <span>{t("page.create_post")}</span>
-        </a>
+        </Link>
       </div>
       {posts.length ? (
         <ul className="flex flex-col gap-2">

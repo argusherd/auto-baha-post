@@ -31,7 +31,18 @@ export default function CreatePost() {
 
   return (
     <div>
-      <h2 className="mb-3 text-lg font-semibold">{t("page.create_post")}</h2>
+      <div className="mb-3 flex justify-between">
+        <h2 className="text-lg font-semibold">{t("page.create_post")}</h2>
+        <button
+          className="flex items-center rounded border px-2 py-1"
+          onClick={() => router.back()}
+        >
+          <i className="icon-[mingcute--arrows-left-line] text-xl"></i>
+          <span>
+            {t("action.back_to", { destination: t("page.previous") })}
+          </span>
+        </button>
+      </div>
       <form onSubmit={(event) => event.preventDefault()}>
         <FormProvider {...methods}>
           <PostInputs />
