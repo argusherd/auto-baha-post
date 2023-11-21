@@ -27,7 +27,7 @@ export default function Boards() {
 
   useEffect(() => {
     if (watchBoard) {
-      const picked = boards.find((board) => board.id == watchBoard);
+      const picked = boards?.find((board) => board.id == watchBoard);
 
       setPublishTo(picked);
       setIsSelecting(false);

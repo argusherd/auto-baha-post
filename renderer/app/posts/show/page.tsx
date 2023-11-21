@@ -19,7 +19,7 @@ export default function ShowPost() {
   const {
     handleSubmit,
     watch,
-    formState: { isDirty },
+    formState: { isDirty, defaultValues },
     reset,
     setError,
   } = methods;
@@ -45,7 +45,7 @@ export default function ShowPost() {
       ...others,
       scheduled_at: scheduled_at
         ? moment(scheduled_at).format("YYYY-MM-DDTHH:mm")
-        : "",
+        : null,
     };
   }
 
@@ -68,13 +68,27 @@ export default function ShowPost() {
 
   return (
     <div>
-      <h2 className="mb-3 text-lg font-semibold">{t("page.update_post")}</h2>
-      <form onSubmit={(event) => event.preventDefault()}>
+      <div className="mb-3 flex justify-between">
+        <h2 className="text-lg font-semibold">{t("page.update_post")}</h2>
+        <button
+          className="flex items-center rounded border px-2 py-1"
+          onClick={() => router.back()}
+        >
+          <i className="icon-[mingcute--arrows-left-line] text-xl"></i>
+          <span>
+            {t("action.back_to", { destination: t("page.previous") })}
+          </span>
+        </button>
+      </div>
+      <form
+        className="flex flex-col gap-2"
+        onSubmit={(event) => event.preventDefault()}
+      >
         <FormProvider {...methods}>
           <PostInputs />
         </FormProvider>
 
-        <div className="mt-2 flex justify-between">
+        <div className="flex justify-between">
           <button
             className="relative rounded bg-teal-500 px-2 py-1 text-white"
             onClick={handleSubmit(onSubmit)}
@@ -92,20 +106,60 @@ export default function ShowPost() {
             <button
               aria-label="publish-now"
               className="rounded border px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-200"
-              disabled={!boardId}
-              title={boardId ? undefined : t("select_a_board_to_unlock")}
+              disabled={!boardId || isDirty}
+              title={
+                boardId
+                  ? isDirty
+                    ? t("save_to_unlock")
+                    : undefined
+                  : t("select_a_board_to_unlock")
+              }
               onClick={() => window.electron.publishNow(Number(POST_ID))}
             >
               {t("action.publish_now")}
             </button>
             <button
-              className="rounded bg-red-600 px-2 py-1 text-white"
+              className="rounded border border-red-600 px-2 py-1 text-red-600"
               data-testid="delete-post"
               onClick={handleDelete}
             >
               {t("action.delete")}
             </button>
           </div>
+        </div>
+
+        <div className="flex flex-col">
+          {defaultValues?.publish_failed && (
+            <div className="mb-1">
+              <small className="rounded border border-red-600 p-1 font-bold text-red-600">
+                <i className="icon-[material-symbols--warning-outline] align-sub text-lg"></i>
+                {t("post.publish_failed", {
+                  publish_failed: defaultValues.publish_failed,
+                })}
+              </small>
+            </div>
+          )}
+          <small>
+            {t("post.published_at", {
+              published_at: defaultValues?.published_at
+                ? moment(defaultValues.published_at).format("YYYY-MM-DD HH:mm")
+                : "-",
+            })}
+          </small>
+          <small>
+            {t("post.updated_at", {
+              updated_at: moment(defaultValues?.updated_at).format(
+                "YYYY-MM-DD HH:mm",
+              ),
+            })}
+          </small>
+          <small>
+            {t("post.created_at", {
+              created_at: moment(defaultValues?.created_at).format(
+                "YYYY-MM-DD HH:mm",
+              ),
+            })}
+          </small>
         </div>
       </form>
     </div>

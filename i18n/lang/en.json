@@ -7,6 +7,7 @@
   "select_a_board_to_unlock": "Select a board to unlock.",
   "refresh_to_retrieve_latest": "Refresh to retrieve the latest record.",
   "no_posts": "There are currently no posts.",
+  "save_to_unlock": "Save to unlock.",
   "action": {
     "open_baha": "Open Baha's page",
     "save": "Save",
@@ -15,6 +16,7 @@
     "back_to": "Back to {{destination}}"
   },
   "page": {
+    "previous": "previous page",
     "create_post": "Create a post",
     "update_post": "Update the post",
     "post_list": "Post list"

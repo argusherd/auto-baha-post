@@ -7,6 +7,7 @@
   "select_a_board_to_unlock": "選擇要發布的哈拉板以解鎖",
   "refresh_to_retrieve_latest": "刷新以獲取最新的資料",
   "no_posts": "目前沒有文章",
+  "save_to_unlock": "儲存後解鎖",
   "action": {
     "open_baha": "開啟巴哈介面",
     "save": "儲存",
@@ -15,6 +16,7 @@
     "back_to": "返回{{destination}}"
   },
   "page": {
+    "previous": "上一頁",
     "create_post": "建立文章",
     "update_post": "更新文章",
     "post_list": "文章列表"
