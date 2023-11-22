@@ -2,7 +2,8 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electron", {
   openBaha: () => ipcRenderer.send("openBaha"),
-  publishNow: (postId: number) => ipcRenderer.send("publishNow", postId),
+  publishNow: async (postId: number) =>
+    await ipcRenderer.invoke("publishNow", postId),
   getPostProperties: async (boardId: number) =>
     await ipcRenderer.invoke("getPostProperties", boardId),
   loginStatusRefreshed: (callback: any) =>

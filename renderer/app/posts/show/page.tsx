@@ -5,6 +5,7 @@ import handleFormRequest from "@/renderer/helpers/handleFormRequest";
 import axios from "axios";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import PostInputs from "../_posts/post-inputs";
@@ -25,6 +26,7 @@ export default function ShowPost() {
   } = methods;
   const boardId = watch("board_id");
   const { t } = useTranslation();
+  const [isPublishing, setIsPublishing] = useState(false);
 
   async function getPostData() {
     const getPost = await axios.get<Post>(
@@ -105,8 +107,8 @@ export default function ShowPost() {
           <div className="flex gap-2">
             <button
               aria-label="publish-now"
-              className="rounded border px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-200"
-              disabled={!boardId || isDirty}
+              className="flex items-center rounded border px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-200"
+              disabled={!boardId || isDirty || isPublishing}
               title={
                 boardId
                   ? isDirty
@@ -114,9 +116,15 @@ export default function ShowPost() {
                     : undefined
                   : t("select_a_board_to_unlock")
               }
-              onClick={() => window.electron.publishNow(Number(POST_ID))}
+              onClick={async () => {
+                setIsPublishing(true);
+                await window.electron.publishNow(Number(POST_ID));
+                reset(await getPostData());
+                setIsPublishing(false);
+              }}
             >
-              {t("action.publish_now")}
+              {isPublishing && <i className="icon-[eos-icons--loading]" />}
+              <span>{t("action.publish_now")}</span>
             </button>
             <button
               className="rounded border border-red-600 px-2 py-1 text-red-600"

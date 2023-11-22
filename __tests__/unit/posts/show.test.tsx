@@ -102,4 +102,37 @@ describe("show a post page", () => {
 
     expect(mockedPublishNow).toBeCalled();
   });
+
+  it("cannot manually publish the post if there is no board assigned", async () => {
+    unmount();
+
+    mockedAxios.get.mockImplementation(async (url: string) => {
+      return url === backendUrl + `/api/posts/${POST_ID}`
+        ? {
+            data: {
+              title: "My first post",
+              content: "Content in post",
+            },
+          }
+        : {
+            data: [],
+          };
+    });
+
+    await waitFor(() => ({ rerender } = render(<ShowPost />)));
+
+    const publishNow = screen.getByRole("button", { name: /publish-now/ });
+
+    expect(publishNow).toBeDisabled();
+  });
+
+  it("cannot manually publish the post if the inputs are dirty", async () => {
+    expect(screen.getByRole("button", { name: /publish-now/ })).toBeEnabled();
+
+    const title = screen.getByPlaceholderText("Title");
+
+    await userEvent.type(title, "dirty");
+
+    expect(screen.getByRole("button", { name: /publish-now/ })).toBeDisabled();
+  });
 });

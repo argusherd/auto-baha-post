@@ -15,7 +15,7 @@ describe("view all posts page", () => {
       ],
     });
 
-    render(<PostIndex />);
+    await waitFor(() => render(<PostIndex />));
 
     const posts = await waitFor(() => screen.getAllByRole("listitem"));
 
@@ -26,11 +26,9 @@ describe("view all posts page", () => {
   it("can tell you there are no posts", async () => {
     mockedAxios.get.mockResolvedValue({ data: [] });
 
-    render(<PostIndex />);
+    await waitFor(() => render(<PostIndex />));
 
-    const noPosts = await waitFor(() =>
-      screen.queryByText("There are no posts.")
-    );
+    const noPosts = screen.queryByText("There are currently no posts.");
 
     expect(noPosts).toBeInTheDocument();
   });
