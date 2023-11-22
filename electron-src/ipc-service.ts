@@ -8,7 +8,7 @@ import { createWindow } from "./initialization";
 
 export default function registerIpcMain() {
   ipcMain.on("openBaha", openBaha);
-  ipcMain.on(
+  ipcMain.handle(
     "publishNow",
     async (_event, postId: number) => await publishNow(postId),
   );
