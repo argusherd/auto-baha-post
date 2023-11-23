@@ -32,4 +32,25 @@ describe("view all posts page", () => {
 
     expect(noPosts).toBeInTheDocument();
   });
+
+  it("shows the name of the assigned board for the post", async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: [
+        {
+          id: 1,
+          title: "my first post",
+          content: "content in the post",
+          board: {
+            name: "Gaming",
+          },
+        },
+      ],
+    });
+
+    await waitFor(() => render(<PostIndex />));
+
+    const boardName = screen.getByTestId("board-name");
+
+    expect(boardName).toHaveTextContent("Board: Gaming");
+  });
 });

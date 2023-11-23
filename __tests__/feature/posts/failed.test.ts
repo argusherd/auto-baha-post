@@ -68,4 +68,16 @@ describe("failed posts api", () => {
         expect(res.body[0].id).toEqual(the21th.id);
       });
   });
+
+  it("should include the assigned board", async () => {
+    const failed = await new PostFactory().create({
+      publish_failed: "reason",
+    });
+
+    await supertest(app)
+      .get("/api/posts/failed")
+      .expect((res) => {
+        expect(res.body[0].board.id).toEqual(failed.board.id);
+      });
+  });
 });

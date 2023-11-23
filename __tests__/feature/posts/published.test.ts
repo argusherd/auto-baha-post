@@ -69,4 +69,16 @@ describe("the published posts api", () => {
         expect(res.body[0].id).toEqual(the21th.id);
       });
   });
+
+  it("should include the assigned board", async () => {
+    const published = await new PostFactory().create({
+      published_at: moment().toISOString(),
+    });
+
+    await supertest(app)
+      .get("/api/posts/published")
+      .expect((res) => {
+        expect(res.body[0].board.id).toEqual(published.board.id);
+      });
+  });
 });
