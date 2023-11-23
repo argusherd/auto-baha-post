@@ -198,7 +198,7 @@ function paginator(where: FindOptionsWhere<Post>, req: Request) {
   const take = Number(req.query.take || 10);
   const skip = (Number(req.query.page || 1) - 1) * take;
 
-  return Post.find({ where, take, skip });
+  return Post.find({ where, take, skip, relations: { board: true } });
 }
 
 export default router;

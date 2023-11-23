@@ -101,7 +101,7 @@ export default function PostIndex() {
                         : "-",
                     })}
                   </small>
-                  <small className="basis-1/2">
+                  <small className="basis-1/2" data-testid="board-name">
                     {t("post.board", {
                       board: post.board?.name || "-",
                     })}

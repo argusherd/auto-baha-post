@@ -80,4 +80,14 @@ describe("in draft posts api", () => {
         expect(res.body[0].id).toEqual(the21th.id);
       });
   });
+
+  it("should include the assigned board", async () => {
+    const post = await new PostFactory().create();
+
+    await supertest(app)
+      .get("/api/posts/draft")
+      .expect((res) => {
+        expect(res.body[0].board.id).toEqual(post.board.id);
+      });
+  });
 });

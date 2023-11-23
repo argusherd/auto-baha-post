@@ -8,7 +8,7 @@ describe("the upcoming post api", () => {
     await new PostFactory().create(); // still in draft
 
     const scheduled = await new PostFactory().create({
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     });
 
     await supertest(app)
@@ -23,11 +23,11 @@ describe("the upcoming post api", () => {
   it("does not include posts that have been published", async () => {
     await new PostFactory().create({
       published_at: moment().toISOString(),
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     }); // published
 
     const scheduled = await new PostFactory().create({
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     });
 
     await supertest(app)
@@ -42,11 +42,11 @@ describe("the upcoming post api", () => {
   it("does not include posts that have failed to publish", async () => {
     await new PostFactory().create({
       publish_failed: "reason",
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     }); // publish failed
 
     const scheduled = await new PostFactory().create({
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     });
 
     await supertest(app)
@@ -64,7 +64,7 @@ describe("the upcoming post api", () => {
     }); // stale
 
     const scheduled = await new PostFactory().create({
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     });
 
     await supertest(app)
@@ -78,7 +78,7 @@ describe("the upcoming post api", () => {
 
   it("defaults to 10 records per page", async () => {
     const override = {
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     };
 
     await new PostFactory().createMany(10, override);
@@ -95,7 +95,7 @@ describe("the upcoming post api", () => {
 
   it("can determine the number of records to list per page", async () => {
     const override = {
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     };
 
     await new PostFactory().create(override);
@@ -112,7 +112,7 @@ describe("the upcoming post api", () => {
 
   it("can paginate all the upcoming posts", async () => {
     const override = {
-      scheduled_at: moment().toISOString(),
+      scheduled_at: moment().add(1, "minute").toISOString(),
     };
 
     await new PostFactory().createMany(20, override);
@@ -123,6 +123,18 @@ describe("the upcoming post api", () => {
       .expect((res) => {
         expect(res.body).toHaveLength(1);
         expect(res.body[0].id).toEqual(the21th.id);
+      });
+  });
+
+  it("should include the assigned board", async () => {
+    const scheduled = await new PostFactory().create({
+      scheduled_at: moment().add(1, "minute").toISOString(),
+    });
+
+    await supertest(app)
+      .get("/api/posts/upcoming")
+      .expect((res) => {
+        expect(res.body[0].board.id).toEqual(scheduled.board.id);
       });
   });
 });
