@@ -31,7 +31,7 @@ export default function CreatePost() {
 
   return (
     <div>
-      <div className="mb-3 flex justify-between">
+      <div className="mb-3 flex items-center justify-between">
         <h2 className="text-lg font-semibold">{t("page.create_post")}</h2>
         <button
           className="flex items-center rounded border px-2 py-1"

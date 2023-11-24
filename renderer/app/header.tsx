@@ -57,7 +57,9 @@ export default function Header() {
         ) : (
           <div className="flex items-center">
             <i className="icon-[mingcute--back-fill]"></i>
-            <span>{t("action.back_to", { destination: t("dashboard") })}</span>
+            <span>
+              {t("action.back_to", { destination: t("page.dashboard") })}
+            </span>
           </div>
         )}
       </Link>

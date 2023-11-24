@@ -1,6 +1,5 @@
 {
   "app": "自動巴哈發文",
-  "dashboard": "儀表板",
   "last_time_checked_at": "最後確認於 {{checked_at}}",
   "publish_to": "發布至",
   "select_a_board": "選擇要發布的哈拉板",
@@ -16,10 +15,15 @@
     "back_to": "返回{{destination}}"
   },
   "page": {
+    "dashboard": "儀表板",
     "previous": "上一頁",
     "create_post": "建立文章",
     "update_post": "更新文章",
-    "post_list": "文章列表"
+    "post_list": "文章列表",
+    "upcoming": "即將發布",
+    "failed": "發布失敗",
+    "draft": "草稿中",
+    "published": "已成功發布"
   },
   "post": {
     "board": "看板: {{board}}",
