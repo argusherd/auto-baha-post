@@ -1,6 +1,5 @@
 {
   "app": "Auto Baha Post",
-  "dashboard": "Dashboard",
   "last_time_checked_at": "Last time checked at {{checked_at}}",
   "publish_to": "Publish to",
   "select_a_board": "Select a board to publish on.",
@@ -16,10 +15,15 @@
     "back_to": "Back to {{destination}}"
   },
   "page": {
+    "dashboard": "Dashboard",
     "previous": "previous page",
     "create_post": "Create a post",
     "update_post": "Update the post",
-    "post_list": "Post list"
+    "post_list": "Post list",
+    "upcoming": "Upcoming publication",
+    "failed": "Failed to publish",
+    "draft": "Still in draft",
+    "published": "Already published"
   },
   "post": {
     "board": "Board: {{board}}",

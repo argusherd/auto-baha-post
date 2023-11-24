@@ -33,7 +33,7 @@ export default function PostIndex() {
         <h2 className="text-lg font-semibold">{t("page.post_list")}</h2>
         <Link
           href="/posts/create"
-          className="flex items-center gap-1 rounded bg-teal-500 px-2 py-1 text-white"
+          className="flex items-center gap-1 rounded border border-transparent bg-teal-500 px-2 py-1 text-white"
         >
           <i className="icon-[ic--baseline-add] text-xl"></i>
           <span>{t("page.create_post")}</span>
