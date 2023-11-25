@@ -142,7 +142,7 @@ export default function ShowPost() {
               <small className="rounded border border-red-600 p-1 font-bold text-red-600">
                 <i className="icon-[material-symbols--warning-outline] align-sub text-lg"></i>
                 {t("post.publish_failed", {
-                  publish_failed: defaultValues.publish_failed,
+                  publish_failed: t(`failed.${defaultValues.publish_failed}`),
                 })}
               </small>
             </div>

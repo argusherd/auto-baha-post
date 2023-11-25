@@ -82,7 +82,7 @@ export default function Dashboard() {
             >
               <h4 className="font-semibold">{failed.title}</h4>
               <small className="text-red-600" data-testid="publish_failed">
-                {failed.publish_failed}
+                {t(`failed.${failed.publish_failed}`)}
               </small>
             </Link>
           ) : (
