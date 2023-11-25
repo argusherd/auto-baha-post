@@ -52,5 +52,10 @@
     "not_iso8601": "The provided datetime should be in ISO 8601 format.",
     "not_after": "The provided datetime should be after {{value}}.",
     "not_overlapped": "This datetime has been scheduled."
+  },
+  "failed": {
+    "USER_IS_NOT_LOGIN": "User is not logged in yet.",
+    "BOARD_NOT_EXISTS": "The board does not exist.",
+    "UNABLE_TO_PUBLISH": "Unable to publish the post successfully."
   }
 }

@@ -109,7 +109,7 @@ export default function PostIndex() {
                   {post.publish_failed && (
                     <small className="basis-1/2 font-bold text-red-600">
                       {t("post.publish_failed", {
-                        publish_failed: post.publish_failed,
+                        publish_failed: t(`failed.${post.publish_failed}`),
                       })}
                     </small>
                   )}
