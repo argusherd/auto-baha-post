@@ -98,10 +98,10 @@ export default class PostPublisher extends InteractableWindow {
   public async setupProperties() {
     await this.page.select(
       "select[name='demonstratioType']",
-      this.post.demonstratio,
+      this.post.demonstratio || "",
     );
-    await this.page.select("select[name='nsubbsn']", this.post.sub_board);
-    await this.page.select("select[name='subject']", this.post.subject);
+    await this.page.select("select[name='nsubbsn']", this.post.sub_board || "");
+    await this.page.select("select[name='subject']", this.post.subject || "");
     await this.page.type("input[name='title']", this.post.title);
   }
 

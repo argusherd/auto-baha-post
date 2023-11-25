@@ -75,15 +75,15 @@ describe("the publish delegator", () => {
 
     expect(mockedExecuteJavaScript).nthCalledWith(
       1,
-      "localStorage.setItem('FOURM_TOUR_vote_apply', 'shown')"
+      "localStorage.setItem('FOURM_TOUR_vote_apply', 'shown')",
     );
     expect(mockedExecuteJavaScript).nthCalledWith(
       2,
-      "localStorage.setItem('FOURM_TOUR_comment', 'shown')"
+      "localStorage.setItem('FOURM_TOUR_comment', 'shown')",
     );
     expect(mockedExecuteJavaScript).nthCalledWith(
       3,
-      "localStorage.setItem('FOURM_DEMONSTRATIO_HINT', 'shown')"
+      "localStorage.setItem('FOURM_DEMONSTRATIO_HINT', 'shown')",
     );
   });
 
@@ -99,7 +99,7 @@ describe("the publish delegator", () => {
     await publisher.toPublishPage();
 
     expect(mockedLoadUrl).toBeCalledWith(
-      `https://forum.gamer.com.tw/post1.php?bsn=${post.board.no}&type=1`
+      `https://forum.gamer.com.tw/post1.php?bsn=${post.board.no}&type=1`,
     );
   });
 
@@ -180,11 +180,34 @@ describe("the publish delegator", () => {
     expect(mockedSelect).nthCalledWith(
       1,
       "select[name='demonstratioType']",
-      "1"
+      "1",
     );
     expect(mockedSelect).nthCalledWith(2, "select[name='nsubbsn']", "2");
     expect(mockedSelect).nthCalledWith(3, "select[name='subject']", "3");
     expect(mockedType).toBeCalledWith("input[name='title']", post.title);
+  });
+
+  it("set the post properties as an empty string if they are null", async () => {
+    const mockedSelect = jest.fn();
+    const publisher = new Publisher();
+    const post = await new PostFactory().create();
+
+    pie.getPage = jest.fn().mockResolvedValue({
+      select: mockedSelect,
+      type: jest.fn(),
+    });
+
+    publisher.post = post;
+    await publisher.init();
+    await publisher.setupProperties();
+
+    expect(mockedSelect).nthCalledWith(
+      1,
+      "select[name='demonstratioType']",
+      "",
+    );
+    expect(mockedSelect).nthCalledWith(2, "select[name='nsubbsn']", "");
+    expect(mockedSelect).nthCalledWith(3, "select[name='subject']", "");
   });
 
   it("can fallback the sub board property if the value is invalid", async () => {
@@ -512,10 +535,10 @@ describe("the publish delegator", () => {
     await publisher.run();
 
     expect(mockedSetupProperties).toHaveBeenCalledBefore(
-      mockedFallbackSubBoard
+      mockedFallbackSubBoard,
     );
     expect(mockedFallbackSubBoard).toHaveBeenCalledBefore(
-      mockedClickAwayPostTips
+      mockedClickAwayPostTips,
     );
     expect(mockedClickAwayPostTips).toHaveBeenCalledBefore(mockedSetupContent);
     expect(mockedSetupContent).toHaveBeenCalledBefore(mockedPublish);
