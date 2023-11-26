@@ -4,6 +4,7 @@ import { t } from "i18next";
 import moment from "moment";
 import {
   Between,
+  FindOptionsOrderValue,
   FindOptionsWhere,
   IsNull,
   MoreThanOrEqual,
@@ -197,8 +198,16 @@ function setPostDate(post: Post, req: Request) {
 function paginator(where: FindOptionsWhere<Post>, req: Request) {
   const take = Number(req.query.take || 10);
   const skip = (Number(req.query.page || 1) - 1) * take;
+  const sortBy = (req.query.sort_by || "updated_at") as string;
+  const sort = (req.query.sort || "desc") as FindOptionsOrderValue;
 
-  return Post.find({ where, take, skip, relations: { board: true } });
+  return Post.find({
+    where,
+    take,
+    skip,
+    relations: { board: true },
+    order: { [sortBy]: sort },
+  });
 }
 
 export default router;
