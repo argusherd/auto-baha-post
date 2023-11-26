@@ -1,5 +1,6 @@
 import PostFactory from "@/backend-api/database/factories/PostFactory";
 import app from "@/backend-api/index";
+import moment from "moment";
 import request from "supertest";
 
 describe("get posts api", () => {
@@ -76,6 +77,51 @@ describe("get posts api", () => {
       .get("/api/posts")
       .expect((res) => {
         expect(res.body[0].board.id).toEqual(post.board.id);
+      });
+  });
+
+  it("orders the list by updated_at in descending order by default", async () => {
+    const earlier = await new PostFactory().create({
+      updated_at: moment().subtract(1, "minute").toISOString(),
+    });
+    const later = await new PostFactory().create();
+
+    await request(app)
+      .get("/api/posts")
+      .expect((res) => {
+        expect(res.body[0].id).toEqual(later.id);
+        expect(res.body[1].id).toEqual(earlier.id);
+      });
+  });
+
+  it("can change the sorting order", async () => {
+    const earlier = await new PostFactory().create({
+      updated_at: moment().subtract(1, "minute").toISOString(),
+    });
+    const later = await new PostFactory().create();
+
+    await request(app)
+      .get("/api/posts?sort=asc")
+      .expect((res) => {
+        expect(res.body[0].id).toEqual(earlier.id);
+        expect(res.body[1].id).toEqual(later.id);
+      });
+  });
+
+  it("can specify the column by which to sort", async () => {
+    const scheduledEarlier = await new PostFactory().create({
+      scheduled_at: moment().subtract(1, "minute").toISOString(),
+    });
+    const scheduledLater = await new PostFactory().create({
+      updated_at: moment().subtract(1, "minute").toISOString(),
+      scheduled_at: moment().toISOString(),
+    });
+
+    await request(app)
+      .get("/api/posts?sort_by=scheduled_at")
+      .expect((res) => {
+        expect(res.body[0].id).toEqual(scheduledLater.id);
+        expect(res.body[1].id).toEqual(scheduledEarlier.id);
       });
   });
 });
