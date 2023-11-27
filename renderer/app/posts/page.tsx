@@ -4,20 +4,24 @@ import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import moment from "moment";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function PostIndex() {
   const [posts, setPosts] = useState<Post[]>([]);
   const { t } = useTranslation();
+  const params = useSearchParams();
+  const defaultType = params.get("type");
+  const [type, setType] = useState(defaultType || "");
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(window.backendUrl + "/api/posts");
+      const res = await axios.get(`${window.backendUrl}/api/posts/${type}`);
 
       setPosts(res.data);
     })();
-  }, []);
+  }, [type]);
 
   function formatDatetime(datetime: string) {
     const momentObj = moment(datetime);
@@ -38,6 +42,19 @@ export default function PostIndex() {
           <i className="icon-[ic--baseline-add] text-xl"></i>
           <span>{t("page.create_post")}</span>
         </Link>
+      </div>
+      <div className="mb-2">
+        <select
+          className="rounded border p-1"
+          defaultValue={defaultType}
+          onChange={(event) => setType(event.target.value)}
+        >
+          <option value="">{t("page.all")}</option>
+          <option value="upcoming">{t("page.upcoming")}</option>
+          <option value="failed">{t("page.failed")}</option>
+          <option value="draft">{t("page.draft")}</option>
+          <option value="published">{t("page.published")}</option>
+        </select>
       </div>
       {posts.length ? (
         <ul className="flex flex-col gap-2">
