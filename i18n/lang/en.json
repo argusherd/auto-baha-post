@@ -20,6 +20,7 @@
     "create_post": "Create a post",
     "update_post": "Update the post",
     "post_list": "Post list",
+    "all": "All",
     "upcoming": "Upcoming publication",
     "failed": "Failed to publish",
     "draft": "Still in draft",
