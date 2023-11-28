@@ -44,6 +44,15 @@
     "board_name": "看板名稱",
     "board_no": "看板編號"
   },
+  "sort": {
+    "by": "排序",
+    "desc": "降冪",
+    "asc": "升冪",
+    "updated_at": "更新時間",
+    "created_at": "創建時間",
+    "scheduled_at": "預計時間",
+    "published_at": "發布時間"
+  },
   "error": {
     "not_empty": "{{column}} 不應為空白",
     "not_numeric": "{{column}} 需要是數字",
