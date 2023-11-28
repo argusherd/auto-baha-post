@@ -5,7 +5,17 @@ import userEvent from "@testing-library/user-event";
 import { backendUrl, mockedAxios } from "../setup/mock";
 
 describe("view all posts page", () => {
+  let unmount;
+
+  beforeEach(async () => {
+    mockedAxios.get.mockResolvedValue({ data: [] });
+
+    await waitFor(() => ({ unmount } = render(<PostIndex />)));
+  });
+
   it("can list all posts", async () => {
+    unmount();
+
     mockedAxios.get.mockResolvedValue({
       data: [
         {
@@ -25,16 +35,14 @@ describe("view all posts page", () => {
   });
 
   it("can tell you there are no posts", async () => {
-    mockedAxios.get.mockResolvedValue({ data: [] });
-
-    await waitFor(() => render(<PostIndex />));
-
     const noPosts = screen.queryByText("There are currently no posts.");
 
     expect(noPosts).toBeInTheDocument();
   });
 
   it("shows the name of the assigned board for the post", async () => {
+    unmount();
+
     mockedAxios.get.mockResolvedValue({
       data: [
         {
@@ -56,11 +64,7 @@ describe("view all posts page", () => {
   });
 
   it("has a filter that selects which type of posts to list", async () => {
-    mockedAxios.get.mockResolvedValue({ data: [] });
-
-    await waitFor(() => render(<PostIndex />));
-
-    const types = screen.getAllByRole("option");
+    const types = screen.getAllByTestId("type");
 
     expect(types[0]).toHaveValue("");
     expect(types[1]).toHaveValue("upcoming");
@@ -70,16 +74,61 @@ describe("view all posts page", () => {
   });
 
   it("can change the type of posts to retrieve", async () => {
+    unmount();
+
     const mockedGet = jest.fn().mockResolvedValue({ data: [] });
 
     mockedAxios.get = mockedGet;
 
     await waitFor(() => render(<PostIndex />));
 
-    const typeSelector = screen.getByRole("combobox");
+    const typeSelector = screen.getByTestId("types");
 
     await userEvent.selectOptions(typeSelector, "upcoming");
 
     expect(mockedGet).toBeCalledWith(`${backendUrl}/api/posts/upcoming`);
+  });
+
+  it("has options that change the sorting column", async () => {
+    const sortByColumns = screen.getAllByTestId("sort-by-column");
+
+    expect(sortByColumns[0]).toHaveValue("updated_at");
+    expect(sortByColumns[1]).toHaveValue("created_at");
+    expect(sortByColumns[2]).toHaveValue("scheduled_at");
+    expect(sortByColumns[3]).toHaveValue("published_at");
+  });
+
+  it("can change the sort by column", async () => {
+    unmount();
+
+    const mockedGet = jest.fn().mockResolvedValue({ data: [] });
+
+    mockedAxios.get = mockedGet;
+
+    await waitFor(() => render(<PostIndex />));
+
+    const sortBy = screen.getByTestId("sort-by");
+
+    await userEvent.selectOptions(sortBy, "created_at");
+
+    expect(mockedGet).toBeCalledWith(
+      `${backendUrl}/api/posts?sort_by=created_at`,
+    );
+  });
+
+  it("can change the sorting direction", async () => {
+    unmount();
+
+    const mockedGet = jest.fn().mockResolvedValue({ data: [] });
+
+    mockedAxios.get = mockedGet;
+
+    await waitFor(() => render(<PostIndex />));
+
+    const sortBtn = screen.getByRole("button", { name: /sort/i });
+
+    await userEvent.click(sortBtn);
+
+    expect(mockedGet).toBeCalledWith(`${backendUrl}/api/posts?sort=asc`);
   });
 });

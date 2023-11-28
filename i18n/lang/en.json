@@ -44,6 +44,15 @@
     "board_name": "Board name",
     "board_no": "Board serial number"
   },
+  "sort": {
+    "by": "Sort by",
+    "desc": "Decending",
+    "asc": "Ascending",
+    "updated_at": "Updated at",
+    "created_at": "Created at",
+    "scheduled_at": "Scheduled at",
+    "published_at": "Published at"
+  },
   "error": {
     "not_empty": "{{column}} should not be empty.",
     "not_numeric": "{{column}} should be a numberic.",

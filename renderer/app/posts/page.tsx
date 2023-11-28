@@ -12,16 +12,24 @@ export default function PostIndex() {
   const [posts, setPosts] = useState<Post[]>([]);
   const { t } = useTranslation();
   const params = useSearchParams();
-  const defaultType = params.get("type");
+  const defaultType = params?.get("type");
   const [type, setType] = useState(defaultType || "");
+  const [sortBy, setSortBy] = useState("");
+  const [isAscending, setIsAscending] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(`${window.backendUrl}/api/posts/${type}`);
+      let url = `${window.backendUrl}/api/posts`;
+
+      if (type) url += `/${type}`;
+      if (sortBy) url += `?sort_by=${sortBy}`;
+      if (isAscending) url += `${sortBy ? "&" : "?"}sort=asc`;
+
+      const res = await axios.get(url);
 
       setPosts(res.data);
     })();
-  }, [type]);
+  }, [type, sortBy, isAscending]);
 
   function formatDatetime(datetime: string) {
     const momentObj = moment(datetime);
@@ -43,18 +51,63 @@ export default function PostIndex() {
           <span>{t("page.create_post")}</span>
         </Link>
       </div>
-      <div className="mb-2">
+      <div className="mb-2 flex justify-between">
         <select
           className="rounded border p-1"
+          data-testid="types"
           defaultValue={defaultType}
           onChange={(event) => setType(event.target.value)}
         >
-          <option value="">{t("page.all")}</option>
-          <option value="upcoming">{t("page.upcoming")}</option>
-          <option value="failed">{t("page.failed")}</option>
-          <option value="draft">{t("page.draft")}</option>
-          <option value="published">{t("page.published")}</option>
+          <option data-testid="type" value="">
+            {t("page.all")}
+          </option>
+          <option data-testid="type" value="upcoming">
+            {t("page.upcoming")}
+          </option>
+          <option data-testid="type" value="failed">
+            {t("page.failed")}
+          </option>
+          <option data-testid="type" value="draft">
+            {t("page.draft")}
+          </option>
+          <option data-testid="type" value="published">
+            {t("page.published")}
+          </option>
         </select>
+        <div className="flex items-center gap-2">
+          <p>{t("sort.by")}</p>
+          <select
+            className="rounded border p-1"
+            data-testid="sort-by"
+            onChange={(event) => setSortBy(event.target.value)}
+          >
+            <option data-testid="sort-by-column" value="updated_at">
+              {t("sort.updated_at")}
+            </option>
+            <option data-testid="sort-by-column" value="created_at">
+              {t("sort.created_at")}
+            </option>
+            <option data-testid="sort-by-column" value="scheduled_at">
+              {t("sort.scheduled_at")}
+            </option>
+            <option data-testid="sort-by-column" value="published_at">
+              {t("sort.published_at")}
+            </option>
+          </select>
+          <button
+            aria-label="sort"
+            className="flex items-center px-1 text-gray-500"
+            onClick={() => setIsAscending((prev) => !prev)}
+          >
+            {isAscending ? (
+              <i className="icon-[heroicons-outline--sort-ascending] text-xl"></i>
+            ) : (
+              <i className="icon-[heroicons-outline--sort-descending] text-xl"></i>
+            )}
+
+            <span>{isAscending ? t("sort.asc") : t("sort.desc")}</span>
+          </button>
+        </div>
       </div>
       {posts.length ? (
         <ul className="flex flex-col gap-2">
