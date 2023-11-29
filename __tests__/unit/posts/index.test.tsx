@@ -8,7 +8,7 @@ describe("view all posts page", () => {
   let unmount;
 
   beforeEach(async () => {
-    mockedAxios.get.mockResolvedValue({ data: [] });
+    mockedAxios.get.mockResolvedValue({ data: { data: [] } });
 
     await waitFor(() => ({ unmount } = render(<PostIndex />)));
   });
@@ -17,13 +17,15 @@ describe("view all posts page", () => {
     unmount();
 
     mockedAxios.get.mockResolvedValue({
-      data: [
-        {
-          id: 1,
-          title: "my first post",
-          content: "content in the post",
-        },
-      ],
+      data: {
+        data: [
+          {
+            id: 1,
+            title: "my first post",
+            content: "content in the post",
+          },
+        ],
+      },
     });
 
     await waitFor(() => render(<PostIndex />));
@@ -44,16 +46,18 @@ describe("view all posts page", () => {
     unmount();
 
     mockedAxios.get.mockResolvedValue({
-      data: [
-        {
-          id: 1,
-          title: "my first post",
-          content: "content in the post",
-          board: {
-            name: "Gaming",
+      data: {
+        data: [
+          {
+            id: 1,
+            title: "my first post",
+            content: "content in the post",
+            board: {
+              name: "Gaming",
+            },
           },
-        },
-      ],
+        ],
+      },
     });
 
     await waitFor(() => render(<PostIndex />));
@@ -76,7 +80,7 @@ describe("view all posts page", () => {
   it("can change the type of posts to retrieve", async () => {
     unmount();
 
-    const mockedGet = jest.fn().mockResolvedValue({ data: [] });
+    const mockedGet = jest.fn().mockResolvedValue({ data: { data: [] } });
 
     mockedAxios.get = mockedGet;
 
@@ -101,7 +105,7 @@ describe("view all posts page", () => {
   it("can change the sort by column", async () => {
     unmount();
 
-    const mockedGet = jest.fn().mockResolvedValue({ data: [] });
+    const mockedGet = jest.fn().mockResolvedValue({ data: { data: [] } });
 
     mockedAxios.get = mockedGet;
 
@@ -119,7 +123,7 @@ describe("view all posts page", () => {
   it("can change the sorting direction", async () => {
     unmount();
 
-    const mockedGet = jest.fn().mockResolvedValue({ data: [] });
+    const mockedGet = jest.fn().mockResolvedValue({ data: { data: [] } });
 
     mockedAxios.get = mockedGet;
 

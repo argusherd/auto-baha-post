@@ -15,13 +15,14 @@ describe("the published posts api", () => {
       .get("/api/posts/published")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(published.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(published.id);
       });
   });
 
   it("defaults to 10 records per page", async () => {
     const override = {
+      updated_at: moment().toISOString(),
       published_at: moment().toISOString(),
     };
 
@@ -32,13 +33,14 @@ describe("the published posts api", () => {
       .get("/api/posts/published")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(10);
-        expect(res.body.map((item) => item.id)).not.toContain(eleventh.id);
+        expect(res.body.data).toHaveLength(10);
+        expect(res.body.data.map((item) => item.id)).not.toContain(eleventh.id);
       });
   });
 
   it("can determine the number of records to list per page", async () => {
     const override = {
+      updated_at: moment().toISOString(),
       published_at: moment().toISOString(),
     };
 
@@ -49,13 +51,14 @@ describe("the published posts api", () => {
       .get("/api/posts/published?take=1")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body.map((item) => item.id)).not.toContain(second.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data.map((item) => item.id)).not.toContain(second.id);
       });
   });
 
   it("can paginate all the published posts", async () => {
     const override = {
+      updated_at: moment().toISOString(),
       published_at: moment().toISOString(),
     };
 
@@ -65,8 +68,8 @@ describe("the published posts api", () => {
     await supertest(app)
       .get("/api/posts/published?page=3")
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(the21th.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(the21th.id);
       });
   });
 
@@ -78,7 +81,7 @@ describe("the published posts api", () => {
     await supertest(app)
       .get("/api/posts/published")
       .expect((res) => {
-        expect(res.body[0].board.id).toEqual(published.board.id);
+        expect(res.body.data[0].board.id).toEqual(published.board.id);
       });
   });
 });

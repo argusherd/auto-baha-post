@@ -15,8 +15,8 @@ describe("in draft posts api", () => {
       .get("/api/posts/draft")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(inDraft.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(inDraft.id);
       });
   });
 
@@ -39,21 +39,23 @@ describe("in draft posts api", () => {
       .get("/api/posts/draft")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(inDraft.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(inDraft.id);
       });
   });
 
   it("defaults to 10 records per page", async () => {
     await new PostFactory().createMany(10);
-    const eleventh = await new PostFactory().create();
+    const eleventh = await new PostFactory().create({
+      updated_at: moment().subtract(1, "minute").toISOString(),
+    });
 
     await supertest(app)
       .get("/api/posts/draft")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(10);
-        expect(res.body.map((item) => item.id)).not.toContain(eleventh.id);
+        expect(res.body.data).toHaveLength(10);
+        expect(res.body.data.map((item) => item.id)).not.toContain(eleventh.id);
       });
   });
 
@@ -64,8 +66,8 @@ describe("in draft posts api", () => {
     await supertest(app)
       .get("/api/posts/draft?take=1")
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body.map((item) => item.id)).not.toContain(second.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data.map((item) => item.id)).not.toContain(second.id);
       });
   });
 
@@ -76,8 +78,8 @@ describe("in draft posts api", () => {
     await supertest(app)
       .get("/api/posts/draft?page=3")
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(the21th.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(the21th.id);
       });
   });
 
@@ -87,7 +89,7 @@ describe("in draft posts api", () => {
     await supertest(app)
       .get("/api/posts/draft")
       .expect((res) => {
-        expect(res.body[0].board.id).toEqual(post.board.id);
+        expect(res.body.data[0].board.id).toEqual(post.board.id);
       });
   });
 });

@@ -195,19 +195,26 @@ function setPostDate(post: Post, req: Request) {
   post.publish_failed = post.scheduled_at ? null : post.publish_failed;
 }
 
-function paginator(where: FindOptionsWhere<Post>, req: Request) {
+async function paginator(where: FindOptionsWhere<Post>, req: Request) {
+  const currentPage = Number(req.query.page || 1);
+  const prevPage = currentPage - 1 < 1 ? 1 : currentPage - 1;
   const take = Number(req.query.take || 10);
-  const skip = (Number(req.query.page || 1) - 1) * take;
+  const skip = (currentPage - 1) * take;
   const sortBy = (req.query.sort_by || "updated_at") as string;
   const sort = (req.query.sort || "desc") as FindOptionsOrderValue;
 
-  return Post.find({
+  const [data, count] = await Post.findAndCount({
     where,
     take,
     skip,
     relations: { board: true },
-    order: { [sortBy]: sort },
+    order: { [sortBy]: sort, id: "asc" },
   });
+
+  const lastPage = Math.ceil(count / take) || 1;
+  const nextPage = currentPage + 1 > lastPage ? lastPage : currentPage + 1;
+
+  return { data, count, currentPage, prevPage, nextPage, lastPage };
 }
 
 export default router;
