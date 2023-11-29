@@ -14,7 +14,7 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts")
       .expect((res) => {
-        expect(res.body).toHaveLength(10);
+        expect(res.body.data).toHaveLength(10);
       });
   });
 
@@ -27,7 +27,7 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts")
       .expect((res) => {
-        expect(res.body[0]).toMatchObject({
+        expect(res.body.data[0]).toMatchObject({
           title: "my first post",
           content: "content in the post",
         });
@@ -41,8 +41,8 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts")
       .expect((res) => {
-        expect(res.body).toHaveLength(10);
-        expect(res.body.map((item) => item.id)).not.toContain(eleventh.id);
+        expect(res.body.data).toHaveLength(10);
+        expect(res.body.data.map((item) => item.id)).not.toContain(eleventh.id);
       });
   });
 
@@ -53,8 +53,8 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts?take=1")
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body.map((item) => item.id)).not.toContain(second.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data.map((item) => item.id)).not.toContain(second.id);
       });
   });
 
@@ -65,8 +65,8 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts?page=3")
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(the21th.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(the21th.id);
       });
   });
 
@@ -76,7 +76,7 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts")
       .expect((res) => {
-        expect(res.body[0].board.id).toEqual(post.board.id);
+        expect(res.body.data[0].board.id).toEqual(post.board.id);
       });
   });
 
@@ -89,8 +89,8 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts")
       .expect((res) => {
-        expect(res.body[0].id).toEqual(later.id);
-        expect(res.body[1].id).toEqual(earlier.id);
+        expect(res.body.data[0].id).toEqual(later.id);
+        expect(res.body.data[1].id).toEqual(earlier.id);
       });
   });
 
@@ -103,8 +103,8 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts?sort=asc")
       .expect((res) => {
-        expect(res.body[0].id).toEqual(earlier.id);
-        expect(res.body[1].id).toEqual(later.id);
+        expect(res.body.data[0].id).toEqual(earlier.id);
+        expect(res.body.data[1].id).toEqual(later.id);
       });
   });
 
@@ -120,8 +120,23 @@ describe("get posts api", () => {
     await request(app)
       .get("/api/posts?sort_by=scheduled_at")
       .expect((res) => {
-        expect(res.body[0].id).toEqual(scheduledLater.id);
-        expect(res.body[1].id).toEqual(scheduledEarlier.id);
+        expect(res.body.data[0].id).toEqual(scheduledLater.id);
+        expect(res.body.data[1].id).toEqual(scheduledEarlier.id);
+      });
+  });
+
+  it("can paginate the list of posts", async () => {
+    await new PostFactory().createMany(30);
+
+    await request(app)
+      .get("/api/posts?take=10&page=1")
+      .expect((res) => {
+        expect(res.body.data).toHaveLength(10);
+        expect(res.body.count).toEqual(30);
+        expect(res.body.currentPage).toEqual(1);
+        expect(res.body.prevPage).toEqual(1);
+        expect(res.body.nextPage).toEqual(2);
+        expect(res.body.lastPage).toEqual(3);
       });
   });
 });

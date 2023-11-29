@@ -30,7 +30,7 @@ export default function Dashboard() {
       `${window.backendUrl}/api/posts/${type}?take=1`,
     );
 
-    setPost(res.data[0]);
+    setPost(res.data.data[0]);
   }
 
   return (

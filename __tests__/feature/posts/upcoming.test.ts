@@ -15,8 +15,8 @@ describe("the upcoming post api", () => {
       .get("/api/posts/upcoming")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(scheduled.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(scheduled.id);
       });
   });
 
@@ -34,8 +34,8 @@ describe("the upcoming post api", () => {
       .get("/api/posts/upcoming")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(scheduled.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(scheduled.id);
       });
   });
 
@@ -53,8 +53,8 @@ describe("the upcoming post api", () => {
       .get("/api/posts/upcoming")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(scheduled.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(scheduled.id);
       });
   });
 
@@ -71,13 +71,14 @@ describe("the upcoming post api", () => {
       .get("/api/posts/upcoming")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(scheduled.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(scheduled.id);
       });
   });
 
   it("defaults to 10 records per page", async () => {
     const override = {
+      updated_at: moment().toISOString(),
       scheduled_at: moment().add(1, "minute").toISOString(),
     };
 
@@ -88,13 +89,14 @@ describe("the upcoming post api", () => {
       .get("/api/posts/upcoming")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(10);
-        expect(res.body.map((item) => item.id)).not.toContain(eleventh.id);
+        expect(res.body.data).toHaveLength(10);
+        expect(res.body.data.map((item) => item.id)).not.toContain(eleventh.id);
       });
   });
 
   it("can determine the number of records to list per page", async () => {
     const override = {
+      updated_at: moment().toISOString(),
       scheduled_at: moment().add(1, "minute").toISOString(),
     };
 
@@ -105,13 +107,14 @@ describe("the upcoming post api", () => {
       .get("/api/posts/upcoming?take=1")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body.map((item) => item.id)).not.toContain(second.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data.map((item) => item.id)).not.toContain(second.id);
       });
   });
 
   it("can paginate all the upcoming posts", async () => {
     const override = {
+      updated_at: moment().toISOString(),
       scheduled_at: moment().add(1, "minute").toISOString(),
     };
 
@@ -121,8 +124,8 @@ describe("the upcoming post api", () => {
     await supertest(app)
       .get("/api/posts/upcoming?page=3")
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(the21th.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(the21th.id);
       });
   });
 
@@ -134,7 +137,7 @@ describe("the upcoming post api", () => {
     await supertest(app)
       .get("/api/posts/upcoming")
       .expect((res) => {
-        expect(res.body[0].board.id).toEqual(scheduled.board.id);
+        expect(res.body.data[0].board.id).toEqual(scheduled.board.id);
       });
   });
 });

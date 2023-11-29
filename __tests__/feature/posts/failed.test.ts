@@ -14,8 +14,8 @@ describe("failed posts api", () => {
       .get("/api/posts/failed")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(failed.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(failed.id);
       });
   });
 
@@ -31,8 +31,8 @@ describe("failed posts api", () => {
       .get("/api/posts/failed")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(10);
-        expect(res.body.map((item) => item.id)).not.toContain(eleventh.id);
+        expect(res.body.data).toHaveLength(10);
+        expect(res.body.data.map((item) => item.id)).not.toContain(eleventh.id);
       });
   });
 
@@ -48,8 +48,8 @@ describe("failed posts api", () => {
       .get("/api/posts/failed?take=1")
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body.map((item) => item.id)).not.toContain(second.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data.map((item) => item.id)).not.toContain(second.id);
       });
   });
 
@@ -64,8 +64,8 @@ describe("failed posts api", () => {
     await supertest(app)
       .get("/api/posts/failed?page=3")
       .expect((res) => {
-        expect(res.body).toHaveLength(1);
-        expect(res.body[0].id).toEqual(the21th.id);
+        expect(res.body.data).toHaveLength(1);
+        expect(res.body.data[0].id).toEqual(the21th.id);
       });
   });
 
@@ -77,7 +77,7 @@ describe("failed posts api", () => {
     await supertest(app)
       .get("/api/posts/failed")
       .expect((res) => {
-        expect(res.body[0].board.id).toEqual(failed.board.id);
+        expect(res.body.data[0].board.id).toEqual(failed.board.id);
       });
   });
 });

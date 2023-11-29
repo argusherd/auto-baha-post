@@ -27,7 +27,7 @@ export default function PostIndex() {
 
       const res = await axios.get(url);
 
-      setPosts(res.data);
+      setPosts(res.data.data);
     })();
   }, [type, sortBy, isAscending]);
 
