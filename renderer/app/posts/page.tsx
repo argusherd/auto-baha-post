@@ -4,32 +4,67 @@ import Post from "@/backend-api/database/entities/Post";
 import axios from "axios";
 import moment from "moment";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Paginator from "./paginator";
 
 export default function PostIndex() {
-  const [posts, setPosts] = useState<Post[]>([]);
   const { t } = useTranslation();
   const params = useSearchParams();
+  const router = useRouter();
+
   const defaultType = params?.get("type");
+  const currentPage = params?.get("page") || "1";
+
+  const [posts, setPosts] = useState<Post[]>([]);
   const [type, setType] = useState(defaultType || "");
   const [sortBy, setSortBy] = useState("");
   const [isAscending, setIsAscending] = useState(false);
+  const [lastPage, setLastPage] = useState(1);
+
+  const previousType = useRef(defaultType);
+
+  const getQuery = useCallback(
+    () =>
+      new URLSearchParams({
+        ...(sortBy && { sort_by: sortBy }),
+        ...(isAscending && { sort: "asc" }),
+        ...(currentPage !== "1" && {
+          page: currentPage,
+        }),
+      }),
+    [currentPage, sortBy, isAscending],
+  );
 
   useEffect(() => {
     (async () => {
       let url = `${window.backendUrl}/api/posts`;
+      const query = getQuery().toString();
 
-      if (type) url += `/${type}`;
-      if (sortBy) url += `?sort_by=${sortBy}`;
-      if (isAscending) url += `${sortBy ? "&" : "?"}sort=asc`;
+      url += type ? `/${type}` : "";
+      url += query ? `?${query}` : "";
 
-      const res = await axios.get(url);
+      const {
+        data: { data, lastPage: totalPage },
+      } = await axios.get(url);
 
-      setPosts(res.data.data);
+      setPosts(data);
+      setLastPage(totalPage);
     })();
-  }, [type, sortBy, isAscending]);
+  }, [type, getQuery, isAscending, sortBy]);
+
+  useEffect(() => {
+    if (previousType.current === type) return;
+
+    const query = getQuery();
+
+    query.set("page", "1");
+    query.set("type", type);
+    previousType.current = type;
+
+    router.push(`/posts?${query.toString()}`);
+  }, [type, router, getQuery]);
 
   function formatDatetime(datetime: string) {
     const momentObj = moment(datetime);
@@ -191,6 +226,9 @@ export default function PostIndex() {
       ) : (
         <p>{t("no_posts")}</p>
       )}
+      <div className="mt-3">
+        <Paginator lastPage={lastPage} />
+      </div>
     </div>
   );
 }

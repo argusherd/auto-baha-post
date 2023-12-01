@@ -2,12 +2,15 @@ import PostIndex from "@/renderer/app/posts/page";
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { backendUrl, mockedAxios } from "../setup/mock";
+import { backendUrl, mockedAxios, mockRouterPush } from "../setup/mock";
 
 describe("view all posts page", () => {
   let unmount;
+  let mockedPush: jest.Func;
 
   beforeEach(async () => {
+    mockedPush = mockRouterPush();
+
     mockedAxios.get.mockResolvedValue({ data: { data: [] } });
 
     await waitFor(() => ({ unmount } = render(<PostIndex />)));
@@ -91,6 +94,14 @@ describe("view all posts page", () => {
     await userEvent.selectOptions(typeSelector, "upcoming");
 
     expect(mockedGet).toBeCalledWith(`${backendUrl}/api/posts/upcoming`);
+  });
+
+  it("resets the page param if the type of posts is changed", async () => {
+    const typeSelector = screen.getByTestId("types");
+
+    await userEvent.selectOptions(typeSelector, "upcoming");
+
+    expect(mockedPush).toBeCalledWith("/posts?page=1&type=upcoming");
   });
 
   it("has options that change the sorting column", async () => {
