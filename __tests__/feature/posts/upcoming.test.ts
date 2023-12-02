@@ -58,10 +58,10 @@ describe("the upcoming post api", () => {
       });
   });
 
-  it("does not include stale posts", async () => {
+  it("does not include outdated posts", async () => {
     await new PostFactory().create({
       scheduled_at: moment().subtract(1, "minute").toISOString(),
-    }); // stale
+    }); // outdated
 
     const scheduled = await new PostFactory().create({
       scheduled_at: moment().add(1, "minute").toISOString(),
