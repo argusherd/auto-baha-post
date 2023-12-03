@@ -23,6 +23,7 @@
     "all": "All",
     "upcoming": "Upcoming publication",
     "failed": "Failed to publish",
+    "outdated": "Outdated schedule",
     "draft": "Still in draft",
     "published": "Already published"
   },

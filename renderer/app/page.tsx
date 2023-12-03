@@ -11,6 +11,7 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const [upcoming, setUpcoming] = useState<Post>(null);
   const [failed, setFailed] = useState<Post>(null);
+  const [outdated, setOutdated] = useState<Post>(null);
   const [draft, setDraft] = useState<Post>(null);
   const [published, setPublished] = useState<Post>(null);
   const noPost = <small>-</small>;
@@ -19,6 +20,7 @@ export default function Dashboard() {
     getPost("upcoming", setUpcoming);
     getPost("failed", setFailed);
     getPost("draft", setDraft);
+    getPost("outdated", setOutdated);
     getPost("published", setPublished);
   }, []);
 
@@ -83,6 +85,24 @@ export default function Dashboard() {
               <h4 className="font-semibold">{failed.title}</h4>
               <small className="text-red-600" data-testid="publish_failed">
                 {t(`failed.${failed.publish_failed}`)}
+              </small>
+            </Link>
+          ) : (
+            noPost
+          )}
+        </div>
+        <div className="flex flex-col gap-2 rounded border-4 border-yellow-100 bg-yellow-50 p-2 hover:shadow">
+          <Link href="/posts?type=outdated">{t("page.outdated")}</Link>
+          {outdated ? (
+            <Link
+              className="flex items-center justify-between hover:text-teal-500"
+              href={`/posts/show?id=${outdated.id}`}
+            >
+              <h4 className="font-semibold">{outdated.title}</h4>
+              <small data-testid="scheduled_at">
+                {t("post.scheduled_at", {
+                  scheduled_at: moment(outdated.scheduled_at).fromNow(),
+                })}
               </small>
             </Link>
           ) : (
