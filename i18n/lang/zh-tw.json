@@ -23,6 +23,7 @@
     "all": "全部",
     "upcoming": "即將發布",
     "failed": "發布失敗",
+    "outdated": "已過期",
     "draft": "草稿中",
     "published": "已成功發布"
   },

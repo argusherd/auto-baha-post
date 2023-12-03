@@ -88,6 +88,39 @@ describe("the dashboard page", () => {
     expect(mockedGet).toBeCalledWith(`${backendUrl}/api/posts/failed?take=1`);
   });
 
+  it("shows the post with an outdated schedule", async () => {
+    const timestamp = moment();
+    const mockedGet = jest.fn().mockImplementation((url: string) => {
+      if (!url.includes("/outdated")) return { data: { data: [] } };
+
+      return {
+        data: {
+          data: [
+            {
+              id: 1,
+              title: "The outdated post",
+              scheduled_at: timestamp.toISOString(),
+            },
+          ],
+        },
+      };
+    });
+
+    mockedAxios.get = mockedGet;
+
+    await waitFor(() => render(<Dashboard />));
+
+    const title = screen.getByRole("heading", { level: 4 });
+    const scheduledAt = screen.getByTestId("scheduled_at");
+
+    expect(title).toHaveTextContent("The outdated post");
+    expect(scheduledAt).toHaveTextContent(
+      i18next.t("post.scheduled_at", { scheduled_at: timestamp.fromNow() }),
+    );
+
+    expect(mockedGet).toBeCalledWith(`${backendUrl}/api/posts/outdated?take=1`);
+  });
+
   it("shows the post that still in draft", async () => {
     const timestamp = moment();
     const mockedGet = jest.fn().mockImplementation((url: string) => {

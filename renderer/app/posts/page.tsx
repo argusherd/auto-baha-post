@@ -102,6 +102,9 @@ export default function PostIndex() {
           <option data-testid="type" value="failed">
             {t("page.failed")}
           </option>
+          <option data-testid="type" value="outdated">
+            {t("page.outdated")}
+          </option>
           <option data-testid="type" value="draft">
             {t("page.draft")}
           </option>

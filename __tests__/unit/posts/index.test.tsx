@@ -76,8 +76,9 @@ describe("view all posts page", () => {
     expect(types[0]).toHaveValue("");
     expect(types[1]).toHaveValue("upcoming");
     expect(types[2]).toHaveValue("failed");
-    expect(types[3]).toHaveValue("draft");
-    expect(types[4]).toHaveValue("published");
+    expect(types[3]).toHaveValue("outdated");
+    expect(types[4]).toHaveValue("draft");
+    expect(types[5]).toHaveValue("published");
   });
 
   it("can change the type of posts to retrieve", async () => {
