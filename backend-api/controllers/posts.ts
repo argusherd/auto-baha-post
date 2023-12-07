@@ -59,8 +59,6 @@ router.get("/posts/upcoming", async (req: Request, res: Response) => {
         scheduled_at: MoreThanOrEqual(
           moment().utc().format("YYYY-MM-DD HH:mm:ss"),
         ),
-        published_at: IsNull(),
-        publish_failed: IsNull(),
       },
       req,
     ),

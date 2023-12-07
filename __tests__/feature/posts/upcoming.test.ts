@@ -20,44 +20,6 @@ describe("the upcoming post api", () => {
       });
   });
 
-  it("does not include posts that have been published", async () => {
-    await new PostFactory().create({
-      published_at: moment().toISOString(),
-      scheduled_at: moment().add(1, "minute").toISOString(),
-    }); // published
-
-    const scheduled = await new PostFactory().create({
-      scheduled_at: moment().add(1, "minute").toISOString(),
-    });
-
-    await supertest(app)
-      .get("/api/posts/upcoming")
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.data).toHaveLength(1);
-        expect(res.body.data[0].id).toEqual(scheduled.id);
-      });
-  });
-
-  it("does not include posts that have failed to publish", async () => {
-    await new PostFactory().create({
-      publish_failed: "reason",
-      scheduled_at: moment().add(1, "minute").toISOString(),
-    }); // publish failed
-
-    const scheduled = await new PostFactory().create({
-      scheduled_at: moment().add(1, "minute").toISOString(),
-    });
-
-    await supertest(app)
-      .get("/api/posts/upcoming")
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.data).toHaveLength(1);
-        expect(res.body.data[0].id).toEqual(scheduled.id);
-      });
-  });
-
   it("does not include outdated posts", async () => {
     await new PostFactory().create({
       scheduled_at: moment().subtract(1, "minute").toISOString(),

@@ -1,5 +1,6 @@
 import app from "@/backend-api";
 import PostFactory from "@/backend-api/database/factories/PostFactory";
+import moment from "moment";
 import supertest from "supertest";
 
 describe("failed posts api", () => {
@@ -56,6 +57,7 @@ describe("failed posts api", () => {
   it("can paginate all the failed to publish posts", async () => {
     const override = {
       publish_failed: "reason",
+      updated_at: moment().toISOString(),
     };
 
     await new PostFactory().createMany(20, override);
