@@ -72,8 +72,12 @@ describe("in draft posts api", () => {
   });
 
   it("can paginate all the draft posts", async () => {
-    await new PostFactory().createMany(20);
-    const the21th = await new PostFactory().create();
+    const override = {
+      updated_at: moment().toISOString(),
+    };
+
+    await new PostFactory().createMany(20, override);
+    const the21th = await new PostFactory().create(override);
 
     await supertest(app)
       .get("/api/posts/draft?page=3")
