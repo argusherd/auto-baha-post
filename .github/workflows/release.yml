@@ -1,0 +1,60 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - v**
+
+jobs:
+  release:
+    name: Build and release electron app
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # available os: windows-latest, macos-latest, ubuntu-latest
+        os: [windows-latest]
+
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3.0.0
+        with:
+          fetch-depth: 0
+
+      # probably don't need this step
+      - name: Set up git config
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build electron App
+        run: npm run dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup artifacts for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          npx rimraf dist/win-unpacked
+
+      - name: Cleanup artifacts for MacOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          npx rimraf "dist/!(*.dmg)"
+
+      - name: Release
+        run: npx release-it --ci --no-increment --no-git --github.update --github.assets=dist/** --no-github.draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
