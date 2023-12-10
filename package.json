@@ -1,9 +1,12 @@
 {
   "private": true,
   "name": "auto-baha-post",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "main/electron-src/index.js",
   "productName": "AutoBahaPost",
+  "author": {
+    "name": "argusherd"
+  },
   "scripts": {
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build-electron && electron .",
@@ -84,6 +87,27 @@
     ],
     "extraFiles": [
       ".env.production.example"
+    ],
+    "icon": "icon.png",
+    "win": {
+      "target": [
+        "msi",
+        "nsis",
+        "zip",
+        "portable"
+      ],
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "argusherd",
+        "repo": "auto-baha-post"
+      }
     ]
   }
 }

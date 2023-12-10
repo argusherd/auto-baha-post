@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/argusherd/auto-baha-post/compare/v0.1.0...v0.1.1) (2023-12-10)
+
+
+### Bug Fixes
+
+* add more release targets and icon ([b48d775](https://github.com/argusherd/auto-baha-post/commit/b48d775836fe1d46fe160130684177547ff0e1fe))
+
 # 0.1.0 (2023-12-10)
 
 
