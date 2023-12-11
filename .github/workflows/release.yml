@@ -39,11 +39,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Create a release draft
-        run: npx release-it --ci --no-increment --no-git --github.release --github.draft
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build electron App
         run: npm run dist
         env:
@@ -60,6 +55,6 @@ jobs:
           npx rimraf "dist/!(*.dmg)"
 
       - name: Release
-        run: npx release-it --ci --no-increment --no-git --github.update --github.assets=dist/** --no-github.draft
+        run: npx release-it --ci --no-increment --no-git --github.release --github.assets=dist/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
