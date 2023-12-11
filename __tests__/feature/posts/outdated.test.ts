@@ -49,4 +49,16 @@ describe("the outdated posts api", () => {
         expect(res.body.data).toHaveLength(0);
       });
   });
+
+  it("shows that the type of posts is outdated", async () => {
+    await new PostFactory().create({
+      scheduled_at: moment().subtract(1, "minute").toISOString(),
+    });
+
+    await supertest(app)
+      .get("/api/posts/outdated")
+      .expect((res) => {
+        expect(res.body.data[0].type).toEqual("outdated");
+      });
+  });
 });

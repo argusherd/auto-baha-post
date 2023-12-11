@@ -15,4 +15,5 @@ export default class Post extends BaseEntity {
   published_at?: string;
   publish_failed?: string;
   board?: Board;
+  type?: string;
 }

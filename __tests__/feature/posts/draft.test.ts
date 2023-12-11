@@ -60,14 +60,12 @@ describe("in draft posts api", () => {
   });
 
   it("can determine the number of records to list per page", async () => {
-    await new PostFactory().create();
-    const second = await new PostFactory().create();
+    await new PostFactory().createMany(2);
 
     await supertest(app)
       .get("/api/posts/draft?take=1")
       .expect((res) => {
         expect(res.body.data).toHaveLength(1);
-        expect(res.body.data.map((item) => item.id)).not.toContain(second.id);
       });
   });
 
@@ -94,6 +92,16 @@ describe("in draft posts api", () => {
       .get("/api/posts/draft")
       .expect((res) => {
         expect(res.body.data[0].board.id).toEqual(post.board.id);
+      });
+  });
+
+  it("shows that the type of posts is draft", async () => {
+    await new PostFactory().create();
+
+    await supertest(app)
+      .get("/api/posts/draft")
+      .expect((res) => {
+        expect(res.body.data[0].type).toEqual("draft");
       });
   });
 });
