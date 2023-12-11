@@ -102,4 +102,29 @@ describe("the upcoming post api", () => {
         expect(res.body.data[0].board.id).toEqual(scheduled.board.id);
       });
   });
+
+  it("shows that the type of posts is upcoming", async () => {
+    await new PostFactory().create({
+      scheduled_at: moment().add(1, "minute").toISOString(),
+    });
+
+    await supertest(app)
+      .get("/api/posts/upcoming")
+      .expect((res) => {
+        expect(res.body.data[0].type).toEqual("upcoming");
+      });
+  });
+
+  it("should show the type of posts that are upcoming as long as the post has been scheduled later than now", async () => {
+    await new PostFactory().create({
+      scheduled_at: moment().add(1, "minute").toISOString(),
+      published_at: moment().toISOString(),
+    });
+
+    await supertest(app)
+      .get("/api/posts/upcoming")
+      .expect((res) => {
+        expect(res.body.data[0].type).toEqual("upcoming");
+      });
+  });
 });

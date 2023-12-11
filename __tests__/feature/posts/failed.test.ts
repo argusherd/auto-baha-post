@@ -82,4 +82,16 @@ describe("failed posts api", () => {
         expect(res.body.data[0].board.id).toEqual(failed.board.id);
       });
   });
+
+  it("shows that the type of posts is failed", async () => {
+    await new PostFactory().create({
+      publish_failed: "reason",
+    });
+
+    await supertest(app)
+      .get("/api/posts/failed")
+      .expect((res) => {
+        expect(res.body.data[0].type).toEqual("failed");
+      });
+  });
 });

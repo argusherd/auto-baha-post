@@ -8,11 +8,15 @@ export function resolveDB() {
   if (DB) return DB;
 
   const entities = readdirSync(join(__dirname, "schemas")).map((file) =>
-    join(__dirname, "schemas", file)
+    join(__dirname, "schemas", file),
   );
 
   const migrations = readdirSync(join(__dirname, "migrations")).map((file) =>
-    join(__dirname, "migrations", file)
+    join(__dirname, "migrations", file),
+  );
+
+  const subscribers = readdirSync(join(__dirname, "subscribers")).map((file) =>
+    join(__dirname, "subscribers", file),
   );
 
   DB = new DataSource({
@@ -22,6 +26,7 @@ export function resolveDB() {
     entities,
     migrations,
     migrationsRun: true,
+    subscribers,
   });
 
   return DB;

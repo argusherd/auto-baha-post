@@ -84,4 +84,16 @@ describe("the published posts api", () => {
         expect(res.body.data[0].board.id).toEqual(published.board.id);
       });
   });
+
+  it("shows that the type of posts is published", async () => {
+    await new PostFactory().create({
+      published_at: moment().toISOString(),
+    });
+
+    await supertest(app)
+      .get("/api/posts/published")
+      .expect((res) => {
+        expect(res.body.data[0].type).toEqual("published");
+      });
+  });
 });
