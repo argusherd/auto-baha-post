@@ -1,5 +1,13 @@
 # Changelog
 
+# [0.2.0](https://github.com/argusherd/auto-baha-post/compare/v0.1.1...v0.2.0) (2023-12-12)
+
+
+### Features
+
+* add type property to all post api ([81044c2](https://github.com/argusherd/auto-baha-post/commit/81044c2884ff624542869564d1c7f18ccb402480))
+* **renderer:** display the type property of posts on the list page ([0c11574](https://github.com/argusherd/auto-baha-post/commit/0c11574cf426ae54ac4765fdf02e53992f1d4673))
+
 ## [0.1.1](https://github.com/argusherd/auto-baha-post/compare/v0.1.0...v0.1.1) (2023-12-10)
 
 

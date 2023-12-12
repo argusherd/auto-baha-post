@@ -9,6 +9,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Paginator from "./paginator";
 
+const typeBackgroundColors = {
+  upcoming: "bg-green-100",
+  failed: "bg-red-100",
+  outdated: "bg-yellow-100",
+  draft: "bg-blue-100",
+  published: "bg-gray-100",
+};
+
 export default function PostIndex() {
   const { t } = useTranslation();
   const params = useSearchParams();
@@ -91,6 +99,7 @@ export default function PostIndex() {
           className="rounded border p-1"
           data-testid="types"
           defaultValue={defaultType}
+          value={type}
           onChange={(event) => setType(event.target.value)}
         >
           <option data-testid="type" value="">
@@ -151,7 +160,7 @@ export default function PostIndex() {
         <ul className="flex flex-col gap-2">
           {posts.map((post) => (
             <li key={post.id}>
-              <div className="flex flex-col gap-2 rounded border p-2 hover:shadow">
+              <div className="relative flex flex-col gap-2 rounded border p-2 hover:shadow">
                 <Link
                   href={`/posts/show?id=${post.id}`}
                   className="hover:text-teal-500"
@@ -222,6 +231,14 @@ export default function PostIndex() {
                     </small>
                   )}
                 </div>
+                <button
+                  className={`absolute right-0 top-0 p-1 text-sm ${
+                    typeBackgroundColors[post.type]
+                  }`}
+                  onClick={() => setType(post.type)}
+                >
+                  {t(`page.${post.type}`)}
+                </button>
               </div>
             </li>
           ))}
