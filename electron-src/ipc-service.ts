@@ -1,4 +1,5 @@
 import { ipcMain } from "electron";
+import { autoUpdater } from "electron-updater";
 import Board from "../backend-api/database/entities/Board";
 import Post from "../backend-api/database/entities/Post";
 import LoginChecker from "./components/LoginChecker";
@@ -16,6 +17,7 @@ export default function registerIpcMain() {
     await getPostProperties(boardId);
   });
   ipcMain.handle("refreshLoginStatus", refreshLoginStatus);
+  ipcMain.on("checkUpdate", () => autoUpdater.checkForUpdates());
 }
 
 async function openBaha() {

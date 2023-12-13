@@ -12,7 +12,8 @@
     "save": "儲存",
     "publish_now": "立即發布",
     "delete": "刪除",
-    "back_to": "返回{{destination}}"
+    "back_to": "返回{{destination}}",
+    "check_update": "檢查更新"
   },
   "page": {
     "dashboard": "儀表板",
@@ -68,5 +69,9 @@
     "USER_IS_NOT_LOGIN": "使用者尚未登入",
     "BOARD_NOT_EXISTS": "該看板不存在",
     "UNABLE_TO_PUBLISH": "無法順利發布該文章"
+  },
+  "update": {
+    "available": "發現新的版本，點擊此處進行更新",
+    "not_available": "目前已經是最新的版本"
   }
 }

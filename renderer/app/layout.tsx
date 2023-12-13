@@ -5,6 +5,7 @@ import "moment/locale/zh-tw";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
+import Footer from "./footer";
 import "./globals.css";
 import Header from "./header";
 
@@ -28,6 +29,8 @@ export default function RootLayout({ children }) {
         <Header />
 
         <div className="container mx-auto px-1 py-3">{children}</div>
+
+        <Footer />
       </body>
     </html>
   );
