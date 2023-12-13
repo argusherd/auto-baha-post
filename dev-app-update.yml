@@ -1,0 +1,4 @@
+provider: github
+owner: argusherd
+repo: auto-baha-post
+updaterCacheDirName: auto-baha-post-updater
