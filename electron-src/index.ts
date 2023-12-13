@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, BrowserWindow } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
 import { autoUpdater } from "electron-updater";
@@ -45,3 +45,15 @@ app.on("before-quit", async () => {
 });
 
 app.on("window-all-closed", app.quit);
+
+autoUpdater.on("update-available", () => {
+  const mainWindow = BrowserWindow.fromId(Number(process.env.MAIN_WINDOW_ID));
+
+  mainWindow.webContents.send("updateAvailable");
+});
+
+autoUpdater.on("update-not-available", () => {
+  const mainWindow = BrowserWindow.fromId(Number(process.env.MAIN_WINDOW_ID));
+
+  mainWindow.webContents.send("updateNotAvailable");
+});

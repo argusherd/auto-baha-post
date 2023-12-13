@@ -12,7 +12,8 @@
     "save": "Save",
     "publish_now": "Publish now",
     "delete": "Delete",
-    "back_to": "Back to {{destination}}"
+    "back_to": "Back to {{destination}}",
+    "check_update": "Check for updates"
   },
   "page": {
     "dashboard": "Dashboard",
@@ -68,5 +69,9 @@
     "USER_IS_NOT_LOGIN": "User is not logged in yet.",
     "BOARD_NOT_EXISTS": "The board does not exist.",
     "UNABLE_TO_PUBLISH": "Unable to publish the post successfully."
+  },
+  "update": {
+    "available": "A new version has been found. Click here to update.",
+    "not_available": "You are in the latest version."
   }
 }

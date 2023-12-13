@@ -6,11 +6,15 @@ contextBridge.exposeInMainWorld("electron", {
     await ipcRenderer.invoke("publishNow", postId),
   getPostProperties: async (boardId: number) =>
     await ipcRenderer.invoke("getPostProperties", boardId),
-  loginStatusRefreshed: (callback: any) =>
-    ipcRenderer.on("loginStatusRefreshed", callback),
+  loginStatusRefreshed: (callback: Function) =>
+    ipcRenderer.on("loginStatusRefreshed", () => callback()),
   refreshLoginStatus: async () =>
     await ipcRenderer.invoke("refreshLoginStatus"),
-  getLng: () => async () => await ipcRenderer.invoke("getLng"),
+  checkUpdate: () => ipcRenderer.send("checkUpdate"),
+  updateAvailable: (callback: Function) =>
+    ipcRenderer.on("updateAvailable", () => callback()),
+  updateNotAvailable: (callback: Function) =>
+    ipcRenderer.on("updateNotAvailable", () => callback()),
 });
 
 contextBridge.exposeInMainWorld(
