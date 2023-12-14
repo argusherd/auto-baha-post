@@ -15,6 +15,15 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.on("updateAvailable", () => callback()),
   updateNotAvailable: (callback: Function) =>
     ipcRenderer.on("updateNotAvailable", () => callback()),
+  downloadUpdate: () => ipcRenderer.send("downloadUpdate"),
+  downloadProgress: (callback: Function) =>
+    ipcRenderer.on("downloadProgress", (_event, progress: number) =>
+      callback(progress),
+    ),
+  updateError: (callback: Function) =>
+    ipcRenderer.on("updateError", (_event, errorMessage: string) =>
+      callback(errorMessage),
+    ),
 });
 
 contextBridge.exposeInMainWorld(

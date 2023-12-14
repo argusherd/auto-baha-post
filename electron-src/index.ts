@@ -1,14 +1,17 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog } from "electron";
 import isDev from "electron-is-dev";
 import prepareNext from "electron-next";
 import { autoUpdater } from "electron-updater";
 import { join } from "path";
 import { revokeDB } from "../backend-api/database/connection";
 import { closeServer } from "../backend-api/server";
+import i18n from "../i18n";
 import { createWindow, initializeApp, serveProduction } from "./initialization";
 import scheduler from "./scheduler";
 
 const loadURL = serveProduction();
+
+let mainWindow: BrowserWindow;
 
 initializeApp();
 
@@ -23,7 +26,7 @@ if (isDev) {
 app.on("ready", async () => {
   await prepareNext("./renderer");
 
-  const mainWindow = createWindow();
+  mainWindow = createWindow();
 
   process.env.MAIN_WINDOW_ID = `${mainWindow.id}`;
 
@@ -47,13 +50,27 @@ app.on("before-quit", async () => {
 app.on("window-all-closed", app.quit);
 
 autoUpdater.on("update-available", () => {
-  const mainWindow = BrowserWindow.fromId(Number(process.env.MAIN_WINDOW_ID));
-
   mainWindow.webContents.send("updateAvailable");
 });
 
 autoUpdater.on("update-not-available", () => {
-  const mainWindow = BrowserWindow.fromId(Number(process.env.MAIN_WINDOW_ID));
-
   mainWindow.webContents.send("updateNotAvailable");
+});
+
+autoUpdater.on("download-progress", (info) => {
+  mainWindow.webContents.send("downloadProgress", info.percent);
+});
+
+autoUpdater.on("update-downloaded", () => {
+  dialog
+    .showMessageBox(mainWindow, {
+      type: "info",
+      buttons: [],
+      message: i18n.t("update.downloaded"),
+    })
+    .then(() => autoUpdater.quitAndInstall());
+});
+
+autoUpdater.on("error", (error) => {
+  mainWindow.webContents.send("updateError", error.message);
 });

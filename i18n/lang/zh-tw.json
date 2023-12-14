@@ -72,6 +72,8 @@
   },
   "update": {
     "available": "發現新的版本，點擊此處進行更新",
-    "not_available": "目前已經是最新的版本"
+    "not_available": "目前已經是最新的版本",
+    "downloading": "下載中... {{progress}}%",
+    "downloaded": "更新下載完畢，關閉程式以安裝更新"
   }
 }

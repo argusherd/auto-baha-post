@@ -72,6 +72,8 @@
   },
   "update": {
     "available": "A new version has been found. Click here to update.",
-    "not_available": "You are in the latest version."
+    "not_available": "You are in the latest version.",
+    "downloading": "Downloading... {{progress}}%",
+    "downloaded": "Update dowloaded. Restart the app to install the new version."
   }
 }

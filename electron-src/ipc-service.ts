@@ -18,6 +18,7 @@ export default function registerIpcMain() {
   });
   ipcMain.handle("refreshLoginStatus", refreshLoginStatus);
   ipcMain.on("checkUpdate", () => autoUpdater.checkForUpdates());
+  ipcMain.on("downloadUpdate", () => autoUpdater.downloadUpdate());
 }
 
 async function openBaha() {
