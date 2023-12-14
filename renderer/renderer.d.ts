@@ -7,6 +7,9 @@ export interface Electron {
   checkUpdate(): void;
   updateNotAvailable(callback: Function): void;
   updateAvailable(callback: Function): void;
+  downloadUpdate(): void;
+  downloadProgress(callback: (progress: number) => void): void;
+  updateError(callback: (errorMessage: string) => void): void;
 }
 
 declare global {

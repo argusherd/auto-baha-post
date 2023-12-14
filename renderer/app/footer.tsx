@@ -18,6 +18,16 @@ export default function Footer() {
       setIsChecking(false);
       setFeedback(t("update.not_available"));
     });
+
+    window.electron.downloadProgress((progress) => {
+      setFeedback(t("update.downloading", { progress }));
+    });
+
+    window.electron.updateError((errorMessage) => {
+      setIsChecking(false);
+      setIsAvailable(false);
+      setFeedback(errorMessage);
+    });
   }, [t]);
 
   return (
@@ -34,11 +44,14 @@ export default function Footer() {
         </button>
         {isChecking && <i className="icon-[eos-icons--loading]" />}
         {isAvailable ? (
-          <button className="hover:underline">
+          <button
+            className="hover:underline"
+            onClick={() => window.electron.downloadUpdate()}
+          >
             <small>{feedback}</small>
           </button>
         ) : (
-          <small>{feedback}</small>
+          <small className="max-w-xs">{feedback}</small>
         )}
       </div>
     </div>
