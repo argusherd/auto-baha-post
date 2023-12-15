@@ -1,5 +1,13 @@
 # Changelog
 
+# [0.3.0](https://github.com/argusherd/auto-baha-post/compare/v0.2.0...v0.3.0) (2023-12-15)
+
+
+### Features
+
+* add check update button and hook into the update events ([1c3a260](https://github.com/argusherd/auto-baha-post/commit/1c3a260b9813b50e6150c9e8d1d39abcd529a3d4))
+* hook up the download update mechanism in the app ([495868b](https://github.com/argusherd/auto-baha-post/commit/495868bbc215a7c89627019ef27b8b3e4d453d63))
+
 # [0.2.0](https://github.com/argusherd/auto-baha-post/compare/v0.1.1...v0.2.0) (2023-12-12)
 
 
