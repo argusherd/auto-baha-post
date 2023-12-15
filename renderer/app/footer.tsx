@@ -7,6 +7,7 @@ export default function Footer() {
   const [isAvailable, setIsAvailable] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [currentVersion, setCurrentVersion] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     window.electron.updateAvailable(() => {
@@ -33,9 +34,19 @@ export default function Footer() {
     setCurrentVersion(window.currentVersion);
   }, [t]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsCopied(false);
+    }, 1500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [isCopied]);
+
   return (
-    <div className="bg-teal-600 p-2 text-sm text-white">
-      <div className="flex items-center gap-1">
+    <div className="flex items-center justify-between bg-teal-600 p-2 text-white">
+      <div className="flex items-center gap-1 text-sm">
         <p>v{currentVersion}</p>
         <button
           className="hover:underline disabled:text-gray-300"
@@ -60,6 +71,27 @@ export default function Footer() {
           <small className="max-w-xs">{feedback}</small>
         )}
       </div>
+      <button
+        className="text-3xl leading-none"
+        title={t("action.copy_repo_link")}
+        onClick={() => {
+          setIsCopied(true);
+          navigator.clipboard.writeText(
+            "https://github.com/argusherd/auto-baha-post",
+          );
+        }}
+      >
+        {isCopied ? (
+          <div className="relative">
+            <i className="icon-[basil--checked-box-outline]" />
+            <small className="absolute -top-8 right-0 whitespace-nowrap break-keep rounded bg-white p-1 text-sm text-black shadow shadow-gray-700">
+              {t("repo_link_copied")}
+            </small>
+          </div>
+        ) : (
+          <i className="icon-[mdi--github]" />
+        )}
+      </button>
     </div>
   );
 }

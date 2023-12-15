@@ -7,13 +7,15 @@
   "refresh_to_retrieve_latest": "刷新以獲取最新的資料",
   "no_posts": "目前沒有文章",
   "save_to_unlock": "儲存後解鎖",
+  "repo_link_copied": "Github連結已複製",
   "action": {
     "open_baha": "開啟巴哈介面",
     "save": "儲存",
     "publish_now": "立即發布",
     "delete": "刪除",
     "back_to": "返回{{destination}}",
-    "check_update": "檢查更新"
+    "check_update": "檢查更新",
+    "copy_repo_link": "複製專案網址"
   },
   "page": {
     "dashboard": "儀表板",
