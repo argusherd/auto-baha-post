@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "auto-baha-post",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "main/electron-src/index.js",
   "productName": "AutoBahaPost",
   "author": {

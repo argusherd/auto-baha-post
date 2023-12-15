@@ -7,13 +7,15 @@
   "refresh_to_retrieve_latest": "Refresh to retrieve the latest record.",
   "no_posts": "There are currently no posts.",
   "save_to_unlock": "Save to unlock.",
+  "repo_link_copied": "Github repo link copied.",
   "action": {
     "open_baha": "Open Baha's page",
     "save": "Save",
     "publish_now": "Publish now",
     "delete": "Delete",
     "back_to": "Back to {{destination}}",
-    "check_update": "Check for updates"
+    "check_update": "Check for updates",
+    "copy_repo_link": "Copy repository link"
   },
   "page": {
     "dashboard": "Dashboard",
