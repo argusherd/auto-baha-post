@@ -29,6 +29,7 @@ app.on("ready", async () => {
   mainWindow = createWindow();
 
   process.env.MAIN_WINDOW_ID = `${mainWindow.id}`;
+  process.env.currentVersion = autoUpdater.currentVersion;
 
   if (parseInt(process.env.DEBUG as string, 10)) {
     mainWindow.webContents.openDevTools();
