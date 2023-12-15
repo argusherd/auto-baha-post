@@ -6,6 +6,7 @@ export default function Footer() {
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [currentVersion, setCurrentVersion] = useState("");
 
   useEffect(() => {
     window.electron.updateAvailable(() => {
@@ -20,7 +21,7 @@ export default function Footer() {
     });
 
     window.electron.downloadProgress((progress) => {
-      setFeedback(t("update.downloading", { progress }));
+      setFeedback(t("update.downloading", { progress: Math.round(progress) }));
     });
 
     window.electron.updateError((errorMessage) => {
@@ -28,12 +29,17 @@ export default function Footer() {
       setIsAvailable(false);
       setFeedback(errorMessage);
     });
+
+    setCurrentVersion(window.currentVersion);
   }, [t]);
 
   return (
     <div className="bg-teal-600 p-2 text-sm text-white">
       <div className="flex items-center gap-1">
+        <p>v{currentVersion}</p>
         <button
+          className="hover:underline disabled:text-gray-300"
+          disabled={isChecking}
           onClick={() => {
             setIsChecking(true);
             setFeedback("");

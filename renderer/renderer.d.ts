@@ -17,5 +17,6 @@ declare global {
     electron: Electron;
     backendUrl: string;
     lng: string;
+    currentVersion: string;
   }
 }

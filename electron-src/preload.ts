@@ -32,3 +32,5 @@ contextBridge.exposeInMainWorld(
 );
 
 contextBridge.exposeInMainWorld("lng", process.env.LNG);
+
+contextBridge.exposeInMainWorld("currentVersion", process.env.currentVersion);
