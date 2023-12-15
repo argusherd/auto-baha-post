@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/argusherd/auto-baha-post/compare/v0.3.0...v0.3.1) (2023-12-15)
+
+
+### Bug Fixes
+
+* add github repo link button ([7fb289d](https://github.com/argusherd/auto-baha-post/commit/7fb289d18f810c826912c9c7258e1b2015185c56))
+* show app version in the footer ([966dbbf](https://github.com/argusherd/auto-baha-post/commit/966dbbfb2ffda6776c484c28554cc98e25bab214))
+
 # [0.3.0](https://github.com/argusherd/auto-baha-post/compare/v0.2.0...v0.3.0) (2023-12-15)
 
 
