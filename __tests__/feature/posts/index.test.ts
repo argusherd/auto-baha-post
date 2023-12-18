@@ -60,7 +60,9 @@ describe("get posts api", () => {
 
   it("can paginate all the posts", async () => {
     await new PostFactory().createMany(20);
-    const the21th = await new PostFactory().create();
+    const the21th = await new PostFactory().create({
+      updated_at: moment().subtract(1, "minute").toISOString(), // descending order by default
+    });
 
     await request(app)
       .get("/api/posts?page=3")
