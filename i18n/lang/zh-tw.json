@@ -15,7 +15,8 @@
     "delete": "刪除",
     "back_to": "返回{{destination}}",
     "check_update": "檢查更新",
-    "copy_repo_link": "複製專案網址"
+    "copy_repo_link": "複製專案網址",
+    "extract": "提取"
   },
   "page": {
     "dashboard": "儀表板",
@@ -65,7 +66,9 @@
     "not_exist": "該 {{column}} 不存在",
     "not_iso8601": "需提供符合ISO 8601格式的日期/時間",
     "not_after": "需提供 {{value}} 之後的日期/時間",
-    "not_overlapped": "該時段已有其他安排"
+    "not_overlapped": "該時段已有其他安排",
+    "invalid_url": "請提供正確格式的網址",
+    "no_bsn": "無法找到bsn參數"
   },
   "failed": {
     "USER_IS_NOT_LOGIN": "使用者尚未登入",
@@ -77,5 +80,12 @@
     "not_available": "目前已經是最新的版本",
     "downloading": "下載中... {{progress}}%",
     "downloaded": "更新下載完畢，關閉程式以安裝更新"
+  },
+  "bsn": {
+    "what_is": "什麼是看板編號(Board Serial Number)？",
+    "it_is": "看板編號(BSN)是該看板網址內的一串數字",
+    "for_example": "舉例來說，\"測試區\"看板的網址為：",
+    "therefore": "因此，\"測試區\"看板的編號為：",
+    "enter_here": "在此輸入該看板的網址，我們可以為你提取看板編號(bsn)："
   }
 }

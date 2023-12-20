@@ -15,7 +15,8 @@
     "delete": "Delete",
     "back_to": "Back to {{destination}}",
     "check_update": "Check for updates",
-    "copy_repo_link": "Copy repository link"
+    "copy_repo_link": "Copy repository link",
+    "extract": "Extract"
   },
   "page": {
     "dashboard": "Dashboard",
@@ -65,7 +66,9 @@
     "not_exist": "The given {{column}} does not exist.",
     "not_iso8601": "The provided datetime should be in ISO 8601 format.",
     "not_after": "The provided datetime should be after {{value}}.",
-    "not_overlapped": "This datetime has been scheduled."
+    "not_overlapped": "This datetime has been scheduled.",
+    "invalid_url": "Please provide a valid URL.",
+    "no_bsn": "The bsn parameter could not be found."
   },
   "failed": {
     "USER_IS_NOT_LOGIN": "User is not logged in yet.",
@@ -77,5 +80,12 @@
     "not_available": "You are in the latest version.",
     "downloading": "Downloading... {{progress}}%",
     "downloaded": "Update dowloaded. Restart the app to install the new version."
+  },
+  "bsn": {
+    "what_is": "What is board serial number?",
+    "it_is": "Board Serial Number (BSN) can be found in the URL of the given board.",
+    "for_example": "For example, the \"Testing\" board's URL is:",
+    "therefore": "Therefore, the \"Testing\" board's serial number is:",
+    "enter_here": "Enter the URL of the board here, and we can extract the bsn for you:"
   }
 }

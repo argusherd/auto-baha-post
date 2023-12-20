@@ -17,13 +17,14 @@ export default function CreateBoard({
     no: "",
   };
 
+  const methods = useForm<FieldValues>({ defaultValues });
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
     setError,
-  } = useForm<FieldValues>({ defaultValues });
+  } = methods;
 
   async function onSubmit(data: Board) {
     handleFormRequest(async () => {
@@ -39,7 +40,7 @@ export default function CreateBoard({
     <li className="flex gap-2 p-1">
       <div className="flex basis-0 gap-2">
         <BoardName register={register} errors={errors} />
-        <BoardNo register={register} errors={errors} />
+        <BoardNo methods={methods} />
       </div>
 
       <button
