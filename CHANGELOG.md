@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.4.0](https://github.com/argusherd/auto-baha-post/compare/v0.3.1...v0.4.0) (2023-12-20)
+
+
+### Features
+
+* **renderer:** add bsn extractor for board serial number ([e898419](https://github.com/argusherd/auto-baha-post/commit/e8984197ec8a4a3f1b076bd7c26119d2e1e10cee))
+
 ## [0.3.1](https://github.com/argusherd/auto-baha-post/compare/v0.3.0...v0.3.1) (2023-12-15)
 
 
