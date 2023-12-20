@@ -38,7 +38,7 @@ describe("the create a board component", () => {
   it("handles the submission of creating a board", async () => {
     const name = screen.getByPlaceholderText("Board name");
     const no = screen.getByPlaceholderText("Board serial number");
-    const submit = screen.getByRole("button");
+    const submit = screen.getByRole("button", { name: "create-board" });
 
     await userEvent.type(no, "123456");
     await userEvent.type(name, "Gaming");
@@ -54,7 +54,7 @@ describe("the create a board component", () => {
   it("does not accept an empty value", async () => {
     const name = screen.getByPlaceholderText("Board name");
     const no = screen.getByPlaceholderText("Board serial number");
-    const submit = screen.getByRole("button");
+    const submit = screen.getByRole("button", { name: "create-board" });
 
     await userEvent.type(no, " ");
     await userEvent.type(name, " ");
@@ -72,7 +72,7 @@ describe("the create a board component", () => {
 
   it("only accepts that the board serial number is a number", async () => {
     const no = screen.getByPlaceholderText("Board serial number");
-    const submit = screen.getByRole("button");
+    const submit = screen.getByRole("button", { name: "create-board" });
 
     await userEvent.type(no, "foobar");
     await userEvent.click(submit);
@@ -87,7 +87,7 @@ describe("the create a board component", () => {
   it("refreshes the board list after added a new board", async () => {
     const name = screen.getByPlaceholderText("Board name");
     const no = screen.getByPlaceholderText("Board serial number");
-    const submit = screen.getByRole("button");
+    const submit = screen.getByRole("button", { name: "create-board" });
 
     await userEvent.type(no, "123456");
     await userEvent.type(name, "Gaming");

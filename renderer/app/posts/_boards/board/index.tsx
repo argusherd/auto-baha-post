@@ -16,18 +16,19 @@ export default function BoardItem({
   fetchBoards: Function;
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const methods = useForm<FieldValues>({
+    defaultValues: {
+      no: board.no,
+      name: board.name,
+    },
+  });
   const {
     register,
     reset,
     formState: { errors },
     handleSubmit,
     setError,
-  } = useForm<FieldValues>({
-    defaultValues: {
-      no: board.no,
-      name: board.name,
-    },
-  });
+  } = methods;
   const { setValue: setParentValue, getValues: getParentValues } =
     useFormContext();
 
@@ -58,7 +59,7 @@ export default function BoardItem({
         <div className="flex justify-between gap-2">
           <div className="flex basis-0 gap-2">
             <BoardName register={register} errors={errors} />
-            <BoardNo register={register} errors={errors} />
+            <BoardNo methods={methods} />
           </div>
 
           <div className="flex gap-2 pt-2">
