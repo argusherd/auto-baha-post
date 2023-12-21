@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/argusherd/auto-baha-post/compare/v0.4.0...v0.4.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* **renderer:** prevent re-assign the open attribute to the modal ([d496f78](https://github.com/argusherd/auto-baha-post/commit/d496f78a96eaab8f101ef7c2c239e4ccaebabf18))
+
 # [0.4.0](https://github.com/argusherd/auto-baha-post/compare/v0.3.1...v0.4.0) (2023-12-20)
 
 
