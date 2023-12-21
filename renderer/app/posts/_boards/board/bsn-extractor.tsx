@@ -19,6 +19,7 @@ const BsnExtractor = forwardRef(function BsnExtractor(
 
   useImperativeHandle(forwardedRef, () => ({
     showModal: () => {
+      if (selfRef.current.hasAttribute("open")) return;
       selfRef.current.showModal();
       setBsnURL("");
       setErrorMessage("");
